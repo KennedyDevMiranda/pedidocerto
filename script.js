@@ -279,7 +279,7 @@ async function consultarCpf() {
             document.getElementById('clienteId').value = cli.id;
 
             statusCliente.className = 'status-box success';
-            statusCliente.textContent = `Cliente localizado: ${cli.nome} (ID ${cli.id}).`;
+            statusCliente.textContent = `Cliente localizado: ${cli.nome}.`;
             showToast('Cliente encontrado no sistema.', 'success');
             return;
         }
@@ -817,7 +817,7 @@ function preencherDadosCliente(cli) {
     document.getElementById('clienteId').value = state.cliente.id || '';
 
     statusCliente.className = 'status-box success';
-    statusCliente.textContent = `Cliente localizado: ${state.cliente.nome} (ID ${state.cliente.id}).`;
+    statusCliente.textContent = `Cliente localizado: ${state.cliente.nome}.`;
 }
 
 function mostrarWizard() {
