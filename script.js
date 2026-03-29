@@ -35,32 +35,6 @@ const state = {
     observacao: ''
 };
 
-const state = {
-    step: 1,
-    produtos: produtosMock,
-    carrinho: [],
-    cliente: {
-        id: null,
-        cpf: '',
-        nome: '',
-        email: '',
-        telefone: '',
-        existente: false
-    },
-    endereco: {
-        cep: '',
-        logradouro: '',
-        numero: '',
-        bairro: '',
-        cidade: '',
-        uf: '',
-        complemento: '',
-        referencia: ''
-    },
-    pagamento: '',
-    observacao: ''
-};
-
 const steps = Array.from(document.querySelectorAll('.step-card'));
 const progressSteps = Array.from(document.querySelectorAll('.progress-step'));
 const listaProdutos = document.getElementById('listaProdutos');
@@ -118,7 +92,7 @@ async function carregarProdutos(busca = '') {
         }
 
         const produtos = await resp.json();
-        state.produtos = Array.isArray(produtos) ? produtos : [];
+        state.produtos = Array.isArray(produtos) ? produtos.filter(p => p.estoque > 0) : [];
         renderProdutos();
     } catch (error) {
         listaProdutos.innerHTML = `<div class="empty-state">Não foi possível carregar os produtos do estoque.</div>`;
@@ -142,15 +116,18 @@ function renderProdutos() {
         return;
     }
 
-    listaProdutos.innerHTML = state.produtos.map(produto => `
-        <button type="button" class="product-card" data-produto-id="${produto.id}">
-            <div>
-                <h3>${produto.nome}</h3>
-                <p>Estoque disponível: ${produto.estoque}</p>
-            </div>
-            <div class="product-price">${formatCurrency(produto.preco)}</div>
-        </button>
-    `).join('');
+    listaProdutos.innerHTML = state.produtos.map(produto => {
+        const estoqueClass = produto.estoque <= 5 ? 'stock-low' : 'stock-ok';
+        return `
+            <button type="button" class="product-card" data-produto-id="${produto.id}">
+                <div>
+                    <h3>${produto.nome}</h3>
+                    <p class="${estoqueClass}">Estoque: ${produto.estoque} un.</p>
+                </div>
+                <div class="product-price">${formatCurrency(produto.preco)}</div>
+            </button>
+        `;
+    }).join('');
 }
 
 function adicionarAoCarrinho(produtoId) {
@@ -500,7 +477,6 @@ async function enviarPedido(e) {
     }
 }
 
-produtoBusca.addEventListener('input', (e) => renderProdutos(e.target.value));
 
 document.getElementById('listaProdutos').addEventListener('click', (e) => {
     const card = e.target.closest('[data-produto-id]');

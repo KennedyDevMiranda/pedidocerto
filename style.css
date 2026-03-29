@@ -242,6 +242,15 @@ body {
     color: var(--muted);
 }
 
+.product-card p.stock-low {
+    color: var(--warning);
+    font-weight: 700;
+}
+
+.product-card p.stock-ok {
+    color: var(--success);
+}
+
 .product-price {
     font-weight: 800;
     color: var(--primary);
