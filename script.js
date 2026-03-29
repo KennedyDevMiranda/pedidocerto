@@ -451,7 +451,7 @@ function validarEtapaAtual() {
             const { total } = getResumo();
 
             if (!trocoInput.value.trim() || isNaN(trocoValor) || trocoValor <= 0) {
-                showToast('Informe com quanto o cliente vai pagar em dinheiro.', 'error');
+                showToast('Informe com quanto vai pagar em dinheiro.', 'error');
                 trocoInput.focus();
                 return false;
             }
