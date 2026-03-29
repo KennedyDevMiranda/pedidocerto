@@ -2,13 +2,6 @@ const API_BASE = 'https://api.pedidocerto.uk';
 
 const ENDPOINTS = {
     criarPedido: `${API_BASE}/api/pedidos`,
-    buscarClientePorCpf: (cpf) => `${API_BASE}/api/clientes/cpf/${cpf}`
-};
-
-const API_BASE = 'https://api.pedidocerto.uk';
-
-const ENDPOINTS = {
-    criarPedido: `${API_BASE}/api/pedidos`,
     buscarClientePorCpf: (cpf) => `${API_BASE}/api/clientes/cpf/${cpf}`,
     listarProdutos: (busca = '') => {
         const query = busca ? `?busca=${encodeURIComponent(busca)}` : '';
