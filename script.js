@@ -109,22 +109,34 @@ function validarCpf(cpf) {
     return resto === parseInt(clean.charAt(10));
 }
 
-function renderProdutos(filter = '') {
-    const termo = filter.trim().toLowerCase();
-    const filtrados = state.produtos.filter(p =>
-        p.nome.toLowerCase().includes(termo) || p.descricao.toLowerCase().includes(termo)
-    );
+async function carregarProdutos(busca = '') {
+    try {
+        const resp = await fetch(ENDPOINTS.listarProdutos(busca));
 
-    if (!filtrados.length) {
-        listaProdutos.innerHTML = `<div class="empty-state">Nenhum produto encontrado.</div>`;
+        if (!resp.ok) {
+            throw new Error('Erro ao carregar produtos.');
+        }
+
+        const produtos = await resp.json();
+        state.produtos = Array.isArray(produtos) ? produtos : [];
+        renderProdutos();
+    } catch (error) {
+        listaProdutos.innerHTML = `<div class="empty-state">Não foi possível carregar os produtos do estoque.</div>`;
+        showToast('Erro ao carregar produtos do sistema.', 'error');
+    }
+}
+
+function renderProdutos() {
+    if (!state.produtos.length) {
+        listaProdutos.innerHTML = `<div class="empty-state">Nenhum produto disponível no estoque.</div>`;
         return;
     }
 
-    listaProdutos.innerHTML = filtrados.map(produto => `
+    listaProdutos.innerHTML = state.produtos.map(produto => `
         <button type="button" class="product-card" data-produto-id="${produto.id}">
             <div>
                 <h3>${produto.nome}</h3>
-                <p>${produto.descricao}</p>
+                <p>Estoque disponível: ${produto.estoque}</p>
             </div>
             <div class="product-price">${formatCurrency(produto.preco)}</div>
         </button>
