@@ -81,9 +81,12 @@
                     <div class="form-grid" style="margin-top:14px">
                         <div class="row two">
                             <div class="form-group">
-                                <label for="desconto">Desconto (R$)</label>
-                                <input type="number" id="desconto" min="0" step="0.01" value="0" placeholder="0,00" />
-                                <small>Valor em reais que será subtraído do total.</small>
+                                <label for="codigoCupom">Cupom de desconto</label>
+                                <div class="inline-group">
+                                    <input type="text" id="codigoCupom" placeholder="Digite o código do cupom" />
+                                    <button type="button" class="btn btn-outline" id="btnAplicarCupom">Aplicar</button>
+                                </div>
+                                <small id="cupomStatus">Se possui um cupom, insira o código acima.</small>
                             </div>
                             <div class="form-group">
                                 <label for="observacao">Observação</label>

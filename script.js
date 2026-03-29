@@ -13,7 +13,9 @@ const ENDPOINTS = {
     },
     buscarClientePorDocumento: (doc) =>
         `${API_BASE}/api/clientes/documento/${encodeURIComponent(doc)}`,
-    criarCliente: `${API_BASE}/api/clientes`
+    criarCliente: `${API_BASE}/api/clientes`,
+    validarCupom: (codigo, subtotal) =>
+        `${API_BASE}/api/cupons/validar/${encodeURIComponent(codigo)}?subtotal=${subtotal}`
 };
 
 /* ---------- Mapa de enums do backend ---------- */
@@ -52,7 +54,13 @@ const state = {
     },
     formaPagamento: 0,
     observacao: '',
-    desconto: 0
+    desconto: 0,
+    cupom: {
+        codigo: '',
+        aplicado: false,
+        valorDesconto: 0,
+        descricao: ''
+    }
 };
 
 /* ---------- Referências DOM ---------- */
@@ -191,7 +199,7 @@ function getResumo() {
     const itens = state.carrinho.length;
     const quantidade = state.carrinho.reduce((a, i) => a + i.quantidade, 0);
     const subtotal = state.carrinho.reduce((a, i) => a + i.quantidade * i.preco, 0);
-    const desconto = parseFloat(document.getElementById('desconto')?.value) || 0;
+    const desconto = state.cupom.aplicado ? state.cupom.valorDesconto : 0;
     const total = Math.max(subtotal - desconto, 0);
     return { itens, quantidade, subtotal, desconto, total };
 }
@@ -257,7 +265,7 @@ async function consultarCpf() {
             document.getElementById('clienteId').value = cli.id;
 
             statusCliente.className = 'status-box success';
-            statusCliente.textContent = `Cliente localizado: ${cli.nome}.`;
+            statusCliente.textContent = `Cliente localizado: ${cli.nome} (ID ${cli.id}).`;
             showToast('Cliente encontrado no sistema.', 'success');
             return;
         }
@@ -385,17 +393,7 @@ function validarEtapaAtual() {
             showToast('Seu carrinho está vazio.', 'error');
             return false;
         }
-        const { subtotal } = getResumo();
-        const desc = parseFloat(document.getElementById('desconto').value) || 0;
-        if (desc < 0) {
-            showToast('Desconto não pode ser negativo.', 'error');
-            return false;
-        }
-        if (desc > subtotal) {
-            showToast(`Desconto (R$ ${desc.toFixed(2)}) excede o subtotal (${formatCurrency(subtotal)}).`, 'error');
-            return false;
-        }
-        state.desconto = desc;
+        state.desconto = state.cupom.aplicado ? state.cupom.valorDesconto : 0;
         state.observacao = document.getElementById('observacao').value.trim();
     }
 
@@ -478,7 +476,7 @@ function preencherRevisao() {
 
     document.getElementById('reviewValores').innerHTML = `
         <p>Subtotal: ${formatCurrency(subtotal)}</p>
-        ${desconto > 0 ? `<p>Desconto: -${formatCurrency(desconto)}</p>` : ''}
+        ${desconto > 0 ? `<p>Cupom (${state.cupom.codigo}): -${formatCurrency(desconto)}</p>` : ''}
         <p style="font-size:1.2rem"><strong>Total: ${formatCurrency(total)}</strong></p>
         ${state.observacao ? `<p style="margin-top:6px;font-size:.85rem;opacity:.85">Obs: ${state.observacao}</p>` : ''}
     `;
@@ -493,6 +491,7 @@ function montarPayload(clienteId) {
         clienteId: clienteId,
         usuarioId: parseInt(document.getElementById('usuarioId').value) || 1,
         desconto: state.desconto,
+        codigoCupom: state.cupom.aplicado ? state.cupom.codigo : '',
         observacao: state.observacao,
         formaPagamento: state.formaPagamento,
         enderecoEntrega: montarEnderecoString(),
@@ -501,6 +500,86 @@ function montarPayload(clienteId) {
             quantidade: i.quantidade
         }))
     };
+}
+
+/* ===================================================================
+   CUPOM DE DESCONTO (GET /api/cupons/validar/{codigo}?subtotal=)
+   =================================================================== */
+
+async function validarCupom() {
+    const input = document.getElementById('codigoCupom');
+    const statusEl = document.getElementById('cupomStatus');
+    const codigo = input.value.trim();
+
+    if (!codigo) {
+        statusEl.textContent = 'Digite o código do cupom.';
+        statusEl.style.color = 'var(--warning)';
+        input.focus();
+        return;
+    }
+
+    const { subtotal } = getResumo();
+
+    statusEl.textContent = 'Validando cupom...';
+    statusEl.style.color = 'var(--muted)';
+
+    try {
+        const resp = await fetch(ENDPOINTS.validarCupom(codigo, subtotal));
+        const data = await resp.json();
+
+        if (resp.ok && data.sucesso) {
+            state.cupom = {
+                codigo: data.codigo,
+                aplicado: true,
+                valorDesconto: data.valorDesconto,
+                descricao: data.descricao || ''
+            };
+            state.desconto = data.valorDesconto;
+
+            const info = data.tipoDesconto === 2
+                ? `${data.valor}% de desconto`
+                : `R$ ${data.valorDesconto.toFixed(2)} de desconto`;
+
+            statusEl.innerHTML = `<strong style="color:var(--success)">✓ Cupom "${data.codigo}" aplicado!</strong> ${info}${data.descricao ? ` — ${data.descricao}` : ''}`;
+            statusEl.style.color = 'var(--success)';
+
+            input.disabled = true;
+            document.getElementById('btnAplicarCupom').textContent = 'Remover';
+            document.getElementById('btnAplicarCupom').removeEventListener('click', validarCupom);
+            document.getElementById('btnAplicarCupom').addEventListener('click', removerCupom);
+
+            renderCarrinho();
+            showToast('Cupom aplicado com sucesso!', 'success');
+        } else {
+            statusEl.textContent = data.mensagem || 'Cupom inválido.';
+            statusEl.style.color = 'var(--danger)';
+            showToast(data.mensagem || 'Cupom inválido.', 'error');
+        }
+    } catch {
+        statusEl.textContent = 'Erro ao validar o cupom. Tente novamente.';
+        statusEl.style.color = 'var(--danger)';
+        showToast('Erro de conexão ao validar cupom.', 'error');
+    }
+}
+
+function removerCupom() {
+    state.cupom = { codigo: '', aplicado: false, valorDesconto: 0, descricao: '' };
+    state.desconto = 0;
+
+    const input = document.getElementById('codigoCupom');
+    input.disabled = false;
+    input.value = '';
+
+    const statusEl = document.getElementById('cupomStatus');
+    statusEl.textContent = 'Se possui um cupom, insira o código acima.';
+    statusEl.style.color = '';
+
+    document.getElementById('btnAplicarCupom').textContent = 'Aplicar';
+    document.getElementById('btnAplicarCupom').removeEventListener('click', removerCupom);
+    document.getElementById('btnAplicarCupom').addEventListener('click', validarCupom);
+
+    renderCarrinho();
+    showToast('Cupom removido.', 'success');
 }
 
 /* ===================================================================
@@ -587,7 +666,7 @@ document.querySelectorAll('.payment-option').forEach(btn => {
     });
 });
 
-document.getElementById('desconto').addEventListener('input', () => renderCarrinho());
+document.getElementById('btnAplicarCupom').addEventListener('click', validarCupom);
 
 document.getElementById('formPedido').addEventListener('submit', enviarPedido);
 
