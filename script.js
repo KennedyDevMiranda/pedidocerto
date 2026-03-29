@@ -156,7 +156,10 @@ function renderProdutos() {
     }
     listaProdutos.innerHTML = state.produtos.map(p => `
         <button type="button" class="product-card" data-produto-id="${p.id}">
-            <div>
+            ${p.imagemUrl
+                ? `<img src="${API_BASE}${p.imagemUrl}" alt="${p.nome}" class="product-img">`
+                : `<div class="product-img-placeholder">📦</div>`}
+            <div class="product-info">
                 <h3>${p.nome}</h3>
                 <p>${p.descricao || ''} · Estoque: ${p.estoque}</p>
             </div>
@@ -186,6 +189,7 @@ function adicionarAoCarrinho(produtoId) {
             nome: p.nome,
             preco: p.preco,
             estoque: p.estoque,
+            imagemUrl: p.imagemUrl || '',
             quantidade: 1
         });
     }
@@ -234,6 +238,9 @@ function renderCarrinho() {
 
     itensPedido.innerHTML = state.carrinho.map(item => `
         <div class="cart-item">
+            ${item.imagemUrl
+                ? `<img src="${API_BASE}${item.imagemUrl}" alt="${item.nome}" class="cart-item-img">`
+                : `<div class="cart-item-img-placeholder">📦</div>`}
             <div>
                 <h4>${item.nome}</h4>
                 <small>${formatCurrency(item.preco)} cada</small>
