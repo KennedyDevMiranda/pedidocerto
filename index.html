@@ -340,6 +340,46 @@
 
     <div class="toast" id="toast"></div>
 
+    <!-- ══ OVERLAY DE PAGAMENTO PIX (pós-pedido) ══ -->
+    <div class="pix-overlay" id="pixOverlay">
+        <div class="pix-overlay-content">
+            <div class="pix-overlay-header">
+                <span class="pix-overlay-icon">📱</span>
+                <h2>Pagamento via Pix</h2>
+                <p class="pix-overlay-pedido" id="pixOverlayPedido"></p>
+            </div>
+
+            <div class="pix-overlay-amount" id="pixOverlayAmount"></div>
+
+            <div class="pix-overlay-qr" id="pixOverlayQrContainer"></div>
+
+            <div class="pix-overlay-copiacola">
+                <label>Pix Copia e Cola:</label>
+                <div class="pix-code-box">
+                    <input type="text" id="pixOverlayCopiaCola" readonly />
+                    <button type="button" class="btn btn-outline pix-copy-btn" id="btnCopiarPixOverlay">📋 Copiar</button>
+                </div>
+                <small id="pixOverlayCopyStatus" style="color:var(--success);display:none">✅ Código copiado!</small>
+            </div>
+
+            <div class="pix-overlay-timer">
+                <small>⏱️ Aguardando confirmação do pagamento...</small>
+                <div class="pix-overlay-pulse"></div>
+            </div>
+
+            <div class="pix-overlay-actions">
+                <button type="button" class="btn btn-primary pix-confirm-btn" id="btnConfirmarPix">✅ Já paguei</button>
+                <button type="button" class="btn btn-secondary" id="btnPagarDepois">Pagar depois</button>
+            </div>
+
+            <div class="pix-overlay-result hidden" id="pixResultado">
+                <div class="pix-result-icon">✅</div>
+                <h3>Pagamento confirmado!</h3>
+                <p>Seu pedido foi marcado como <strong>Pago</strong>.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="offline-overlay" id="offlineOverlay">
         <div class="offline-content">
             <span class="offline-icon">🔌</span>

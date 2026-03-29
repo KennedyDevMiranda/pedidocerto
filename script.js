@@ -34,9 +34,9 @@ const TAXA_ENTREGA_FIXA = 3.00;
 /* ---------- Configuração PIX ---------- */
 
 const PIX_CONFIG = {
-    chave: '18173582785',         // Chave PIX do recebedor (telefone, CPF, e-mail ou aleatória)
-    nome: 'KENNEDY MIRANDA VENANCIO',           // Nome do recebedor (até 25 caracteres, sem acentos)
-    cidade: 'BARRA DE SAO FRANCISCO'           // Cidade do recebedor (até 15 caracteres, sem acentos)
+    chave: '11999999999',         // Chave PIX do recebedor (telefone, CPF, e-mail ou aleatória)
+    nome: 'DEVMIRANDA',           // Nome do recebedor (até 25 caracteres, sem acentos)
+    cidade: 'SAO PAULO'           // Cidade do recebedor (até 15 caracteres, sem acentos)
 };
 
 /* ---------- Estado global ---------- */
@@ -279,7 +279,7 @@ async function consultarCpf() {
             document.getElementById('clienteId').value = cli.id;
 
             statusCliente.className = 'status-box success';
-            statusCliente.textContent = `Cliente localizado: ${cli.nome}.`;
+            statusCliente.textContent = `Cliente localizado: ${cli.nome} (ID ${cli.id}).`;
             showToast('Cliente encontrado no sistema.', 'success');
             return;
         }
@@ -654,6 +654,14 @@ async function enviarPedido(e) {
 
         if (resp.ok || resp.status === 201) {
             const num = data?.numeroPedido || `#${data?.pedidoId || ''}`;
+
+            // Se for PIX, mostrar overlay de pagamento
+            if (state.formaPagamento === 2 && data?.pedidoId && data?.valorTotal) {
+                showToast(`Pedido ${num} criado! Complete o pagamento via Pix.`, 'success');
+                exibirOverlayPix(data.pedidoId, num, data.valorTotal);
+                return;
+            }
+
             showToast(`Pedido ${num} criado com sucesso!`, 'success');
             setTimeout(() => window.location.reload(), 1500);
             return;
@@ -666,6 +674,104 @@ async function enviarPedido(e) {
         btn.disabled = false;
         btn.textContent = 'Enviar Pedido';
     }
+}
+
+/* ===================================================================
+   OVERLAY PIX — Pagamento pós-pedido
+   =================================================================== */
+
+let pixOverlayPedidoId = null;
+let pixOverlayValor = 0;
+
+function exibirOverlayPix(pedidoId, numeroPedido, valorTotal) {
+    pixOverlayPedidoId = pedidoId;
+    pixOverlayValor = valorTotal;
+
+    const overlay = document.getElementById('pixOverlay');
+    const container = document.getElementById('pixOverlayQrContainer');
+    const copiaCola = document.getElementById('pixOverlayCopiaCola');
+
+    document.getElementById('pixOverlayPedido').textContent = `Pedido ${numeroPedido}`;
+    document.getElementById('pixOverlayAmount').textContent = formatCurrency(valorTotal);
+
+    // Gerar payload PIX
+    const payload = gerarPixPayload(valorTotal);
+    copiaCola.value = payload;
+
+    // Gerar QR Code
+    container.innerHTML = '';
+    if (typeof QRCode !== 'undefined') {
+        new QRCode(container, {
+            text: payload,
+            width: 220,
+            height: 220,
+            colorDark: '#0f3460',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+        });
+    }
+
+    // Resetar estado visual
+    document.getElementById('pixResultado').classList.add('hidden');
+    document.querySelector('.pix-overlay-timer').style.display = '';
+    document.querySelector('.pix-overlay-actions').style.display = '';
+    document.querySelector('.pix-overlay-qr').style.display = '';
+    document.querySelector('.pix-overlay-copiacola').style.display = '';
+    document.getElementById('pixOverlayCopyStatus').style.display = 'none';
+    document.getElementById('btnConfirmarPix').disabled = false;
+    document.getElementById('btnConfirmarPix').textContent = '✅ Já paguei';
+
+    overlay.classList.add('visible');
+}
+
+async function confirmarPagamentoPix() {
+    if (!pixOverlayPedidoId) return;
+
+    const btn = document.getElementById('btnConfirmarPix');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Confirmando...';
+
+    try {
+        const resp = await fetch(`${API_BASE}/api/pedidos/${pixOverlayPedidoId}/pagamento`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                valor: pixOverlayValor,
+                formaPagamento: 2,
+                observacao: 'Pagamento via Pix confirmado pelo cliente'
+            })
+        });
+
+        const data = await resp.json().catch(() => null);
+
+        if (resp.ok && data?.sucesso) {
+            // Esconder elementos de pagamento e mostrar resultado
+            document.querySelector('.pix-overlay-timer').style.display = 'none';
+            document.querySelector('.pix-overlay-actions').style.display = 'none';
+            document.querySelector('.pix-overlay-qr').style.display = 'none';
+            document.querySelector('.pix-overlay-copiacola').style.display = 'none';
+
+            document.getElementById('pixResultado').classList.remove('hidden');
+            showToast('Pagamento Pix confirmado!', 'success');
+
+            setTimeout(() => window.location.reload(), 3000);
+            return;
+        }
+
+        showToast(data?.mensagem || 'Erro ao confirmar pagamento.', 'error');
+        btn.disabled = false;
+        btn.textContent = '✅ Já paguei';
+    } catch {
+        showToast('Erro de conexão ao confirmar pagamento.', 'error');
+        btn.disabled = false;
+        btn.textContent = '✅ Já paguei';
+    }
+}
+
+function fecharOverlayPix() {
+    document.getElementById('pixOverlay').classList.remove('visible');
+    showToast('Você poderá pagar depois. O pedido foi criado com pagamento pendente.', 'success');
+    setTimeout(() => window.location.reload(), 2000);
 }
 
 /* ===================================================================
@@ -711,7 +817,7 @@ function preencherDadosCliente(cli) {
     document.getElementById('clienteId').value = state.cliente.id || '';
 
     statusCliente.className = 'status-box success';
-    statusCliente.textContent = `Cliente localizado: ${state.cliente.nome}.`;
+    statusCliente.textContent = `Cliente localizado: ${state.cliente.nome} (ID ${state.cliente.id}).`;
 }
 
 function mostrarWizard() {
@@ -1004,6 +1110,23 @@ function atualizarTrocoInfo() {
 document.getElementById('btnAplicarCupom').addEventListener('click', validarCupom);
 
 document.getElementById('btnCopiarPix').addEventListener('click', copiarPixCodigo);
+
+document.getElementById('btnCopiarPixOverlay').addEventListener('click', () => {
+    const input = document.getElementById('pixOverlayCopiaCola');
+    const status = document.getElementById('pixOverlayCopyStatus');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(input.value).then(() => {
+            status.style.display = '';
+            showToast('Código Pix copiado!', 'success');
+            setTimeout(() => { status.style.display = 'none'; }, 3000);
+        }).catch(() => fallbackCopy(input, status));
+    } else {
+        fallbackCopy(input, status);
+    }
+});
+
+document.getElementById('btnConfirmarPix').addEventListener('click', confirmarPagamentoPix);
+document.getElementById('btnPagarDepois').addEventListener('click', fecharOverlayPix);
 
 document.getElementById('formPedido').addEventListener('submit', enviarPedido);
 
