@@ -1,6 +1,7 @@
 // Detecta o IP/domínio do servidor automaticamente (mesmo host da página)
 //const API_BASE = window.location.origin;
-const API_BASE = 'http://100.104.17.8:5000/DevMiranda_2/index.html';
+const API_BASE = 'https://minha-api-pedidos.onrender.com';
+//const API_BASE = 'http://100.104.17.8:5000/';
 
 function atualizarNumeracaoItens() {
     const rows = document.querySelectorAll('.item-row');
