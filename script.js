@@ -138,11 +138,11 @@ document.getElementById('formPedido').addEventListener('submit', async (e) => {
     };
 
     try {
-        const resp = await fetch(API_BASE + '/api/pedidos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(pedido)
-        });
+            fetch(API_BASE + "/api/pedidos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(pedido)
+            });
 
         const data = await resp.json().catch(() => null);
 
