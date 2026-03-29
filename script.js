@@ -1,13 +1,32 @@
+/* ===================================================================
+   DevMiranda — Script do Formulário de Pedido
+   Adaptado à API real: /api/pedidos, /api/produtos, /api/clientes
+   =================================================================== */
+
 const API_BASE = 'https://api.pedidocerto.uk';
 
 const ENDPOINTS = {
     criarPedido: `${API_BASE}/api/pedidos`,
-    buscarClientePorCpf: (cpf) => `${API_BASE}/api/clientes/cpf/${cpf}`,
     listarProdutos: (busca = '') => {
-        const query = busca ? `?busca=${encodeURIComponent(busca)}` : '';
-        return `${API_BASE}/api/produtos${query}`;
-    }
+        const q = busca ? `?busca=${encodeURIComponent(busca)}` : '';
+        return `${API_BASE}/api/produtos${q}`;
+    },
+    buscarClientePorDocumento: (doc) =>
+        `${API_BASE}/api/clientes/documento/${encodeURIComponent(doc)}`,
+    criarCliente: `${API_BASE}/api/clientes`
 };
+
+/* ---------- Mapa de enums do backend ---------- */
+
+const FORMAS_PAGAMENTO = {
+    1: 'Dinheiro',
+    2: 'Pix',
+    3: 'Cartão de Crédito',
+    4: 'Cartão de Débito',
+    5: 'Boleto'
+};
+
+/* ---------- Estado global ---------- */
 
 const state = {
     step: 1,
@@ -31,35 +50,12 @@ const state = {
         complemento: '',
         referencia: ''
     },
-    pagamento: '',
-    observacao: ''
+    formaPagamento: 0,
+    observacao: '',
+    desconto: 0
 };
 
-const state = {
-    step: 1,
-    produtos: produtosMock,
-    carrinho: [],
-    cliente: {
-        id: null,
-        cpf: '',
-        nome: '',
-        email: '',
-        telefone: '',
-        existente: false
-    },
-    endereco: {
-        cep: '',
-        logradouro: '',
-        numero: '',
-        bairro: '',
-        cidade: '',
-        uf: '',
-        complemento: '',
-        referencia: ''
-    },
-    pagamento: '',
-    observacao: ''
-};
+/* ---------- Referências DOM ---------- */
 
 const steps = Array.from(document.querySelectorAll('.step-card'));
 const progressSteps = Array.from(document.querySelectorAll('.progress-step'));
@@ -68,6 +64,10 @@ const produtoBusca = document.getElementById('produtoBusca');
 const itensPedido = document.getElementById('itensPedido');
 const carrinhoVazio = document.getElementById('carrinhoVazio');
 const statusCliente = document.getElementById('statusCliente');
+
+/* ===================================================================
+   UTILITÁRIOS
+   =================================================================== */
 
 function showToast(msg, type = 'success') {
     const toast = document.getElementById('toast');
@@ -85,122 +85,100 @@ function onlyDigits(value) {
 }
 
 function formatCpf(value) {
-    const digits = onlyDigits(value).slice(0, 11);
-    return digits
+    const d = onlyDigits(value).slice(0, 11);
+    return d
         .replace(/(\d{3})(\d)/, '$1.$2')
         .replace(/(\d{3})(\d)/, '$1.$2')
         .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
 }
 
 function validarCpf(cpf) {
-    const clean = onlyDigits(cpf);
-    if (clean.length !== 11 || /^(\d)\1+$/.test(clean)) return false;
-
-    let soma = 0;
-    for (let i = 0; i < 9; i++) soma += parseInt(clean.charAt(i)) * (10 - i);
-    let resto = (soma * 10) % 11;
-    if (resto === 10) resto = 0;
-    if (resto !== parseInt(clean.charAt(9))) return false;
-
-    soma = 0;
-    for (let i = 0; i < 10; i++) soma += parseInt(clean.charAt(i)) * (11 - i);
-    resto = (soma * 10) % 11;
-    if (resto === 10) resto = 0;
-    return resto === parseInt(clean.charAt(10));
+    const c = onlyDigits(cpf);
+    if (c.length !== 11 || /^(\d)\1+$/.test(c)) return false;
+    let s = 0;
+    for (let i = 0; i < 9; i++) s += parseInt(c[i]) * (10 - i);
+    let r = (s * 10) % 11; if (r === 10) r = 0;
+    if (r !== parseInt(c[9])) return false;
+    s = 0;
+    for (let i = 0; i < 10; i++) s += parseInt(c[i]) * (11 - i);
+    r = (s * 10) % 11; if (r === 10) r = 0;
+    return r === parseInt(c[10]);
 }
+
+/* ===================================================================
+   PRODUTOS (GET /api/produtos?busca=)
+   =================================================================== */
 
 async function carregarProdutos(busca = '') {
     try {
         const resp = await fetch(ENDPOINTS.listarProdutos(busca));
-
-        if (!resp.ok) {
-            throw new Error('Erro ao carregar produtos.');
-        }
-
-        const produtos = await resp.json();
-        state.produtos = Array.isArray(produtos) ? produtos : [];
+        if (!resp.ok) throw new Error();
+        const dados = await resp.json();
+        state.produtos = Array.isArray(dados) ? dados : [];
         renderProdutos();
-    } catch (error) {
-        listaProdutos.innerHTML = `<div class="empty-state">Não foi possível carregar os produtos do estoque.</div>`;
-        showToast('Erro ao carregar produtos do sistema.', 'error');
+    } catch {
+        listaProdutos.innerHTML = '<div class="empty-state">Não foi possível carregar os produtos do estoque.</div>';
+        showToast('Erro ao carregar produtos.', 'error');
     }
 }
 
 let buscaTimeout;
-
 produtoBusca.addEventListener('input', (e) => {
     clearTimeout(buscaTimeout);
-
-    buscaTimeout = setTimeout(() => {
-        carregarProdutos(e.target.value.trim());
-    }, 300);
+    buscaTimeout = setTimeout(() => carregarProdutos(e.target.value.trim()), 300);
 });
 
 function renderProdutos() {
     if (!state.produtos.length) {
-        listaProdutos.innerHTML = `<div class="empty-state">Nenhum produto disponível no estoque.</div>`;
+        listaProdutos.innerHTML = '<div class="empty-state">Nenhum produto encontrado no estoque.</div>';
         return;
     }
-
-    listaProdutos.innerHTML = state.produtos.map(produto => `
-        <button type="button" class="product-card" data-produto-id="${produto.id}">
+    listaProdutos.innerHTML = state.produtos.map(p => `
+        <button type="button" class="product-card" data-produto-id="${p.id}">
             <div>
-                <h3>${produto.nome}</h3>
-                <p>Estoque disponível: ${produto.estoque}</p>
+                <h3>${p.nome}</h3>
+                <p>${p.descricao || ''} · Estoque: ${p.estoque}</p>
             </div>
-            <div class="product-price">${formatCurrency(produto.preco)}</div>
+            <div class="product-price">${formatCurrency(p.preco)}</div>
         </button>
     `).join('');
 }
 
+/* ===================================================================
+   CARRINHO
+   =================================================================== */
+
 function adicionarAoCarrinho(produtoId) {
-    const produto = state.produtos.find(p => p.id === produtoId);
-    if (!produto) return;
+    const p = state.produtos.find(x => x.id === produtoId);
+    if (!p) return;
 
-    const itemExistente = state.carrinho.find(i => i.produtoId === produtoId);
-
-    if (itemExistente) {
-        if (itemExistente.quantidade >= produto.estoque) {
-            showToast(`Estoque máximo disponível para ${produto.nome}: ${produto.estoque}`, 'error');
+    const existente = state.carrinho.find(i => i.produtoId === produtoId);
+    if (existente) {
+        if (existente.quantidade >= p.estoque) {
+            showToast(`Estoque máximo de "${p.nome}": ${p.estoque}`, 'error');
             return;
         }
-
-        itemExistente.quantidade += 1;
+        existente.quantidade += 1;
     } else {
         state.carrinho.push({
-            produtoId: produto.id,
-            nome: produto.nome,
-            preco: produto.preco,
-            estoque: produto.estoque,
+            produtoId: p.id,
+            nome: p.nome,
+            preco: p.preco,
+            estoque: p.estoque,
             quantidade: 1
         });
     }
-
     renderCarrinho();
-    showToast(`${produto.nome} adicionado ao pedido.`, 'success');
+    showToast(`${p.nome} adicionado.`, 'success');
 }
 
 function alterarQuantidade(produtoId, delta) {
     const item = state.carrinho.find(i => i.produtoId === produtoId);
     if (!item) return;
-
-    const produto = state.produtos.find(p => p.id === produtoId);
-    if (!produto) return;
-
-    const novaQuantidade = item.quantidade + delta;
-
-    if (novaQuantidade <= 0) {
-        state.carrinho = state.carrinho.filter(i => i.produtoId !== produtoId);
-        renderCarrinho();
-        return;
-    }
-
-    if (novaQuantidade > produto.estoque) {
-        showToast(`Estoque disponível: ${produto.estoque}`, 'error');
-        return;
-    }
-
-    item.quantidade = novaQuantidade;
+    const novo = item.quantidade + delta;
+    if (novo <= 0) { removerDoCarrinho(produtoId); return; }
+    if (novo > item.estoque) { showToast(`Estoque disponível: ${item.estoque}`, 'error'); return; }
+    item.quantidade = novo;
     renderCarrinho();
 }
 
@@ -211,9 +189,11 @@ function removerDoCarrinho(produtoId) {
 
 function getResumo() {
     const itens = state.carrinho.length;
-    const quantidade = state.carrinho.reduce((acc, item) => acc + item.quantidade, 0);
-    const total = state.carrinho.reduce((acc, item) => acc + (item.quantidade * item.preco), 0);
-    return { itens, quantidade, total };
+    const quantidade = state.carrinho.reduce((a, i) => a + i.quantidade, 0);
+    const subtotal = state.carrinho.reduce((a, i) => a + i.quantidade * i.preco, 0);
+    const desconto = parseFloat(document.getElementById('desconto')?.value) || 0;
+    const total = Math.max(subtotal - desconto, 0);
+    return { itens, quantidade, subtotal, desconto, total };
 }
 
 function renderCarrinho() {
@@ -228,7 +208,6 @@ function renderCarrinho() {
         itensPedido.innerHTML = '';
         return;
     }
-
     carrinhoVazio.style.display = 'none';
 
     itensPedido.innerHTML = state.carrinho.map(item => `
@@ -238,7 +217,7 @@ function renderCarrinho() {
                 <small>${formatCurrency(item.preco)} cada</small>
             </div>
             <div class="qty-box">
-                <button type="button" class="qty-btn" onclick="alterarQuantidade(${item.produtoId}, -1)">-</button>
+                <button type="button" class="qty-btn" onclick="alterarQuantidade(${item.produtoId}, -1)">−</button>
                 <strong>${item.quantidade}</strong>
                 <button type="button" class="qty-btn" onclick="alterarQuantidade(${item.produtoId}, 1)">+</button>
             </div>
@@ -248,86 +227,98 @@ function renderCarrinho() {
     `).join('');
 }
 
-function irParaEtapa(step) {
-    state.step = step;
+/* ===================================================================
+   CLIENTE (GET /api/clientes/documento/{doc}  ·  POST /api/clientes)
+   =================================================================== */
 
-    steps.forEach(card => {
-        card.classList.toggle('active', Number(card.dataset.step) === step);
-    });
+async function consultarCpf() {
+    const cpf = onlyDigits(document.getElementById('cpf').value);
 
-    progressSteps.forEach(item => {
-        const current = Number(item.dataset.step);
-        item.classList.toggle('active', current === step);
-        item.classList.toggle('done', current < step);
-    });
+    if (!validarCpf(cpf)) {
+        statusCliente.className = 'status-box warning';
+        statusCliente.textContent = 'CPF inválido. Confira e tente novamente.';
+        return;
+    }
 
-    if (step === 6) preencherRevisao();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    statusCliente.className = 'status-box';
+    statusCliente.textContent = 'Consultando cadastro...';
+
+    try {
+        const resp = await fetch(ENDPOINTS.buscarClientePorDocumento(cpf));
+
+        if (resp.ok) {
+            const cli = await resp.json();
+            state.cliente.id = cli.id;
+            state.cliente.existente = true;
+
+            document.getElementById('nomeCliente').value = cli.nome || '';
+            document.getElementById('telefoneCliente').value = cli.telefone || '';
+            document.getElementById('emailCliente').value = cli.email || '';
+            document.getElementById('clienteId').value = cli.id;
+
+            statusCliente.className = 'status-box success';
+            statusCliente.textContent = `Cliente localizado: ${cli.nome} (ID ${cli.id}).`;
+            showToast('Cliente encontrado no sistema.', 'success');
+            return;
+        }
+
+        if (resp.status === 404) {
+            state.cliente.id = null;
+            state.cliente.existente = false;
+            document.getElementById('clienteId').value = '';
+            document.getElementById('nomeCliente').value = '';
+            document.getElementById('telefoneCliente').value = '';
+            document.getElementById('emailCliente').value = '';
+
+            statusCliente.className = 'status-box warning';
+            statusCliente.textContent = 'CPF não encontrado. Preencha os dados para cadastrar um novo cliente.';
+            showToast('Novo cliente — preencha os dados abaixo.', 'success');
+            return;
+        }
+
+        statusCliente.className = 'status-box warning';
+        statusCliente.textContent = 'Não foi possível consultar o CPF agora.';
+    } catch {
+        statusCliente.className = 'status-box warning';
+        statusCliente.textContent = 'Erro de comunicação ao consultar CPF.';
+    }
 }
 
-function validarEtapaAtual() {
-    if (state.step === 1) {
-        if (!state.carrinho.length) {
-            showToast('Adicione pelo menos 1 produto antes de continuar.', 'error');
-            return false;
-        }
+async function garantirClienteId() {
+    if (state.cliente.id) return state.cliente.id;
+
+    const payload = {
+        nome: state.cliente.nome,
+        telefone: state.cliente.telefone,
+        email: state.cliente.email,
+        documento: state.cliente.cpf,
+        endereco: montarEnderecoString()
+    };
+
+    const resp = await fetch(ENDPOINTS.criarCliente, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await resp.json();
+
+    if (resp.ok || resp.status === 201) {
+        state.cliente.id = data.clienteId;
+        return data.clienteId;
     }
 
-    if (state.step === 2) {
-        if (!state.carrinho.length) {
-            showToast('Seu carrinho está vazio.', 'error');
-            return false;
-        }
+    if (resp.status === 409 && data.clienteId) {
+        state.cliente.id = data.clienteId;
+        return data.clienteId;
     }
 
-    if (state.step === 3) {
-        const camposObrigatorios = ['cep', 'logradouro', 'numero', 'bairro', 'cidade', 'uf'];
-        for (const id of camposObrigatorios) {
-            const el = document.getElementById(id);
-            if (!el.value.trim()) {
-                showToast('Preencha os dados de endereço antes de continuar.', 'error');
-                el.focus();
-                return false;
-            }
-        }
-        capturarEndereco();
-    }
-
-    if (state.step === 4) {
-        const cpf = document.getElementById('cpf').value.trim();
-        const nome = document.getElementById('nomeCliente').value.trim();
-        const telefone = document.getElementById('telefoneCliente').value.trim();
-
-        if (!validarCpf(cpf)) {
-            showToast('Informe um CPF válido.', 'error');
-            document.getElementById('cpf').focus();
-            return false;
-        }
-
-        if (!nome) {
-            showToast('Informe o nome do cliente.', 'error');
-            document.getElementById('nomeCliente').focus();
-            return false;
-        }
-
-        if (!telefone) {
-            showToast('Informe o telefone do cliente.', 'error');
-            document.getElementById('telefoneCliente').focus();
-            return false;
-        }
-
-        capturarCliente();
-    }
-
-    if (state.step === 5) {
-        if (!state.pagamento) {
-            showToast('Selecione a forma de pagamento.', 'error');
-            return false;
-        }
-    }
-
-    return true;
+    throw new Error(data.mensagem || 'Erro ao cadastrar cliente.');
 }
+
+/* ===================================================================
+   ENDEREÇO — concatena campos em string única para EnderecoEntrega
+   =================================================================== */
 
 function capturarEndereco() {
     state.endereco = {
@@ -342,131 +333,182 @@ function capturarEndereco() {
     };
 }
 
+function montarEnderecoString() {
+    const e = state.endereco;
+    let partes = [];
+    if (e.logradouro) partes.push(e.logradouro);
+    if (e.numero) partes.push(`nº ${e.numero}`);
+    if (e.complemento) partes.push(e.complemento);
+    if (e.bairro) partes.push(e.bairro);
+    if (e.cidade && e.uf) partes.push(`${e.cidade}/${e.uf}`);
+    else if (e.cidade) partes.push(e.cidade);
+    if (e.cep) partes.push(`CEP ${e.cep}`);
+    if (e.referencia) partes.push(`Ref: ${e.referencia}`);
+    return partes.join(', ');
+}
+
 function capturarCliente() {
     state.cliente.cpf = onlyDigits(document.getElementById('cpf').value);
     state.cliente.nome = document.getElementById('nomeCliente').value.trim();
     state.cliente.telefone = document.getElementById('telefoneCliente').value.trim();
     state.cliente.email = document.getElementById('emailCliente').value.trim();
-
-    document.getElementById('clienteId').value = state.cliente.id || '';
 }
 
+/* ===================================================================
+   WIZARD — Navegação entre etapas
+   =================================================================== */
+
+function irParaEtapa(step) {
+    state.step = step;
+    steps.forEach(c => c.classList.toggle('active', Number(c.dataset.step) === step));
+    progressSteps.forEach(p => {
+        const n = Number(p.dataset.step);
+        p.classList.toggle('active', n === step);
+        p.classList.toggle('done', n < step);
+    });
+    if (step === 6) preencherRevisao();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validarEtapaAtual() {
+    const s = state.step;
+
+    if (s === 1) {
+        if (!state.carrinho.length) {
+            showToast('Adicione pelo menos 1 produto.', 'error');
+            return false;
+        }
+    }
+
+    if (s === 2) {
+        if (!state.carrinho.length) {
+            showToast('Seu carrinho está vazio.', 'error');
+            return false;
+        }
+        const { subtotal } = getResumo();
+        const desc = parseFloat(document.getElementById('desconto').value) || 0;
+        if (desc < 0) {
+            showToast('Desconto não pode ser negativo.', 'error');
+            return false;
+        }
+        if (desc > subtotal) {
+            showToast(`Desconto (R$ ${desc.toFixed(2)}) excede o subtotal (${formatCurrency(subtotal)}).`, 'error');
+            return false;
+        }
+        state.desconto = desc;
+        state.observacao = document.getElementById('observacao').value.trim();
+    }
+
+    if (s === 3) {
+        const cpf = document.getElementById('cpf').value.trim();
+        const nome = document.getElementById('nomeCliente').value.trim();
+        const telefone = document.getElementById('telefoneCliente').value.trim();
+
+        if (!validarCpf(cpf)) {
+            showToast('Informe um CPF válido.', 'error');
+            document.getElementById('cpf').focus();
+            return false;
+        }
+        if (!nome) {
+            showToast('Informe o nome do cliente.', 'error');
+            document.getElementById('nomeCliente').focus();
+            return false;
+        }
+        if (!telefone) {
+            showToast('Informe o telefone do cliente.', 'error');
+            document.getElementById('telefoneCliente').focus();
+            return false;
+        }
+        capturarCliente();
+    }
+
+    if (s === 4) {
+        const obrig = ['cep', 'logradouro', 'numero', 'bairro', 'cidade', 'uf'];
+        for (const id of obrig) {
+            const el = document.getElementById(id);
+            if (!el.value.trim()) {
+                showToast('Preencha todos os campos de endereço obrigatórios.', 'error');
+                el.focus();
+                return false;
+            }
+        }
+        capturarEndereco();
+    }
+
+    if (s === 5) {
+        if (!state.formaPagamento) {
+            showToast('Selecione a forma de pagamento.', 'error');
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/* ===================================================================
+   REVISÃO (Etapa 6)
+   =================================================================== */
+
 function preencherRevisao() {
-    const { total } = getResumo();
+    const { subtotal, desconto, total } = getResumo();
 
     document.getElementById('reviewCliente').innerHTML = `
         <p><strong>${state.cliente.nome}</strong></p>
         <p>CPF: ${formatCpf(state.cliente.cpf)}</p>
-        <p>Telefone: ${state.cliente.telefone || '-'}</p>
-        <p>E-mail: ${state.cliente.email || '-'}</p>
+        <p>Telefone: ${state.cliente.telefone || '—'}</p>
+        <p>E-mail: ${state.cliente.email || '—'}</p>
+        ${state.cliente.existente ? '<p style="color:var(--success);font-weight:700">✓ Cliente já cadastrado</p>' : '<p style="color:var(--warning);font-weight:700">⚠ Novo cadastro</p>'}
     `;
 
+    const end = state.endereco;
     document.getElementById('reviewEndereco').innerHTML = `
-        <p>${state.endereco.logradouro}, ${state.endereco.numero}</p>
-        <p>${state.endereco.bairro} - ${state.endereco.cidade}/${state.endereco.uf}</p>
-        <p>CEP: ${state.endereco.cep}</p>
-        <p>${state.endereco.complemento || ''}</p>
-        <p>${state.endereco.referencia || ''}</p>
+        <p>${end.logradouro}, nº ${end.numero}</p>
+        <p>${end.bairro} — ${end.cidade}/${end.uf}</p>
+        <p>CEP: ${end.cep}</p>
+        ${end.complemento ? `<p>${end.complemento}</p>` : ''}
+        ${end.referencia ? `<p>Ref: ${end.referencia}</p>` : ''}
     `;
 
-    document.getElementById('reviewItens').innerHTML = state.carrinho.map(item => `
-        <p>${item.quantidade}x ${item.nome} - ${formatCurrency(item.quantidade * item.preco)}</p>
-    `).join('');
+    document.getElementById('reviewItens').innerHTML = state.carrinho.map(i =>
+        `<p>${i.quantidade}× ${i.nome} — ${formatCurrency(i.quantidade * i.preco)}</p>`
+    ).join('');
 
-    document.getElementById('reviewPagamento').innerHTML = `<p>${state.pagamento}</p>`;
-    document.getElementById('reviewTotal').innerHTML = `<p><strong>${formatCurrency(total)}</strong></p>`;
+    const nomePag = FORMAS_PAGAMENTO[state.formaPagamento] || '—';
+    document.getElementById('reviewPagamento').innerHTML = `<p>${nomePag}</p>`;
+
+    document.getElementById('reviewValores').innerHTML = `
+        <p>Subtotal: ${formatCurrency(subtotal)}</p>
+        ${desconto > 0 ? `<p>Desconto: -${formatCurrency(desconto)}</p>` : ''}
+        <p style="font-size:1.2rem"><strong>Total: ${formatCurrency(total)}</strong></p>
+        ${state.observacao ? `<p style="margin-top:6px;font-size:.85rem;opacity:.85">Obs: ${state.observacao}</p>` : ''}
+    `;
 }
 
-async function consultarCpf() {
-    const cpfInput = document.getElementById('cpf');
-    const cpf = onlyDigits(cpfInput.value);
+/* ===================================================================
+   PAYLOAD — monta o corpo para POST /api/pedidos
+   =================================================================== */
 
-    if (!validarCpf(cpf)) {
-        statusCliente.className = 'status-box warning';
-        statusCliente.textContent = 'CPF inválido. Confira e tente novamente.';
-        return;
-    }
-
-    statusCliente.className = 'status-box';
-    statusCliente.textContent = 'Consultando cadastro...';
-
-    try {
-        const resp = await fetch(ENDPOINTS.buscarClientePorCpf(cpf));
-
-        if (resp.ok) {
-            const cliente = await resp.json();
-            state.cliente.id = cliente.id || cliente.clienteId || null;
-            state.cliente.existente = true;
-
-            document.getElementById('nomeCliente').value = cliente.nome || '';
-            document.getElementById('telefoneCliente').value = cliente.telefone || cliente.celular || '';
-            document.getElementById('emailCliente').value = cliente.email || '';
-            document.getElementById('clienteId').value = state.cliente.id || '';
-
-            statusCliente.className = 'status-box success';
-            statusCliente.textContent = 'Cliente já cadastrado. Dados carregados automaticamente.';
-            showToast('Cliente localizado pelo CPF.', 'success');
-            return;
-        }
-
-        if (resp.status === 404) {
-            state.cliente.id = null;
-            state.cliente.existente = false;
-            document.getElementById('clienteId').value = '';
-            document.getElementById('nomeCliente').value = '';
-            document.getElementById('telefoneCliente').value = '';
-            document.getElementById('emailCliente').value = '';
-
-            statusCliente.className = 'status-box warning';
-            statusCliente.textContent = 'CPF não encontrado. Continue preenchendo para cadastrar um novo cliente.';
-            showToast('CPF não encontrado. Novo cadastro será criado.', 'success');
-            return;
-        }
-
-        statusCliente.className = 'status-box warning';
-        statusCliente.textContent = 'Não foi possível validar o CPF agora.';
-    } catch {
-        statusCliente.className = 'status-box warning';
-        statusCliente.textContent = 'Erro de comunicação ao consultar o CPF.';
-    }
-}
-
-function montarPayload() {
-    const { total } = getResumo();
-
+function montarPayload(clienteId) {
     return {
-        clienteId: state.cliente.id,
+        clienteId: clienteId,
         usuarioId: parseInt(document.getElementById('usuarioId').value) || 1,
-        desconto: parseFloat(document.getElementById('desconto').value) || 0,
+        desconto: state.desconto,
         observacao: state.observacao,
-        cpf: state.cliente.cpf,
-        cliente: {
-            nome: state.cliente.nome,
-            email: state.cliente.email,
-            telefone: state.cliente.telefone
-        },
-        enderecoEntrega: {
-            cep: state.endereco.cep,
-            logradouro: state.endereco.logradouro,
-            numero: state.endereco.numero,
-            bairro: state.endereco.bairro,
-            cidade: state.endereco.cidade,
-            uf: state.endereco.uf,
-            complemento: state.endereco.complemento,
-            referencia: state.endereco.referencia
-        },
-        formaPagamento: state.pagamento,
-        valorTotal: total,
-        itens: state.carrinho.map(item => ({
-            produtoId: item.produtoId,
-            quantidade: item.quantidade
+        formaPagamento: state.formaPagamento,
+        enderecoEntrega: montarEnderecoString(),
+        itens: state.carrinho.map(i => ({
+            produtoId: i.produtoId,
+            quantidade: i.quantidade
         }))
     };
 }
 
+/* ===================================================================
+   ENVIAR PEDIDO
+   =================================================================== */
+
 async function enviarPedido(e) {
     e.preventDefault();
-
     if (state.step !== 6) return;
 
     const btn = document.getElementById('btnEnviar');
@@ -474,7 +516,8 @@ async function enviarPedido(e) {
     btn.innerHTML = '<span class="spinner"></span>Enviando...';
 
     try {
-        const payload = montarPayload();
+        const clienteId = await garantirClienteId();
+        const payload = montarPayload(clienteId);
 
         const resp = await fetch(ENDPOINTS.criarPedido, {
             method: 'POST',
@@ -484,42 +527,39 @@ async function enviarPedido(e) {
 
         const data = await resp.json().catch(() => null);
 
-        if (resp.ok) {
-            showToast(`Pedido enviado com sucesso${data?.pedidoId ? ` #${data.pedidoId}` : ''}.`, 'success');
-            setTimeout(() => window.location.reload(), 1200);
+        if (resp.ok || resp.status === 201) {
+            const num = data?.numeroPedido || `#${data?.pedidoId || ''}`;
+            showToast(`Pedido ${num} criado com sucesso!`, 'success');
+            setTimeout(() => window.location.reload(), 1500);
             return;
         }
 
-        const errorMsg = data?.mensagem || data?.message || 'Erro ao criar pedido.';
-        showToast(errorMsg, 'error');
-    } catch {
-        showToast('Sem conexão com o servidor.', 'error');
+        showToast(data?.mensagem || 'Erro ao criar pedido.', 'error');
+    } catch (err) {
+        showToast(err.message || 'Sem conexão com o servidor.', 'error');
     } finally {
         btn.disabled = false;
         btn.textContent = 'Enviar Pedido';
     }
 }
 
-produtoBusca.addEventListener('input', (e) => renderProdutos(e.target.value));
+/* ===================================================================
+   EVENT LISTENERS
+   =================================================================== */
 
 document.getElementById('listaProdutos').addEventListener('click', (e) => {
     const card = e.target.closest('[data-produto-id]');
-    if (!card) return;
-    adicionarAoCarrinho(Number(card.dataset.produtoId));
+    if (card) adicionarAoCarrinho(Number(card.dataset.produtoId));
 });
 
 document.getElementById('btnIrCarrinho').addEventListener('click', () => {
-    if (!state.carrinho.length) {
-        showToast('Selecione pelo menos um produto.', 'error');
-        return;
-    }
+    if (!state.carrinho.length) { showToast('Selecione pelo menos um produto.', 'error'); return; }
     irParaEtapa(2);
 });
 
 document.querySelectorAll('[data-next]').forEach(btn => {
     btn.addEventListener('click', () => {
-        if (!validarEtapaAtual()) return;
-        irParaEtapa(state.step + 1);
+        if (validarEtapaAtual()) irParaEtapa(state.step + 1);
     });
 });
 
@@ -532,8 +572,8 @@ document.getElementById('cpf').addEventListener('input', (e) => {
 });
 
 document.getElementById('cep').addEventListener('input', (e) => {
-    const digits = onlyDigits(e.target.value).slice(0, 8);
-    e.target.value = digits.replace(/(\d{5})(\d)/, '$1-$2');
+    const d = onlyDigits(e.target.value).slice(0, 8);
+    e.target.value = d.replace(/(\d{5})(\d)/, '$1-$2');
 });
 
 document.getElementById('btnConsultarCpf').addEventListener('click', consultarCpf);
@@ -542,14 +582,20 @@ document.querySelectorAll('.payment-option').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.payment-option').forEach(x => x.classList.remove('active'));
         btn.classList.add('active');
-        state.pagamento = btn.dataset.value;
-        document.getElementById('formaPagamento').value = state.pagamento;
+        state.formaPagamento = parseInt(btn.dataset.value);
+        document.getElementById('formaPagamento').value = state.formaPagamento;
     });
 });
 
+document.getElementById('desconto').addEventListener('input', () => renderCarrinho());
+
 document.getElementById('formPedido').addEventListener('submit', enviarPedido);
 
-renderProdutos();
+/* ===================================================================
+   INICIALIZAÇÃO
+   =================================================================== */
+
+carregarProdutos();
 renderCarrinho();
 irParaEtapa(1);
 
