@@ -29,6 +29,7 @@ const FORMAS_PAGAMENTO = {
 };
 
 const STORAGE_KEY = 'devmiranda_cpf_salvo';
+const TAXA_ENTREGA_FIXA = 3.00;
 
 /* ---------- Estado global ---------- */
 
@@ -55,7 +56,7 @@ const state = {
         referencia: ''
     },
     formaPagamento: 0,
-    taxaEntrega: 0,
+    taxaEntrega: TAXA_ENTREGA_FIXA,
     trocoPara: 0,
     observacao: '',
     desconto: 0,
@@ -204,7 +205,7 @@ function getResumo() {
     const quantidade = state.carrinho.reduce((a, i) => a + i.quantidade, 0);
     const subtotal = state.carrinho.reduce((a, i) => a + i.quantidade * i.preco, 0);
     const desconto = state.cupom.aplicado ? state.cupom.valorDesconto : 0;
-    const taxaEntrega = state.taxaEntrega || 0;
+    const taxaEntrega = TAXA_ENTREGA_FIXA;
     const total = Math.max(subtotal - desconto + taxaEntrega, 0);
     return { itens, quantidade, subtotal, desconto, taxaEntrega, total };
 }
@@ -443,17 +444,25 @@ function validarEtapaAtual() {
             showToast('Selecione a forma de pagamento.', 'error');
             return false;
         }
-        state.taxaEntrega = parseFloat(document.getElementById('taxaEntrega').value) || 0;
-        if (state.taxaEntrega < 0) state.taxaEntrega = 0;
 
         if (state.formaPagamento === 1) {
-            state.trocoPara = parseFloat(document.getElementById('trocoPara').value) || 0;
+            const trocoInput = document.getElementById('trocoPara');
+            const trocoValor = parseFloat(trocoInput.value);
             const { total } = getResumo();
-            if (state.trocoPara > 0 && state.trocoPara < total) {
-                showToast('O valor do troco deve ser maior ou igual ao total do pedido.', 'error');
-                document.getElementById('trocoPara').focus();
+
+            if (!trocoInput.value.trim() || isNaN(trocoValor) || trocoValor <= 0) {
+                showToast('Informe com quanto o cliente vai pagar em dinheiro.', 'error');
+                trocoInput.focus();
                 return false;
             }
+
+            if (trocoValor < total) {
+                showToast(`O valor informado (${formatCurrency(trocoValor)}) é menor que o total do pedido (${formatCurrency(total)}). Informe um valor igual ou maior.`, 'error');
+                trocoInput.focus();
+                return false;
+            }
+
+            state.trocoPara = trocoValor;
         } else {
             state.trocoPara = 0;
         }
@@ -521,7 +530,7 @@ function montarPayload(clienteId) {
         codigoCupom: state.cupom.aplicado ? state.cupom.codigo : '',
         observacao: state.observacao,
         formaPagamento: state.formaPagamento,
-        taxaEntrega: state.taxaEntrega,
+        taxaEntrega: TAXA_ENTREGA_FIXA,
         trocoPara: state.formaPagamento === 1 ? state.trocoPara : 0,
         enderecoEntrega: montarEnderecoString(),
         itens: state.carrinho.map(i => ({
@@ -826,13 +835,45 @@ document.querySelectorAll('.payment-option').forEach(btn => {
         const trocoGroup = document.getElementById('trocoGroup');
         if (state.formaPagamento === 1) {
             trocoGroup.style.display = '';
+            document.getElementById('trocoPara').value = '';
+            atualizarTrocoInfo();
         } else {
             trocoGroup.style.display = 'none';
-            document.getElementById('trocoPara').value = '0';
+            document.getElementById('trocoPara').value = '';
             state.trocoPara = 0;
         }
     });
 });
+
+document.getElementById('trocoPara').addEventListener('input', atualizarTrocoInfo);
+
+function atualizarTrocoInfo() {
+    const trocoInput = document.getElementById('trocoPara');
+    const infoEl = document.getElementById('trocoInfo');
+    const valor = parseFloat(trocoInput.value);
+    const { total } = getResumo();
+
+    if (!trocoInput.value.trim() || isNaN(valor) || valor <= 0) {
+        infoEl.textContent = 'Informe o valor que o cliente vai pagar em dinheiro.';
+        infoEl.style.color = 'var(--muted)';
+        return;
+    }
+
+    if (valor < total) {
+        infoEl.textContent = `⚠️ Valor insuficiente. Total do pedido: ${formatCurrency(total)}`;
+        infoEl.style.color = 'var(--danger)';
+        return;
+    }
+
+    if (valor === total) {
+        infoEl.textContent = '✅ Valor exato, sem troco.';
+        infoEl.style.color = 'var(--success)';
+    } else {
+        const troco = valor - total;
+        infoEl.textContent = `✅ Troco: ${formatCurrency(troco)}`;
+        infoEl.style.color = 'var(--success)';
+    }
+}
 
 document.getElementById('btnAplicarCupom').addEventListener('click', validarCupom);
 
