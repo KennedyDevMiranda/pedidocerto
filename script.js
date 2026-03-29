@@ -5,16 +5,42 @@ const ENDPOINTS = {
     buscarClientePorCpf: (cpf) => `${API_BASE}/api/clientes/cpf/${cpf}`
 };
 
-const produtosMock = [
-    { id: 1, nome: 'X-Burger', descricao: 'Hambúrguer artesanal com queijo', preco: 24.9 },
-    { id: 2, nome: 'X-Salada', descricao: 'Hambúrguer com salada e molho especial', preco: 27.9 },
-    { id: 3, nome: 'Batata Frita G', descricao: 'Porção generosa e crocante', preco: 18.5 },
-    { id: 4, nome: 'Refrigerante 2L', descricao: 'Bebida gelada para acompanhar', preco: 12.0 },
-    { id: 5, nome: 'Pizza Calabresa', descricao: 'Mussarela, calabresa e cebola', preco: 54.9 },
-    { id: 6, nome: 'Pizza Frango com Catupiry', descricao: 'Clássica e campeã de pedidos', preco: 59.9 },
-    { id: 7, nome: 'Açaí 500ml', descricao: 'Com complementos variados', preco: 22.0 },
-    { id: 8, nome: 'Suco Natural', descricao: 'Feito na hora', preco: 9.5 }
-];
+const API_BASE = 'https://api.pedidocerto.uk';
+
+const ENDPOINTS = {
+    criarPedido: `${API_BASE}/api/pedidos`,
+    buscarClientePorCpf: (cpf) => `${API_BASE}/api/clientes/cpf/${cpf}`,
+    listarProdutos: (busca = '') => {
+        const query = busca ? `?busca=${encodeURIComponent(busca)}` : '';
+        return `${API_BASE}/api/produtos${query}`;
+    }
+};
+
+const state = {
+    step: 1,
+    produtos: [],
+    carrinho: [],
+    cliente: {
+        id: null,
+        cpf: '',
+        nome: '',
+        email: '',
+        telefone: '',
+        existente: false
+    },
+    endereco: {
+        cep: '',
+        logradouro: '',
+        numero: '',
+        bairro: '',
+        cidade: '',
+        uf: '',
+        complemento: '',
+        referencia: ''
+    },
+    pagamento: '',
+    observacao: ''
+};
 
 const state = {
     step: 1,
