@@ -53,6 +53,8 @@ const state = {
         referencia: ''
     },
     formaPagamento: 0,
+    taxaEntrega: 0,
+    trocoPara: 0,
     observacao: '',
     desconto: 0,
     cupom: {
@@ -200,8 +202,9 @@ function getResumo() {
     const quantidade = state.carrinho.reduce((a, i) => a + i.quantidade, 0);
     const subtotal = state.carrinho.reduce((a, i) => a + i.quantidade * i.preco, 0);
     const desconto = state.cupom.aplicado ? state.cupom.valorDesconto : 0;
-    const total = Math.max(subtotal - desconto, 0);
-    return { itens, quantidade, subtotal, desconto, total };
+    const taxaEntrega = state.taxaEntrega || 0;
+    const total = Math.max(subtotal - desconto + taxaEntrega, 0);
+    return { itens, quantidade, subtotal, desconto, taxaEntrega, total };
 }
 
 function renderCarrinho() {
@@ -265,7 +268,7 @@ async function consultarCpf() {
             document.getElementById('clienteId').value = cli.id;
 
             statusCliente.className = 'status-box success';
-            statusCliente.textContent = `Cliente localizado: ${cli.nome}.`;
+            statusCliente.textContent = `Cliente localizado: ${cli.nome} (ID ${cli.id}).`;
             showToast('Cliente encontrado no sistema.', 'success');
             return;
         }
@@ -438,6 +441,20 @@ function validarEtapaAtual() {
             showToast('Selecione a forma de pagamento.', 'error');
             return false;
         }
+        state.taxaEntrega = parseFloat(document.getElementById('taxaEntrega').value) || 0;
+        if (state.taxaEntrega < 0) state.taxaEntrega = 0;
+
+        if (state.formaPagamento === 1) {
+            state.trocoPara = parseFloat(document.getElementById('trocoPara').value) || 0;
+            const { total } = getResumo();
+            if (state.trocoPara > 0 && state.trocoPara < total) {
+                showToast('O valor do troco deve ser maior ou igual ao total do pedido.', 'error');
+                document.getElementById('trocoPara').focus();
+                return false;
+            }
+        } else {
+            state.trocoPara = 0;
+        }
     }
 
     return true;
@@ -448,7 +465,7 @@ function validarEtapaAtual() {
    =================================================================== */
 
 function preencherRevisao() {
-    const { subtotal, desconto, total } = getResumo();
+    const { subtotal, desconto, taxaEntrega, total } = getResumo();
 
     document.getElementById('reviewCliente').innerHTML = `
         <p><strong>${state.cliente.nome}</strong></p>
@@ -474,12 +491,20 @@ function preencherRevisao() {
     const nomePag = FORMAS_PAGAMENTO[state.formaPagamento] || '—';
     document.getElementById('reviewPagamento').innerHTML = `<p>${nomePag}</p>`;
 
-    document.getElementById('reviewValores').innerHTML = `
-        <p>Subtotal: ${formatCurrency(subtotal)}</p>
-        ${desconto > 0 ? `<p>Cupom (${state.cupom.codigo}): -${formatCurrency(desconto)}</p>` : ''}
-        <p style="font-size:1.2rem"><strong>Total: ${formatCurrency(total)}</strong></p>
-        ${state.observacao ? `<p style="margin-top:6px;font-size:.85rem;opacity:.85">Obs: ${state.observacao}</p>` : ''}
-    `;
+    let valoresHtml = `<p>Subtotal: ${formatCurrency(subtotal)}</p>`;
+    if (desconto > 0)
+        valoresHtml += `<p>Cupom (${state.cupom.codigo}): -${formatCurrency(desconto)}</p>`;
+    if (taxaEntrega > 0)
+        valoresHtml += `<p>🚚 Taxa de entrega: ${formatCurrency(taxaEntrega)}</p>`;
+    valoresHtml += `<p style="font-size:1.2rem"><strong>Total: ${formatCurrency(total)}</strong></p>`;
+    if (state.formaPagamento === 1 && state.trocoPara > 0) {
+        const troco = state.trocoPara - total;
+        valoresHtml += `<p>💵 Troco para: ${formatCurrency(state.trocoPara)} (Troco: ${formatCurrency(troco)})</p>`;
+    }
+    if (state.observacao)
+        valoresHtml += `<p style="margin-top:6px;font-size:.85rem;opacity:.85">Obs: ${state.observacao}</p>`;
+
+    document.getElementById('reviewValores').innerHTML = valoresHtml;
 }
 
 /* ===================================================================
@@ -494,6 +519,8 @@ function montarPayload(clienteId) {
         codigoCupom: state.cupom.aplicado ? state.cupom.codigo : '',
         observacao: state.observacao,
         formaPagamento: state.formaPagamento,
+        taxaEntrega: state.taxaEntrega,
+        trocoPara: state.formaPagamento === 1 ? state.trocoPara : 0,
         enderecoEntrega: montarEnderecoString(),
         itens: state.carrinho.map(i => ({
             produtoId: i.produtoId,
@@ -663,6 +690,14 @@ document.querySelectorAll('.payment-option').forEach(btn => {
         btn.classList.add('active');
         state.formaPagamento = parseInt(btn.dataset.value);
         document.getElementById('formaPagamento').value = state.formaPagamento;
+        const trocoGroup = document.getElementById('trocoGroup');
+        if (state.formaPagamento === 1) {
+            trocoGroup.style.display = '';
+        } else {
+            trocoGroup.style.display = 'none';
+            document.getElementById('trocoPara').value = '0';
+            state.trocoPara = 0;
+        }
     });
 });
 
