@@ -34,9 +34,9 @@ const TAXA_ENTREGA_FIXA = 3.00;
 /* ---------- Configuração PIX ---------- */
 
 const PIX_CONFIG = {
-    chave: '11999999999',         // Chave PIX do recebedor (telefone, CPF, e-mail ou aleatória)
-    nome: 'DEVMIRANDA',           // Nome do recebedor (até 25 caracteres, sem acentos)
-    cidade: 'SAO PAULO'           // Cidade do recebedor (até 15 caracteres, sem acentos)
+    chave: '18173582785',         // Chave PIX do recebedor (telefone, CPF, e-mail ou aleatória)
+    nome: 'KENNEDY MIRANDA VENANCIO',           // Nome do recebedor (até 25 caracteres, sem acentos)
+    cidade: 'BARRA DE SAO FRANCISCO'           // Cidade do recebedor (até 15 caracteres, sem acentos)
 };
 
 /* ---------- Estado global ---------- */
