@@ -1,11 +1,9 @@
-if (typeof API_BASE === 'undefined') {
-    var API_BASE = 'https://api.pedidocerto.uk';
+const API_BASE = 'https://api.pedidocerto.uk';
 
-    var ENDPOINTS = {
-        criarPedido: `${API_BASE}/api/pedidos`,
-        buscarClientePorCpf: (cpf) => `${API_BASE}/api/clientes/cpf/${cpf}`
-    };
-}
+const ENDPOINTS = {
+    criarPedido: `${API_BASE}/api/pedidos`,
+    buscarClientePorCpf: (cpf) => `${API_BASE}/api/clientes/cpf/${cpf}`
+};
 
 const produtosMock = [
     { id: 1, nome: 'X-Burger', descricao: 'Hambúrguer artesanal com queijo', preco: 24.9 },
@@ -99,7 +97,7 @@ function renderProdutos(filter = '') {
     );
 
     if (!filtrados.length) {
-        listaProdutos.innerHTML = <div class="empty-state">Nenhum produto encontrado.</div>;
+        listaProdutos.innerHTML = `<div class="empty-state">Nenhum produto encontrado.</div>`;
         return;
     }
 
@@ -314,8 +312,8 @@ function preencherRevisao() {
         <p>${item.quantidade}x ${item.nome} - ${formatCurrency(item.quantidade * item.preco)}</p>
     `).join('');
 
-    document.getElementById('reviewPagamento').innerHTML = <p>${state.pagamento}</p>;
-    document.getElementById('reviewTotal').innerHTML = <p><strong>${formatCurrency(total)}</strong></p>;
+    document.getElementById('reviewPagamento').innerHTML = `<p>${state.pagamento}</p>`;
+    document.getElementById('reviewTotal').innerHTML = `<p><strong>${formatCurrency(total)}</strong></p>`;
 }
 
 async function consultarCpf() {
