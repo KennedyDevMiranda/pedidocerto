@@ -1,7 +1,7 @@
 // Detecta o IP/domínio do servidor automaticamente (mesmo host da página)
 //const API_BASE = window.location.origin;
 //const API_BASE = 'https://minha-api-pedidos.onrender.com';
-const API_BASE = 'https://sun-returns-realized-custom.trycloudflare.com';
+const API_BASE = 'https://guam-incentives-sea-generating.trycloudflare.com';
 
 function atualizarNumeracaoItens() {
     const rows = document.querySelectorAll('.item-row');
