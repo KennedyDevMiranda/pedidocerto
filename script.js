@@ -122,7 +122,7 @@ function renderProdutos() {
             <button type="button" class="product-card" data-produto-id="${produto.id}">
                 <div>
                     <h3>${produto.nome}</h3>
-                    <p class="${estoqueClass}">Estoque: ${produto.estoque} un.</p>
+                    <p class="${estoqueClass}">Estoque: ${produto.estoque} unid.</p>
                 </div>
                 <div class="product-price">${formatCurrency(produto.preco)}</div>
             </button>
