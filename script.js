@@ -126,6 +126,16 @@ async function carregarProdutos(busca = '') {
     }
 }
 
+let buscaTimeout;
+
+produtoBusca.addEventListener('input', (e) => {
+    clearTimeout(buscaTimeout);
+
+    buscaTimeout = setTimeout(() => {
+        carregarProdutos(e.target.value.trim());
+    }, 300);
+});
+
 function renderProdutos() {
     if (!state.produtos.length) {
         listaProdutos.innerHTML = `<div class="empty-state">Nenhum produto disponível no estoque.</div>`;
@@ -148,13 +158,20 @@ function adicionarAoCarrinho(produtoId) {
     if (!produto) return;
 
     const itemExistente = state.carrinho.find(i => i.produtoId === produtoId);
+
     if (itemExistente) {
+        if (itemExistente.quantidade >= produto.estoque) {
+            showToast(`Estoque máximo disponível para ${produto.nome}: ${produto.estoque}`, 'error');
+            return;
+        }
+
         itemExistente.quantidade += 1;
     } else {
         state.carrinho.push({
             produtoId: produto.id,
             nome: produto.nome,
             preco: produto.preco,
+            estoque: produto.estoque,
             quantidade: 1
         });
     }
@@ -167,10 +184,23 @@ function alterarQuantidade(produtoId, delta) {
     const item = state.carrinho.find(i => i.produtoId === produtoId);
     if (!item) return;
 
-    item.quantidade += delta;
-    if (item.quantidade <= 0) {
+    const produto = state.produtos.find(p => p.id === produtoId);
+    if (!produto) return;
+
+    const novaQuantidade = item.quantidade + delta;
+
+    if (novaQuantidade <= 0) {
         state.carrinho = state.carrinho.filter(i => i.produtoId !== produtoId);
+        renderCarrinho();
+        return;
     }
+
+    if (novaQuantidade > produto.estoque) {
+        showToast(`Estoque disponível: ${produto.estoque}`, 'error');
+        return;
+    }
+
+    item.quantidade = novaQuantidade;
     renderCarrinho();
 }
 
