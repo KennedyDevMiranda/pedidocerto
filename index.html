@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Novo Pedido - DevMiranda</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <main class="app-shell">
+        <section class="hero">
+            <div class="hero-card">
+                <div class="hero-top">
+                    <div>
+                        <div class="brand-badge">Sistema DevMiranda</div>
+                        <h1>Novo Pedido</h1>
+                        <p>Preencha os dados abaixo para registrar o pedido com rapidez, clareza e uma experiência mais elegante.</p>
+                    </div>
+                    <div class="hero-icon">🧾</div>
+                </div>
+            </div>
+        </section>
+
+        <form id="formPedido" autocomplete="off">
+            <div class="content-grid">
+                <section class="card">
+                    <div class="section-head">
+                        <div class="section-title-wrap">
+                            <div class="section-title">Dados do pedido</div>
+                            <div class="section-subtitle">Informações principais para identificação e lançamento</div>
+                        </div>
+                        <div class="section-chip">Obrigatório</div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="clienteId">Cód. Cliente</label>
+                                <div class="input-wrap">
+                                    <input type="number" id="clienteId" min="1" required inputmode="numeric" placeholder="Ex.: 101" />
+                                </div>
+                                <small>Informe o código do cliente cadastrado.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="usuarioId">Cód. Usuário</label>
+                                <div class="input-wrap">
+                                    <input type="number" id="usuarioId" min="1" required inputmode="numeric" placeholder="Ex.: 7" />
+                                </div>
+                                <small>Usuário responsável pelo pedido.</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="desconto">Desconto (R$)</label>
+                            <div class="input-wrap">
+                                <input type="number" id="desconto" min="0" step="0.01" value="0" inputmode="decimal" placeholder="0,00" />
+                            </div>
+                            <small>Use zero caso não exista desconto.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="observacao">Observação</label>
+                            <div class="input-wrap">
+                                <textarea id="observacao" placeholder="Digite observações relevantes do pedido..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <div class="section-head">
+                        <div class="section-title-wrap">
+                            <div class="section-title">Itens do pedido</div>
+                            <div class="section-subtitle">Adicione um ou mais produtos com suas respectivas quantidades</div>
+                        </div>
+                        <div class="section-chip" id="contadorItensBadge">1 item</div>
+                    </div>
+
+                    <div id="itensContainer" class="items-stack">
+                        <div class="item-row">
+                            <div class="form-group">
+                                <span class="item-index">#1</span>
+                                <label>Cód. Produto</label>
+                                <input type="number" class="produto-id" min="1" required inputmode="numeric" placeholder="Ex.: 250" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Qtd.</label>
+                                <input type="number" class="quantidade" min="1" value="1" required inputmode="numeric" placeholder="1" />
+                            </div>
+
+                            <button type="button" class="btn-remove" onclick="removerItem(this)" title="Remover item">✕</button>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="button" class="btn-add" onclick="adicionarItem()">+ Adicionar Item</button>
+
+                        <div class="summary-box">
+                            <div class="summary-card">
+                                <span class="label">Itens lançados</span>
+                                <span class="value" id="resumoItens">1</span>
+                            </div>
+                            <div class="summary-card">
+                                <span class="label">Qtd. total</span>
+                                <span class="value" id="resumoQuantidade">1</span>
+                            </div>
+                            <div class="summary-card">
+                                <span class="label">Desconto</span>
+                                <span class="value" id="resumoDesconto">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="submit-wrap">
+                    <button type="submit" class="btn-submit" id="btnEnviar">
+                        Enviar Pedido
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="footer-note">
+            Painel de pedidos com visual profissional, mantendo a mesma integração com o servidor.
+        </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
