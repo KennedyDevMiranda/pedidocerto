@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>DevMiranda - Pedido Certo</title>
+    <title>DevMiranda - Novo Pedido</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,6 +12,10 @@
             <div class="hero-card">
                 <div>
                     <span class="brand-badge">DevMiranda · Sistema de Pedidos</span>
+                    <div class="store-status" id="storeStatus">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Verificando...</span>
+                    </div>
                     <h1>Novo Pedido</h1>
                     <p>Selecione produtos do estoque, identifique o cliente pelo CPF e finalize com a forma de pagamento.</p>
                 </div>
@@ -264,6 +268,15 @@
     </main>
 
     <div class="toast" id="toast"></div>
+
+    <div class="offline-overlay" id="offlineOverlay">
+        <div class="offline-content">
+            <span class="offline-icon">🔌</span>
+            <h2>Loja Offline</h2>
+            <p>O sistema não está disponível no momento. Aguarde a loja ficar online para realizar pedidos.</p>
+            <div class="offline-pulse"></div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

@@ -265,7 +265,7 @@ async function consultarCpf() {
             document.getElementById('clienteId').value = cli.id;
 
             statusCliente.className = 'status-box success';
-            statusCliente.textContent = `Cliente localizado: ${cli.nome}.`;
+            statusCliente.textContent = `Cliente localizado: ${cli.nome} (ID ${cli.id}).`;
             showToast('Cliente encontrado no sistema.', 'success');
             return;
         }
@@ -677,6 +677,49 @@ document.getElementById('formPedido').addEventListener('submit', enviarPedido);
 carregarProdutos();
 renderCarrinho();
 irParaEtapa(1);
+
+/* ===================================================================
+   STATUS DA LOJA (ONLINE / OFFLINE)
+   =================================================================== */
+
+const STORE_STATUS_INTERVAL = 15000; // 15 segundos
+let storeOnline = null;
+
+async function verificarStatusLoja() {
+    const badge = document.getElementById('storeStatus');
+    const overlay = document.getElementById('offlineOverlay');
+    const text = badge.querySelector('.status-text');
+
+    try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 5000);
+        const resp = await fetch(`${API_BASE}/api/status`, { signal: ctrl.signal });
+        clearTimeout(timer);
+
+        if (resp.ok) {
+            if (storeOnline !== true) {
+                badge.className = 'store-status online';
+                text.textContent = 'Loja Online';
+                overlay.classList.remove('visible');
+                storeOnline = true;
+                // recarrega produtos caso tenha ficado offline
+                carregarProdutos();
+            }
+            return;
+        }
+        throw new Error();
+    } catch {
+        if (storeOnline !== false) {
+            badge.className = 'store-status offline';
+            text.textContent = 'Loja Offline';
+            overlay.classList.add('visible');
+            storeOnline = false;
+        }
+    }
+}
+
+verificarStatusLoja();
+setInterval(verificarStatusLoja, STORE_STATUS_INTERVAL);
 
 window.alterarQuantidade = alterarQuantidade;
 window.removerDoCarrinho = removerDoCarrinho;

@@ -23,7 +23,7 @@
 }
 
 body {
-    font-family: "Segoe UI", system-ui, sans-serif;
+    font-family: "Century Gothic", system-ui, sans-serif;
     background:
         radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 30%),
         linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
@@ -572,4 +572,114 @@ body {
     .payment-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ---- Store Status Badge ---- */
+
+.store-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,0,0,0.25);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: .78rem;
+    font-weight: 600;
+    margin-top: 6px;
+    margin-bottom: 4px;
+    transition: background .4s;
+}
+
+.store-status.online {
+    background: rgba(21, 128, 61, 0.35);
+}
+
+.store-status.offline {
+    background: rgba(220, 38, 38, 0.35);
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #94a3b8;
+    transition: background .4s;
+    flex-shrink: 0;
+}
+
+.store-status.online .status-dot {
+    background: #4ade80;
+    box-shadow: 0 0 6px #4ade80;
+    animation: pulse-dot 2s infinite;
+}
+
+.store-status.offline .status-dot {
+    background: #f87171;
+    box-shadow: 0 0 6px #f87171;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+}
+
+/* ---- Offline Overlay ---- */
+
+.offline-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+}
+
+.offline-overlay.visible {
+    display: flex;
+}
+
+.offline-content {
+    text-align: center;
+    color: #fff;
+    max-width: 380px;
+    padding: 32px;
+    animation: fadeInUp .4s ease-out;
+}
+
+.offline-icon {
+    font-size: 3.5rem;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.offline-content h2 {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+}
+
+.offline-content p {
+    font-size: .92rem;
+    color: rgba(255,255,255,.78);
+    line-height: 1.5;
+}
+
+.offline-pulse {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    margin: 24px auto 0;
+    animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
