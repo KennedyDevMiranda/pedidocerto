@@ -31,6 +31,14 @@ const FORMAS_PAGAMENTO = {
 const STORAGE_KEY = 'devmiranda_cpf_salvo';
 const TAXA_ENTREGA_FIXA = 3.00;
 
+/* ---------- Configuração PIX ---------- */
+
+const PIX_CONFIG = {
+    chave: '18173582785',         // Chave PIX do recebedor (telefone, CPF, e-mail ou aleatória)
+    nome: 'KENNEDY MIRANDA VENANCIO',           // Nome do recebedor (até 25 caracteres, sem acentos)
+    cidade: 'BARRA DE SAO FRANCISCO'           // Cidade do recebedor (até 15 caracteres, sem acentos)
+};
+
 /* ---------- Estado global ---------- */
 
 const state = {
@@ -451,7 +459,7 @@ function validarEtapaAtual() {
             const { total } = getResumo();
 
             if (!trocoInput.value.trim() || isNaN(trocoValor) || trocoValor <= 0) {
-                showToast('Informe com quanto vai pagar em dinheiro.', 'error');
+                showToast('Informe com quanto o cliente vai pagar em dinheiro.', 'error');
                 trocoInput.focus();
                 return false;
             }
@@ -792,6 +800,116 @@ function inicializarIdentificacao() {
 }
 
 /* ===================================================================
+   PIX — Gerador de payload EMV (padrão BACEN) + QR Code
+   =================================================================== */
+
+function pixCrc16(payload) {
+    let crc = 0xFFFF;
+    for (let i = 0; i < payload.length; i++) {
+        crc ^= payload.charCodeAt(i) << 8;
+        for (let j = 0; j < 8; j++) {
+            crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+            crc &= 0xFFFF;
+        }
+    }
+    return crc.toString(16).toUpperCase().padStart(4, '0');
+}
+
+function pixField(id, value) {
+    const len = value.length.toString().padStart(2, '0');
+    return id + len + value;
+}
+
+function gerarPixPayload(valor) {
+    const gui = pixField('00', 'BR.GOV.BCB.PIX');
+    const chave = pixField('01', PIX_CONFIG.chave);
+    const merchantInfo = pixField('26', gui + chave);
+
+    const valorStr = valor.toFixed(2);
+    const txid = pixField('05', '***');
+    const additionalData = pixField('62', txid);
+
+    let payload = '';
+    payload += pixField('00', '01');               // Payload Format Indicator
+    payload += pixField('01', '12');               // Point of Initiation (dinâmico)
+    payload += merchantInfo;                        // Merchant Account Info
+    payload += pixField('52', '0000');             // MCC
+    payload += pixField('53', '986');              // Currency (BRL)
+    payload += pixField('54', valorStr);           // Transaction Amount
+    payload += pixField('58', 'BR');               // Country
+    payload += pixField('59', PIX_CONFIG.nome.substring(0, 25));
+    payload += pixField('60', PIX_CONFIG.cidade.substring(0, 15));
+    payload += additionalData;
+    payload += '6304';                              // CRC field ID + length
+
+    const crc = pixCrc16(payload);
+    return payload + crc;
+}
+
+let pixQrInstance = null;
+
+function renderPixQrCode(valor) {
+    const pixSection = document.getElementById('pixSection');
+    const container = document.getElementById('pixQrContainer');
+    const amountEl = document.getElementById('pixAmount');
+    const copiaCola = document.getElementById('pixCopiaCola');
+    const copyStatus = document.getElementById('pixCopyStatus');
+
+    copyStatus.style.display = 'none';
+
+    if (!valor || valor <= 0) {
+        pixSection.style.display = 'none';
+        return;
+    }
+
+    const payload = gerarPixPayload(valor);
+
+    amountEl.textContent = `Total a pagar: ${formatCurrency(valor)}`;
+    copiaCola.value = payload;
+
+    container.innerHTML = '';
+
+    if (typeof QRCode !== 'undefined') {
+        pixQrInstance = new QRCode(container, {
+            text: payload,
+            width: 220,
+            height: 220,
+            colorDark: '#0f3460',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+        });
+    } else {
+        container.innerHTML = '<p style="color:var(--warning);font-size:.85rem">QR Code indisponível.</p>';
+    }
+
+    pixSection.style.display = '';
+}
+
+function copiarPixCodigo() {
+    const input = document.getElementById('pixCopiaCola');
+    const status = document.getElementById('pixCopyStatus');
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(input.value).then(() => {
+            status.style.display = '';
+            showToast('Código Pix copiado!', 'success');
+            setTimeout(() => { status.style.display = 'none'; }, 3000);
+        }).catch(() => fallbackCopy(input, status));
+    } else {
+        fallbackCopy(input, status);
+    }
+}
+
+function fallbackCopy(input, status) {
+    input.select();
+    input.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    status.style.display = '';
+    showToast('Código Pix copiado!', 'success');
+    setTimeout(() => { status.style.display = 'none'; }, 3000);
+}
+
+/* ===================================================================
    EVENT LISTENERS
    =================================================================== */
 
@@ -842,6 +960,14 @@ document.querySelectorAll('.payment-option').forEach(btn => {
             document.getElementById('trocoPara').value = '';
             state.trocoPara = 0;
         }
+
+        // PIX QR Code
+        if (state.formaPagamento === 2) {
+            const { total } = getResumo();
+            renderPixQrCode(total);
+        } else {
+            document.getElementById('pixSection').style.display = 'none';
+        }
     });
 });
 
@@ -876,6 +1002,8 @@ function atualizarTrocoInfo() {
 }
 
 document.getElementById('btnAplicarCupom').addEventListener('click', validarCupom);
+
+document.getElementById('btnCopiarPix').addEventListener('click', copiarPixCodigo);
 
 document.getElementById('formPedido').addEventListener('submit', enviarPedido);
 

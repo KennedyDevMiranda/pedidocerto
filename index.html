@@ -272,6 +272,27 @@
                         </div>
                     </div>
 
+                    <!-- Seção PIX QR Code -->
+                    <div class="pix-section" id="pixSection" style="display:none">
+                        <div class="pix-card">
+                            <div class="pix-header">
+                                <span class="pix-logo">📱</span>
+                                <h3>Pagamento via Pix</h3>
+                                <p>Escaneie o QR Code ou copie o código para pagar</p>
+                            </div>
+                            <div class="pix-amount" id="pixAmount"></div>
+                            <div class="pix-qr-container" id="pixQrContainer"></div>
+                            <div class="pix-copiacola">
+                                <label>Pix Copia e Cola:</label>
+                                <div class="pix-code-box">
+                                    <input type="text" id="pixCopiaCola" readonly />
+                                    <button type="button" class="btn btn-outline pix-copy-btn" id="btnCopiarPix">📋 Copiar</button>
+                                </div>
+                                <small id="pixCopyStatus" style="color:var(--success);display:none">✅ Código copiado!</small>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="sticky-actions dual">
                         <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
                         <button type="button" class="btn btn-primary" data-next>Continuar</button>
@@ -328,6 +349,7 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
