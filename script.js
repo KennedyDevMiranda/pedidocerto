@@ -28,6 +28,8 @@ const FORMAS_PAGAMENTO = {
     5: 'Boleto'
 };
 
+const STORAGE_KEY = 'devmiranda_cpf_salvo';
+
 /* ---------- Estado global ---------- */
 
 const state = {
@@ -650,6 +652,137 @@ async function enviarPedido(e) {
 }
 
 /* ===================================================================
+   IDENTIFICAÇÃO POR CPF (tela inicial)
+   =================================================================== */
+
+function exibirBoasVindas(dados) {
+    const welcomeDiv = document.getElementById('welcomeBack');
+    document.getElementById('welcomeNome').textContent = `Olá, ${dados.nome}!`;
+    document.getElementById('welcomeCpf').textContent = `CPF: ${formatCpf(dados.cpf)}`;
+    welcomeDiv.classList.remove('hidden');
+
+    document.getElementById('cpfInputArea').classList.add('hidden');
+    document.getElementById('changeCpfArea').classList.remove('hidden');
+}
+
+function trocarCpf() {
+    localStorage.removeItem(STORAGE_KEY);
+
+    document.getElementById('welcomeBack').classList.add('hidden');
+    document.getElementById('changeCpfArea').classList.add('hidden');
+    document.getElementById('cpfInputArea').classList.remove('hidden');
+
+    const input = document.getElementById('cpfIdentificacao');
+    input.value = '';
+    input.focus();
+
+    document.getElementById('chkLembrar').checked = false;
+}
+
+function preencherDadosCliente(cli) {
+    state.cliente.id = cli.id || cli.clienteId || null;
+    state.cliente.cpf = cli.cpf || cli.documento || '';
+    state.cliente.nome = cli.nome || '';
+    state.cliente.telefone = cli.telefone || '';
+    state.cliente.email = cli.email || '';
+    state.cliente.existente = true;
+
+    document.getElementById('cpf').value = formatCpf(state.cliente.cpf);
+    document.getElementById('nomeCliente').value = state.cliente.nome;
+    document.getElementById('telefoneCliente').value = state.cliente.telefone;
+    document.getElementById('emailCliente').value = state.cliente.email;
+    document.getElementById('clienteId').value = state.cliente.id || '';
+
+    statusCliente.className = 'status-box success';
+    statusCliente.textContent = `Cliente localizado: ${state.cliente.nome} (ID ${state.cliente.id}).`;
+}
+
+function mostrarWizard() {
+    document.getElementById('telaIdentificacao').classList.add('hidden');
+    document.getElementById('wizardShell').classList.remove('hidden');
+}
+
+async function identificarCliente() {
+    const input = document.getElementById('cpfIdentificacao');
+    const cpfRaw = onlyDigits(input.value);
+
+    if (!validarCpf(cpfRaw)) {
+        showToast('CPF inválido. Confira e tente novamente.', 'error');
+        input.focus();
+        return;
+    }
+
+    const btn = document.getElementById('btnIdentificar');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Consultando...';
+
+    try {
+        const resp = await fetch(ENDPOINTS.buscarClientePorDocumento(cpfRaw));
+
+        if (resp.ok) {
+            const cli = await resp.json();
+
+            const dados = {
+                cpf: cpfRaw,
+                nome: cli.nome,
+                clienteId: cli.id
+            };
+
+            if (document.getElementById('chkLembrar').checked) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+            }
+
+            preencherDadosCliente({ ...cli, cpf: cpfRaw });
+            showToast(`Bem-vindo(a), ${cli.nome}!`, 'success');
+            mostrarWizard();
+            return;
+        }
+
+        if (resp.status === 404) {
+            state.cliente.cpf = cpfRaw;
+            state.cliente.existente = false;
+            document.getElementById('cpf').value = formatCpf(cpfRaw);
+
+            statusCliente.className = 'status-box warning';
+            statusCliente.textContent = 'CPF não encontrado. Preencha os dados para cadastrar um novo cliente.';
+
+            if (document.getElementById('chkLembrar').checked) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ cpf: cpfRaw, nome: '', clienteId: null }));
+            }
+
+            showToast('Novo cliente — preencha os dados na etapa "Cliente".', 'success');
+            mostrarWizard();
+            return;
+        }
+
+        showToast('Não foi possível consultar o CPF agora.', 'error');
+    } catch {
+        showToast('Erro de comunicação ao consultar CPF.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Continuar';
+    }
+}
+
+function inicializarIdentificacao() {
+    const salvo = localStorage.getItem(STORAGE_KEY);
+
+    if (salvo) {
+        try {
+            const dados = JSON.parse(salvo);
+            if (dados.cpf) {
+                document.getElementById('cpfIdentificacao').value = formatCpf(dados.cpf);
+                document.getElementById('chkLembrar').checked = true;
+
+                if (dados.nome) {
+                    exibirBoasVindas(dados);
+                }
+            }
+        } catch { /* localStorage corrompido, ignora */ }
+    }
+}
+
+/* ===================================================================
    EVENT LISTENERS
    =================================================================== */
 
@@ -705,10 +838,22 @@ document.getElementById('btnAplicarCupom').addEventListener('click', validarCupo
 
 document.getElementById('formPedido').addEventListener('submit', enviarPedido);
 
+document.getElementById('btnIdentificar').addEventListener('click', identificarCliente);
+document.getElementById('btnTrocarCpf').addEventListener('click', trocarCpf);
+
+document.getElementById('cpfIdentificacao').addEventListener('input', (e) => {
+    e.target.value = formatCpf(e.target.value);
+});
+
+document.getElementById('cpfIdentificacao').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); identificarCliente(); }
+});
+
 /* ===================================================================
    INICIALIZAÇÃO
    =================================================================== */
 
+inicializarIdentificacao();
 carregarProdutos();
 renderCarrinho();
 irParaEtapa(1);
