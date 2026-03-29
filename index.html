@@ -3,619 +3,42 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Novo Pedido - DevMiranda</title>
-
-    <style>
-        :root {
-            --bg: #f4f7fb;
-            --bg-soft: #eef3f9;
-            --card: rgba(255, 255, 255, 0.92);
-            --card-border: rgba(15, 52, 96, 0.08);
-            --text: #162033;
-            --muted: #667085;
-            --primary: #0f3460;
-            --primary-2: #1b4d8a;
-            --accent: #2563eb;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --warning: #f59e0b;
-            --shadow: 0 10px 30px rgba(15, 52, 96, 0.08);
-            --radius-lg: 20px;
-            --radius-md: 14px;
-            --radius-sm: 10px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: "Century Gothic", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            background:
-                radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 28%),
-                radial-gradient(circle at top right, rgba(15, 52, 96, 0.10), transparent 26%),
-                linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
-            color: var(--text);
-            min-height: 100dvh;
-            line-height: 1.5;
-        }
-
-        .app-shell {
-            max-width: 760px;
-            margin: 0 auto;
-            padding: 24px 16px 40px;
-        }
-
-        .hero {
-            position: sticky;
-            top: 0;
-            z-index: 20;
-            margin-bottom: 18px;
-            padding-top: 8px;
-            backdrop-filter: blur(12px);
-        }
-
-        .hero-card {
-            background: linear-gradient(135deg, #0f3460 0%, #16213e 55%, #1b4d8a 100%);
-            color: #fff;
-            border-radius: 24px;
-            padding: 24px 20px;
-            box-shadow: 0 14px 40px rgba(15, 52, 96, 0.28);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-card::before,
-        .hero-card::after {
-            content: "";
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.12;
-            pointer-events: none;
-        }
-
-        .hero-card::before {
-            width: 180px;
-            height: 180px;
-            right: -50px;
-            top: -60px;
-            background: #ffffff;
-        }
-
-        .hero-card::after {
-            width: 120px;
-            height: 120px;
-            left: -30px;
-            bottom: -40px;
-            background: #60a5fa;
-        }
-
-        .hero-top {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
-        .brand-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.14);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            margin-bottom: 12px;
-        }
-
-        .hero h1 {
-            font-size: clamp(1.5rem, 2.4vw, 2rem);
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            margin-bottom: 6px;
-        }
-
-        .hero p {
-            color: rgba(255, 255, 255, 0.82);
-            font-size: 0.95rem;
-            max-width: 480px;
-        }
-
-        .hero-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
-            display: grid;
-            place-items: center;
-            font-size: 1.35rem;
-            background: rgba(255, 255, 255, 0.14);
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            flex-shrink: 0;
-        }
-
-        .content-grid {
-            display: grid;
-            gap: 18px;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(8px);
-        }
-
-        .section-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .section-title-wrap {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .section-title {
-            font-size: 1rem;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: -0.01em;
-        }
-
-        .section-subtitle {
-            font-size: 0.86rem;
-            color: var(--muted);
-        }
-
-        .section-chip {
-            font-size: 0.74rem;
-            font-weight: 700;
-            color: var(--primary);
-            background: rgba(37, 99, 235, 0.08);
-            border: 1px solid rgba(37, 99, 235, 0.14);
-            padding: 7px 10px;
-            border-radius: 999px;
-            white-space: nowrap;
-        }
-
-        .form-grid {
-            display: grid;
-            gap: 14px;
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
-
-        .form-group label {
-            font-size: 0.84rem;
-            font-weight: 700;
-            color: #334155;
-        }
-
-        .form-group small {
-            color: var(--muted);
-            font-size: 0.76rem;
-            margin-top: -2px;
-        }
-
-        .input-wrap {
-            position: relative;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            border: 1.5px solid #d6dfeb;
-            background: #fbfdff;
-            color: var(--text);
-            border-radius: var(--radius-md);
-            padding: 13px 14px;
-            font-size: 0.97rem;
-            transition: 0.22s ease;
-            outline: none;
-        }
-
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: #98a2b3;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: var(--accent);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
-        }
-
-        .form-group input:hover,
-        .form-group textarea:hover {
-            border-color: #b8c6da;
-        }
-
-        .items-stack {
-            display: grid;
-            gap: 12px;
-        }
-
-        .item-row {
-            display: grid;
-            grid-template-columns: 1.35fr 0.8fr auto;
-            gap: 10px;
-            align-items: end;
-            padding: 14px;
-            border-radius: 18px;
-            background: linear-gradient(180deg, #fbfdff 0%, #f4f8fc 100%);
-            border: 1px solid rgba(15, 52, 96, 0.08);
-        }
-
-        .item-index {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 999px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--primary);
-            background: rgba(37, 99, 235, 0.08);
-            margin-bottom: 8px;
-        }
-
-        .btn-remove {
-            width: 46px;
-            height: 46px;
-            border: none;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: #fff;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.15s ease, opacity 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 8px 18px rgba(220, 38, 38, 0.2);
-        }
-
-        .btn-remove:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
-        }
-
-        .btn-remove:active {
-            transform: translateY(0);
-        }
-
-        .actions {
-            display: grid;
-            gap: 12px;
-            margin-top: 4px;
-        }
-
-        .btn-add {
-            width: 100%;
-            min-height: 48px;
-            border-radius: 16px;
-            border: 1.8px dashed rgba(37, 99, 235, 0.35);
-            background: rgba(37, 99, 235, 0.04);
-            color: var(--primary);
-            font-size: 0.96rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
-
-        .btn-add:hover {
-            background: rgba(37, 99, 235, 0.08);
-            border-color: rgba(37, 99, 235, 0.5);
-        }
-
-        .submit-wrap {
-            position: sticky;
-            bottom: 12px;
-            z-index: 15;
-            padding-top: 4px;
-        }
-
-        .btn-submit {
-            width: 100%;
-            min-height: 56px;
-            border: none;
-            border-radius: 18px;
-            background: linear-gradient(135deg, #0f3460 0%, #1b4d8a 100%);
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 800;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            box-shadow: 0 14px 28px rgba(15, 52, 96, 0.24);
-            transition: transform 0.15s ease, opacity 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 18px 30px rgba(15, 52, 96, 0.28);
-        }
-
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: 0 10px 20px rgba(15, 52, 96, 0.14);
-        }
-
-        .summary-box {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .summary-card {
-            border-radius: 16px;
-            padding: 14px;
-            background: linear-gradient(180deg, #f9fbff 0%, #f3f7fc 100%);
-            border: 1px solid rgba(15, 52, 96, 0.08);
-        }
-
-        .summary-card span {
-            display: block;
-        }
-
-        .summary-card .label {
-            font-size: 0.76rem;
-            color: var(--muted);
-            margin-bottom: 4px;
-        }
-
-        .summary-card .value {
-            font-size: 1rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .toast {
-            position: fixed;
-            left: 50%;
-            bottom: -120px;
-            transform: translateX(-50%);
-            min-width: 260px;
-            max-width: calc(100% - 24px);
-            padding: 14px 18px;
-            border-radius: 16px;
-            color: #fff;
-            font-size: 0.93rem;
-            font-weight: 700;
-            text-align: center;
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
-            z-index: 999;
-            transition: bottom 0.35s ease;
-        }
-
-        .toast.show {
-            bottom: 20px;
-        }
-
-        .toast.success {
-            background: linear-gradient(135deg, #16a34a, #15803d);
-        }
-
-        .toast.error {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255, 255, 255, 0.35);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.65s linear infinite;
-            vertical-align: middle;
-            margin-right: 8px;
-        }
-
-        .footer-note {
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--muted);
-            margin-top: 16px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 640px) {
-            .app-shell {
-                padding: 16px 12px 28px;
-            }
-
-            .hero-card {
-                padding: 20px 16px;
-                border-radius: 20px;
-            }
-
-            .row,
-            .summary-box,
-            .item-row {
-                grid-template-columns: 1fr;
-            }
-
-            .item-row {
-                gap: 12px;
-            }
-
-            .btn-remove {
-                width: 100%;
-                height: 44px;
-            }
-
-            .section-head {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-                .submit-wrap {
-                        bottom: 8px;
-                    }
-                }
-
-                /* ── Tela de identificação por CPF ── */
-                .id-screen {
-                    min-height: 70dvh;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 24px;
-                }
-
-                .id-card {
-                    background: var(--card);
-                    border: 1px solid var(--card-border);
-                    border-radius: var(--radius-lg);
-                    padding: 28px 24px;
-                    box-shadow: var(--shadow);
-                    backdrop-filter: blur(8px);
-                    width: 100%;
-                    max-width: 420px;
-                }
-
-                .id-card .section-title {
-                    text-align: center;
-                    font-size: 1.12rem;
-                    margin-bottom: 4px;
-                }
-
-                .id-card .section-subtitle {
-                    text-align: center;
-                    margin-bottom: 18px;
-                }
-
-                .remember-row {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    margin: 14px 0 6px;
-                }
-
-                .remember-row input[type="checkbox"] {
-                    width: 20px;
-                    height: 20px;
-                    accent-color: var(--accent);
-                    cursor: pointer;
-                }
-
-                .remember-row label {
-                    font-size: 0.88rem;
-                    color: #334155;
-                    cursor: pointer;
-                    user-select: none;
-                }
-
-                .id-welcome {
-                    text-align: center;
-                    padding: 14px;
-                    border-radius: var(--radius-md);
-                    background: rgba(22, 163, 74, 0.06);
-                    border: 1px solid rgba(22, 163, 74, 0.15);
-                    margin-bottom: 14px;
-                }
-
-                .id-welcome .name {
-                    font-size: 1.05rem;
-                    font-weight: 800;
-                    color: var(--success);
-                }
-
-                .id-welcome .doc {
-                    font-size: 0.82rem;
-                    color: var(--muted);
-                }
-
-                .btn-change-cpf {
-                    background: none;
-                    border: none;
-                    color: var(--accent);
-                    font-size: 0.84rem;
-                    font-weight: 700;
-                    cursor: pointer;
-                    text-decoration: underline;
-                    padding: 0;
-                }
-
-                .hidden { display: none !important; }
-            </style>
+    <title>DevMiranda - Novo Pedido</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <main class="app-shell">
-        <section class="hero">
+        <header class="hero">
             <div class="hero-card">
-                <div class="hero-top">
-                    <div>
-                        <div class="brand-badge">Sistema DevMiranda</div>
-                        <h1>Novo Pedido</h1>
-                        <p>Preencha os dados abaixo para registrar o pedido com rapidez, clareza e uma experiência mais elegante.</p>
+                <div>
+                    <span class="brand-badge">DevMiranda · Sistema de Pedidos</span>
+                    <div class="store-status" id="storeStatus">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Verificando...</span>
                     </div>
-                    <div class="hero-icon">🧾</div>
+                    <h1>Novo Pedido</h1>
+                    <p>Selecione produtos do estoque, identifique o cliente pelo CPF e finalize com a forma de pagamento.</p>
                 </div>
+                <div class="hero-icon">🛒</div>
             </div>
-        </section>
+        </header>
 
-        <!-- ══ TELA 1 — Identificação por CPF ══ -->
-        <section id="telaIdentificacao" class="id-screen">
+        <!-- ══ TELA DE IDENTIFICAÇÃO POR CPF ══ -->
+        <section class="id-screen" id="telaIdentificacao">
             <div class="id-card">
-                <div class="section-title">Identificação</div>
-                <div class="section-subtitle">Informe seu CPF para iniciar o pedido</div>
+                <div class="id-icon">👤</div>
+                <h2 class="id-title">Identificação</h2>
+                <p class="id-subtitle">Informe seu CPF para iniciar o pedido</p>
 
                 <div id="welcomeBack" class="id-welcome hidden">
-                    <div class="name" id="welcomeNome"></div>
-                    <div class="doc" id="welcomeCpf"></div>
+                    <div class="id-welcome-name" id="welcomeNome"></div>
+                    <div class="id-welcome-cpf" id="welcomeCpf"></div>
                 </div>
 
                 <div class="form-grid" id="cpfInputArea">
                     <div class="form-group">
-                        <label for="cpfInput">CPF</label>
-                        <div class="input-wrap">
-                            <input type="text" id="cpfInput" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required />
-                        </div>
+                        <label for="cpfIdentificacao">CPF</label>
+                        <input type="text" id="cpfIdentificacao" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" />
                     </div>
                 </div>
 
@@ -624,383 +47,284 @@
                     <label for="chkLembrar">Lembrar meu CPF neste dispositivo</label>
                 </div>
 
-                <div style="margin-top:16px">
-                    <button type="button" class="btn-submit" id="btnContinuar" onclick="identificarCliente()">
-                        Continuar
-                    </button>
-                </div>
+                <button type="button" class="btn btn-primary id-btn" id="btnIdentificar">Continuar</button>
 
-                <div id="changeCpfArea" class="hidden" style="text-align:center;margin-top:12px">
-                    <button type="button" class="btn-change-cpf" onclick="trocarCpf()">Usar outro CPF</button>
+                <div id="changeCpfArea" class="hidden" style="text-align:center;margin-top:10px">
+                    <button type="button" class="btn-change-cpf" id="btnTrocarCpf">Usar outro CPF</button>
                 </div>
             </div>
         </section>
 
-        <!-- ══ TELA 2 — Formulário de pedido (inicia oculto) ══ -->
-        <form id="formPedido" autocomplete="off" class="hidden">
-            <div class="content-grid">
-                <section class="card">
+        <!-- ══ WIZARD DE PEDIDO (inicia oculto) ══ -->
+        <section class="wizard-shell hidden" id="wizardShell">
+            <div class="wizard-progress">
+                <div class="progress-step active" data-step="1">Produtos</div>
+                <div class="progress-step" data-step="2">Carrinho</div>
+                <div class="progress-step" data-step="3">Cliente</div>
+                <div class="progress-step" data-step="4">Endereço</div>
+                <div class="progress-step" data-step="5">Pagamento</div>
+                <div class="progress-step" data-step="6">Revisão</div>
+            </div>
+
+            <form id="formPedido" autocomplete="off">
+                <input type="hidden" id="usuarioId" value="1" />
+                <input type="hidden" id="clienteId" value="" />
+
+                <!-- ETAPA 1 — PRODUTOS DO ESTOQUE -->
+                <section class="step-card active" data-step="1">
                     <div class="section-head">
-                        <div class="section-title-wrap">
-                            <div class="section-title">Dados do pedido</div>
-                            <div class="section-subtitle">Informações principais para identificação e lançamento</div>
+                        <h2>Escolha os produtos</h2>
+                        <p>Pesquise no estoque pelo nome e toque para adicionar ao pedido.</p>
+                    </div>
+
+                    <div class="search-box">
+                        <input type="text" id="produtoBusca" placeholder="Buscar produto pelo nome ou descrição..." />
+                    </div>
+
+                    <div class="products-list" id="listaProdutos">
+                        <div class="empty-state">Carregando produtos do estoque...</div>
+                    </div>
+
+                    <div class="sticky-actions">
+                        <button type="button" class="btn btn-primary" id="btnIrCarrinho">Continuar</button>
+                    </div>
+                </section>
+
+                <!-- ETAPA 2 — CARRINHO / RESUMO -->
+                <section class="step-card" data-step="2">
+                    <div class="section-head">
+                        <h2>Seu pedido</h2>
+                        <p>Confira os itens, ajuste quantidades e veja o resumo.</p>
+                    </div>
+
+                    <div id="carrinhoVazio" class="empty-state">Nenhum item foi adicionado ainda.</div>
+                    <div id="itensPedido" class="cart-list"></div>
+
+                    <div class="summary-box">
+                        <div class="summary-card">
+                            <span class="label">Itens</span>
+                            <span class="value" id="resumoItens">0</span>
                         </div>
-                        <div class="section-chip">Obrigatório</div>
+                        <div class="summary-card">
+                            <span class="label">Quantidade</span>
+                            <span class="value" id="resumoQuantidade">0</span>
+                        </div>
+                        <div class="summary-card highlight">
+                            <span class="label">Total</span>
+                            <span class="value" id="resumoTotal">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <div class="form-grid" style="margin-top:14px">
+                        <div class="row two">
+                            <div class="form-group">
+                                <label for="codigoCupom">Cupom de desconto</label>
+                                <div class="inline-group">
+                                    <input type="text" id="codigoCupom" placeholder="Digite o código do cupom" />
+                                    <button type="button" class="btn btn-outline" id="btnAplicarCupom">Aplicar</button>
+                                </div>
+                                <small id="cupomStatus">Se possui um cupom, insira o código acima.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="observacao">Observação</label>
+                                <input type="text" id="observacao" placeholder="Observação geral do pedido (opcional)" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sticky-actions dual">
+                        <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
+                        <button type="button" class="btn btn-primary" data-next>Continuar</button>
+                    </div>
+                </section>
+
+                <!-- ETAPA 3 — CLIENTE (CPF) -->
+                <section class="step-card" data-step="3">
+                    <div class="section-head">
+                        <h2>Identificação do cliente</h2>
+                        <p>Consulte o CPF para localizar o cadastro ou preencha os dados para criar um novo.</p>
                     </div>
 
                     <div class="form-grid">
-                        <input type="hidden" id="clienteId" />
-
                         <div class="form-group">
-                            <label for="usuarioId">Cód. Vendedor</label>
-                            <div class="input-wrap">
-                                <input type="number" id="usuarioId" min="1" required inputmode="numeric" placeholder="Ex.: 7" />
+                            <label for="cpf">CPF / Documento</label>
+                            <div class="inline-group">
+                                <input type="text" id="cpf" maxlength="14" placeholder="000.000.000-00" />
+                                <button type="button" class="btn btn-outline" id="btnConsultarCpf">Consultar</button>
                             </div>
-                            <small>Usuário responsável pelo pedido.</small>
+                            <small>Se já cadastrado, os dados são preenchidos automaticamente.</small>
                         </div>
 
-                        <div class="form-group">
-                            <label for="desconto">Desconto (R$)</label>
-                            <div class="input-wrap">
-                                <input type="number" id="desconto" min="0" step="0.01" value="0" inputmode="decimal" placeholder="0,00" />
+                        <div class="status-box" id="statusCliente">Informe o CPF e clique em Consultar.</div>
+
+                        <div class="row two">
+                            <div class="form-group">
+                                <label for="nomeCliente">Nome completo</label>
+                                <input type="text" id="nomeCliente" placeholder="Nome do cliente" />
                             </div>
-                            <small>Use zero caso não exista desconto.</small>
+                            <div class="form-group">
+                                <label for="telefoneCliente">Telefone</label>
+                                <input type="text" id="telefoneCliente" placeholder="(00) 00000-0000" />
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="observacao">Observação</label>
-                            <div class="input-wrap">
-                                <textarea id="observacao" placeholder="Digite observações relevantes do pedido..."></textarea>
-                            </div>
+                            <label for="emailCliente">E-mail</label>
+                            <input type="email" id="emailCliente" placeholder="cliente@email.com" />
                         </div>
+                    </div>
+
+                    <div class="sticky-actions dual">
+                        <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
+                        <button type="button" class="btn btn-primary" data-next>Continuar</button>
                     </div>
                 </section>
 
-                <section class="card">
+                <!-- ETAPA 4 — ENDEREÇO DE ENTREGA -->
+                <section class="step-card" data-step="4">
                     <div class="section-head">
-                        <div class="section-title-wrap">
-                            <div class="section-title">Itens do pedido</div>
-                            <div class="section-subtitle">Adicione um ou mais produtos com suas respectivas quantidades</div>
-                        </div>
-                        <div class="section-chip" id="contadorItensBadge">1 item</div>
+                        <h2>Endereço de entrega</h2>
+                        <p>Informe o endereço para entrega do pedido.</p>
                     </div>
 
-                    <div id="itensContainer" class="items-stack">
-                        <div class="item-row">
+                    <div class="form-grid">
+                        <div class="row two">
                             <div class="form-group">
-                                <span class="item-index">#1</span>
-                                <label>Cód. Produto</label>
-                                <input type="number" class="produto-id" min="1" required inputmode="numeric" placeholder="Ex.: 250" />
+                                <label for="cep">CEP</label>
+                                <input type="text" id="cep" maxlength="9" placeholder="00000-000" />
                             </div>
-
                             <div class="form-group">
-                                <label>Qtd.</label>
-                                <input type="number" class="quantidade" min="1" value="1" required inputmode="numeric" placeholder="1" />
+                                <label for="numero">Número</label>
+                                <input type="text" id="numero" maxlength="10" placeholder="Ex.: 123" />
                             </div>
+                        </div>
 
-                            <button type="button" class="btn-remove" onclick="removerItem(this)" title="Remover item">✕</button>
+                        <div class="form-group">
+                            <label for="logradouro">Logradouro</label>
+                            <input type="text" id="logradouro" placeholder="Rua, avenida, travessa..." />
+                        </div>
+
+                        <div class="row two">
+                            <div class="form-group">
+                                <label for="bairro">Bairro</label>
+                                <input type="text" id="bairro" placeholder="Bairro" />
+                            </div>
+                            <div class="form-group">
+                                <label for="cidade">Cidade</label>
+                                <input type="text" id="cidade" placeholder="Cidade" />
+                            </div>
+                        </div>
+
+                        <div class="row two">
+                            <div class="form-group">
+                                <label for="uf">UF</label>
+                                <input type="text" id="uf" maxlength="2" placeholder="UF" />
+                            </div>
+                            <div class="form-group">
+                                <label for="complemento">Complemento</label>
+                                <input type="text" id="complemento" placeholder="Apto, bloco... (opcional)" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="referencia">Referência</label>
+                            <textarea id="referencia" placeholder="Ponto de referência ou observação sobre a entrega..."></textarea>
                         </div>
                     </div>
 
-                    <div class="actions">
-                        <button type="button" class="btn-add" onclick="adicionarItem()">+ Adicionar Item</button>
-
-                        <div class="summary-box">
-                            <div class="summary-card">
-                                <span class="label">Itens lançados</span>
-                                <span class="value" id="resumoItens">1</span>
-                            </div>
-                            <div class="summary-card">
-                                <span class="label">Qtd. total</span>
-                                <span class="value" id="resumoQuantidade">1</span>
-                            </div>
-                            <div class="summary-card">
-                                <span class="label">Desconto</span>
-                                <span class="value" id="resumoDesconto">R$ 0,00</span>
-                            </div>
-                        </div>
+                    <div class="sticky-actions dual">
+                        <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
+                        <button type="button" class="btn btn-primary" data-next>Continuar</button>
                     </div>
                 </section>
 
-                <div class="submit-wrap">
-                    <button type="submit" class="btn-submit" id="btnEnviar">
-                        Enviar Pedido
-                    </button>
-                </div>
-            </div>
-        </form>
+                <!-- ETAPA 5 — FORMA DE PAGAMENTO (enum real: 1-5) -->
+                <section class="step-card" data-step="5">
+                    <div class="section-head">
+                        <h2>Forma de pagamento</h2>
+                        <p>Selecione como o cliente deseja pagar este pedido.</p>
+                    </div>
 
-        <div class="footer-note">
-            Painel de pedidos com visual profissional, mantendo a mesma integração com o servidor.
-        </div>
+                    <div class="payment-grid" id="formasPagamento">
+                        <button type="button" class="payment-option" data-value="1">💵 Dinheiro</button>
+                        <button type="button" class="payment-option" data-value="2">📱 Pix</button>
+                        <button type="button" class="payment-option" data-value="3">💳 Cartão de Crédito</button>
+                        <button type="button" class="payment-option" data-value="4">💳 Cartão de Débito</button>
+                        <button type="button" class="payment-option" data-value="5">📄 Boleto</button>
+                    </div>
+
+                    <input type="hidden" id="formaPagamento" value="" />
+
+                    <div class="form-grid" style="margin-top:14px">
+                        <div class="row two">
+                            <div class="form-group">
+                                <label for="taxaEntrega">🚚 Taxa de entrega (R$)</label>
+                                <input type="number" id="taxaEntrega" min="0" step="0.01" value="0" placeholder="0,00" />
+                            </div>
+                            <div class="form-group" id="trocoGroup" style="display:none">
+                                <label for="trocoPara">💵 Troco para (R$)</label>
+                                <input type="number" id="trocoPara" min="0" step="0.01" value="0" placeholder="Ex: 50,00" />
+                                <small id="trocoInfo" style="color:var(--muted)">Informe o valor que o cliente vai pagar em dinheiro.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sticky-actions dual">
+                        <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
+                        <button type="button" class="btn btn-primary" data-next>Continuar</button>
+                    </div>
+                </section>
+
+                <!-- ETAPA 6 — REVISÃO FINAL -->
+                <section class="step-card" data-step="6">
+                    <div class="section-head">
+                        <h2>Revisão final</h2>
+                        <p>Confira todas as informações antes de enviar o pedido.</p>
+                    </div>
+
+                    <div class="review-grid">
+                        <div class="review-card">
+                            <h3>👤 Cliente</h3>
+                            <div id="reviewCliente"></div>
+                        </div>
+                        <div class="review-card">
+                            <h3>📍 Endereço de Entrega</h3>
+                            <div id="reviewEndereco"></div>
+                        </div>
+                        <div class="review-card full">
+                            <h3>📦 Itens do Pedido</h3>
+                            <div id="reviewItens"></div>
+                        </div>
+                        <div class="review-card">
+                            <h3>💰 Pagamento</h3>
+                            <div id="reviewPagamento"></div>
+                        </div>
+                        <div class="review-card highlight">
+                            <h3>Valores</h3>
+                            <div id="reviewValores"></div>
+                        </div>
+                    </div>
+
+                    <div class="sticky-actions dual">
+                        <button type="button" class="btn btn-secondary" data-prev>Voltar</button>
+                        <button type="submit" class="btn btn-primary" id="btnEnviar">Enviar Pedido</button>
+                    </div>
+                </section>
+            </form>
+        </section>
     </main>
 
     <div class="toast" id="toast"></div>
 
-    <script>
-        const API_BASE = window.location.origin;
-        const STORAGE_KEY = 'devmiranda_cpf_salvo';
+    <div class="offline-overlay" id="offlineOverlay">
+        <div class="offline-content">
+            <span class="offline-icon">🔌</span>
+            <h2>Loja Offline</h2>
+            <p>O sistema não está disponível no momento. Aguarde a loja ficar online para realizar pedidos.</p>
+            <div class="offline-pulse"></div>
+        </div>
+    </div>
 
-        let clienteIdentificado = null;
-
-        // ── Máscara de CPF ──
-        document.getElementById('cpfInput').addEventListener('input', function () {
-            let v = this.value.replace(/\D/g, '').slice(0, 11);
-            if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
-            else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
-            else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
-            this.value = v;
-        });
-
-        // ── Ao carregar: verifica se há CPF salvo ──
-        (function init() {
-            const salvo = localStorage.getItem(STORAGE_KEY);
-            if (salvo) {
-                try {
-                    const dados = JSON.parse(salvo);
-                    if (dados.cpf && dados.nome && dados.clienteId) {
-                        exibirBoasVindas(dados);
-                        return;
-                    }
-                } catch { }
-            }
-        })();
-
-        function exibirBoasVindas(dados) {
-            clienteIdentificado = dados;
-            document.getElementById('cpfInputArea').classList.add('hidden');
-            document.getElementById('welcomeBack').classList.remove('hidden');
-            document.getElementById('welcomeNome').textContent = '👋 Olá, ' + dados.nome + '!';
-            document.getElementById('welcomeCpf').textContent = 'CPF: ' + dados.cpf;
-            document.getElementById('changeCpfArea').classList.remove('hidden');
-            document.getElementById('chkLembrar').checked = true;
-        }
-
-        function trocarCpf() {
-            localStorage.removeItem(STORAGE_KEY);
-            clienteIdentificado = null;
-            document.getElementById('cpfInputArea').classList.remove('hidden');
-            document.getElementById('welcomeBack').classList.add('hidden');
-            document.getElementById('changeCpfArea').classList.add('hidden');
-            document.getElementById('cpfInput').value = '';
-            document.getElementById('chkLembrar').checked = false;
-            document.getElementById('cpfInput').focus();
-        }
-
-        async function identificarCliente() {
-            const btn = document.getElementById('btnContinuar');
-
-            // Se já identificado (voltando do "boas-vindas"), vai direto
-            if (clienteIdentificado) {
-                document.getElementById('clienteId').value = clienteIdentificado.clienteId;
-                document.getElementById('telaIdentificacao').classList.add('hidden');
-                document.getElementById('formPedido').classList.remove('hidden');
-                return;
-            }
-
-            const cpfRaw = document.getElementById('cpfInput').value.replace(/\D/g, '');
-            if (cpfRaw.length < 11) {
-                showToast('Informe um CPF válido com 11 dígitos.', 'error');
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span>Buscando...';
-
-            try {
-                const resp = await fetch(API_BASE + '/api/clientes/documento/' + cpfRaw);
-                const data = await resp.json().catch(() => null);
-
-                if (!resp.ok || !data || !data.id) {
-                    const msg = (data && data.mensagem) || 'Cliente não encontrado. Verifique o CPF.';
-                    showToast('❌ ' + msg, 'error');
-                    return;
-                }
-
-                const cpfFormatado = document.getElementById('cpfInput').value;
-                const dados = {
-                    cpf: cpfFormatado,
-                    nome: data.nome,
-                    clienteId: data.id
-                };
-
-                clienteIdentificado = dados;
-
-                if (document.getElementById('chkLembrar').checked) {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
-                } else {
-                    localStorage.removeItem(STORAGE_KEY);
-                }
-
-                document.getElementById('clienteId').value = data.id;
-                document.getElementById('telaIdentificacao').classList.add('hidden');
-                document.getElementById('formPedido').classList.remove('hidden');
-                showToast('✅ Bem-vindo, ' + data.nome + '!', 'success');
-            } catch {
-                showToast('❌ Sem conexão com o servidor.', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Continuar';
-            }
-        }
-
-        // Enter no campo CPF aciona o botão Continuar
-        document.getElementById('cpfInput').addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') { e.preventDefault(); identificarCliente(); }
-        });
-
-        // ── Funções do formulário de pedido (originais) ──
-        function atualizarNumeracaoItens() {
-            const rows = document.querySelectorAll('.item-row');
-            rows.forEach((row, index) => {
-                const badge = row.querySelector('.item-index');
-                if (badge) badge.textContent = '#' + (index + 1);
-            });
-
-            const totalItens = rows.length;
-            document.getElementById('contadorItensBadge').textContent = totalItens + (totalItens === 1 ? ' item' : ' itens');
-            document.getElementById('resumoItens').textContent = totalItens;
-        }
-
-        function atualizarResumo() {
-            const rows = document.querySelectorAll('.item-row');
-            let quantidadeTotal = 0;
-
-            rows.forEach(row => {
-                const qtd = parseInt(row.querySelector('.quantidade').value) || 0;
-                quantidadeTotal += qtd;
-            });
-
-            const desconto = parseFloat(document.getElementById('desconto').value) || 0;
-
-            document.getElementById('resumoQuantidade').textContent = quantidadeTotal;
-            document.getElementById('resumoDesconto').textContent = 'R$ ' + desconto.toFixed(2);
-            atualizarNumeracaoItens();
-        }
-
-        function adicionarItem() {
-            const container = document.getElementById('itensContainer');
-            const row = document.createElement('div');
-            row.className = 'item-row';
-            row.innerHTML = `
-                <div class="form-group">
-                    <span class="item-index">#${container.children.length + 1}</span>
-                    <label>Cód. Produto</label>
-                    <input type="number" class="produto-id" min="1" required inputmode="numeric" placeholder="Ex.: 250">
-                </div>
-                <div class="form-group">
-                    <label>Qtd.</label>
-                    <input type="number" class="quantidade" min="1" value="1" required inputmode="numeric" placeholder="1">
-                </div>
-                <button type="button" class="btn-remove" onclick="removerItem(this)" title="Remover item">✕</button>
-            `;
-            container.appendChild(row);
-            row.querySelector('.produto-id').focus();
-            atualizarResumo();
-        }
-
-        function removerItem(btn) {
-            const container = document.getElementById('itensContainer');
-            if (container.children.length > 1) {
-                btn.closest('.item-row').remove();
-                atualizarResumo();
-            } else {
-                showToast('O pedido precisa ter pelo menos 1 item.', 'error');
-            }
-        }
-
-        function showToast(msg, type) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.className = 'toast ' + type + ' show';
-            setTimeout(() => toast.classList.remove('show'), 4000);
-        }
-
-        document.addEventListener('input', (e) => {
-            if (
-                e.target.classList.contains('quantidade') ||
-                e.target.classList.contains('produto-id') ||
-                e.target.id === 'desconto'
-            ) {
-                atualizarResumo();
-            }
-        });
-
-        document.getElementById('formPedido').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const btn = document.getElementById('btnEnviar');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span>Enviando...';
-
-            const itens = [];
-            const rows = document.querySelectorAll('.item-row');
-
-            for (const row of rows) {
-                const produtoId = parseInt(row.querySelector('.produto-id').value);
-                const quantidade = parseInt(row.querySelector('.quantidade').value);
-
-                if (!produtoId || produtoId <= 0 || !quantidade || quantidade <= 0) {
-                    showToast('Preencha todos os itens corretamente.', 'error');
-                    btn.disabled = false;
-                    btn.textContent = 'Enviar Pedido';
-                    return;
-                }
-
-                itens.push({ produtoId, quantidade });
-            }
-
-            const pedido = {
-                clienteId: parseInt(document.getElementById('clienteId').value),
-                usuarioId: parseInt(document.getElementById('usuarioId').value),
-                desconto: parseFloat(document.getElementById('desconto').value) || 0,
-                observacao: document.getElementById('observacao').value,
-                itens: itens
-            };
-
-            try {
-                const resp = await fetch(API_BASE + '/api/pedidos', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(pedido)
-                });
-
-                const data = await resp.json().catch(() => null);
-
-                if (resp.ok && data) {
-                    let msg = '✅ Pedido #' + data.pedidoId + ' criado!';
-                    if (data.valorTotal != null) {
-                        msg += ' Total: R$ ' + data.valorTotal.toFixed(2);
-                    }
-
-                    showToast(msg, 'success');
-                    document.getElementById('formPedido').reset();
-                    document.getElementById('clienteId').value = clienteIdentificado.clienteId;
-
-                    const container = document.getElementById('itensContainer');
-                    while (container.children.length > 1) {
-                        container.removeChild(container.lastChild);
-                    }
-
-                    container.querySelector('.quantidade').value = '1';
-                    atualizarResumo();
-                } else {
-                    const errorMsg = (typeof data === 'string' ? data : null)
-                        || (data && data.mensagem)
-                        || await resp.text().catch(() => '')
-                        || 'Erro ao criar pedido.';
-
-                    showToast('❌ ' + errorMsg, 'error');
-                }
-            } catch (err) {
-                showToast('❌ Sem conexão com o servidor.', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Enviar Pedido';
-            }
-        });
-
-        atualizarResumo();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
