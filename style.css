@@ -379,6 +379,9 @@ body {
     border: 1px solid var(--border);
     border-radius: 18px;
     padding: 16px;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .summary-card.highlight,
