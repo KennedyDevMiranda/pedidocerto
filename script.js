@@ -1327,6 +1327,12 @@ document.querySelectorAll('.payment-option').forEach(btn => {
     });
 });
 
+document.querySelectorAll('.address-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        selecionarModoEntrega(tab.dataset.modo);
+    });
+});
+
 document.getElementById('trocoPara').addEventListener('input', atualizarTrocoInfo);
 
 function atualizarTrocoInfo() {
