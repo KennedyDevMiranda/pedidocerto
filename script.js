@@ -150,6 +150,46 @@ produtoBusca.addEventListener('input', (e) => {
     buscaTimeout = setTimeout(() => carregarProdutos(e.target.value.trim()), 300);
 });
 
+/* ===================================================================
+   CUPONS DISPONÍVEIS (GET /api/cupons/disponiveis)
+   =================================================================== */
+
+const bannerCupons = document.getElementById('bannerCupons');
+
+async function carregarCuponsDisponiveis() {
+    try {
+        const resp = await fetch(ENDPOINTS.cuponsDisponiveis);
+        if (!resp.ok) throw new Error();
+        const cupons = await resp.json();
+        renderCupons(Array.isArray(cupons) ? cupons : []);
+    } catch {
+        bannerCupons.classList.add('hidden');
+    }
+}
+
+function renderCupons(cupons) {
+    if (!cupons.length) {
+        bannerCupons.classList.add('hidden');
+        return;
+    }
+    bannerCupons.classList.remove('hidden');
+    bannerCupons.innerHTML = `
+        <div class="cupons-header">
+            <span class="cupons-icon">🎟️</span>
+            <strong>Cupons disponíveis</strong>
+        </div>
+        <div class="cupons-list">
+            ${cupons.map(c => `
+                <div class="cupom-card">
+                    <span class="cupom-codigo">${c.codigo}</span>
+                    <span class="cupom-valor">${c.valorFormatado}</span>
+                    <span class="cupom-desc">${c.descricao || ''}</span>
+                    ${c.diasRestantes != null ? `<span class="cupom-prazo">Expira em ${c.diasRestantes} dia${c.diasRestantes !== 1 ? 's' : ''}</span>` : ''}
+                </div>
+            `).join('')}
+        </div>`;
+}
+
 function renderProdutos() {
     if (!state.produtos.length) {
         listaProdutos.innerHTML = '<div class="empty-state">Nenhum produto encontrado no estoque.</div>';
@@ -199,12 +239,15 @@ function adicionarAoCarrinho(produtoId) {
         }
         existente.quantidade += 1;
     } else {
+        const precoEfetivo = (p.ofertaAtiva && p.precoPromocional > 0) ? p.precoPromocional : p.preco;
         state.carrinho.push({
             produtoId: p.id,
             nome: p.nome,
-            preco: p.preco,
+            preco: precoEfetivo,
+            precoOriginal: p.preco,
             estoque: p.estoque,
             imagemUrl: p.imagemUrl || '',
+            ofertaAtiva: p.ofertaAtiva || false,
             quantidade: 1
         });
     }
@@ -1282,6 +1325,7 @@ document.getElementById('cpfIdentificacao').addEventListener('keydown', (e) => {
 
 inicializarIdentificacao();
 carregarProdutos();
+carregarCuponsDisponiveis();
 renderCarrinho();
 irParaEtapa(1);
 
