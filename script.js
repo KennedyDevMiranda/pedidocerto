@@ -1357,13 +1357,33 @@ async function verificarStatusLoja() {
         clearTimeout(timer);
 
         if (resp.ok) {
-            if (storeOnline !== true) {
-                badge.className = 'store-status online';
-                text.textContent = 'Loja Online';
-                overlay.classList.remove('visible');
-                storeOnline = true;
-                // recarrega produtos caso tenha ficado offline
-                carregarProdutos();
+            const dados = await resp.json();
+            const aberta = dados.aberta !== false;
+
+            if (aberta) {
+                if (storeOnline !== true) {
+                    badge.className = 'store-status online';
+                    text.textContent = 'Loja Online';
+                    overlay.classList.remove('visible');
+                    storeOnline = true;
+                    carregarProdutos();
+                }
+            } else {
+                badge.className = 'store-status offline';
+                const horarioInfo = dados.diaAberto && dados.horaAbertura
+                    ? `Horário: ${dados.horaAbertura} - ${dados.horaFechamento}`
+                    : 'Fechado hoje';
+                text.textContent = 'Loja Fechada';
+                const overlayContent = overlay.querySelector('.offline-content');
+                if (overlayContent) {
+                    overlayContent.querySelector('h2').textContent = 'Loja Fechada';
+                    overlayContent.querySelector('p').textContent =
+                        dados.diaAberto
+                            ? `Nosso horário de funcionamento hoje é das ${dados.horaAbertura} às ${dados.horaFechamento}. Volte no horário de atendimento!`
+                            : 'Estamos fechados hoje. Volte amanhã!';
+                }
+                overlay.classList.add('visible');
+                storeOnline = false;
             }
             return;
         }
