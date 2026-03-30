@@ -1377,10 +1377,14 @@ async function verificarStatusLoja() {
                 const overlayContent = overlay.querySelector('.offline-content');
                 if (overlayContent) {
                     overlayContent.querySelector('h2').textContent = 'Loja Fechada';
-                    overlayContent.querySelector('p').textContent =
-                        dados.diaAberto
-                            ? `Nosso horário de funcionamento hoje é das ${dados.horaAbertura} às ${dados.horaFechamento}. Volte no horário de atendimento!`
-                            : 'Estamos fechados hoje. Volte amanhã!';
+                    if (dados.diaAberto && dados.horaAbertura) {
+                        const virada = dados.horaFechamento <= dados.horaAbertura;
+                        const ate = virada ? `${dados.horaFechamento} (dia seguinte)` : dados.horaFechamento;
+                        overlayContent.querySelector('p').textContent =
+                            `Nosso horário de funcionamento hoje é das ${dados.horaAbertura} às ${ate}. Volte no horário de atendimento!`;
+                    } else {
+                        overlayContent.querySelector('p').textContent = 'Estamos fechados hoje. Volte amanhã!';
+                    }
                 }
                 overlay.classList.add('visible');
                 storeOnline = false;
