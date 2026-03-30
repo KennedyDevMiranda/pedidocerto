@@ -717,6 +717,51 @@ body {
     .payment-grid {
         grid-template-columns: 1fr;
     }
+
+    /* ---- Product card mobile: stack layout ---- */
+    .product-card {
+        grid-template-columns: 60px 1fr;
+        grid-template-rows: auto auto;
+        gap: 10px 12px;
+        padding: 14px;
+    }
+
+    .product-img,
+    .product-img-placeholder {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        grid-row: 1;
+    }
+
+    .product-info {
+        grid-row: 1;
+        grid-column: 2;
+        min-width: 0;
+    }
+
+    .product-info h3 {
+        font-size: 1rem;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    .product-info p {
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    .product-price,
+    .product-price-wrap {
+        grid-row: 2;
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        justify-content: flex-start;
+    }
 }
 
 /* ---- Store Status Badge ---- */
@@ -1230,4 +1275,22 @@ body {
         min-width: 130px;
         padding: 8px 10px;
     }
+}
+
+/* ===================================================================
+   FOOTER
+   =================================================================== */
+
+.app-footer {
+    text-align: center;
+    padding: 20px 16px;
+    margin-top: 32px;
+    font-size: .8rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+}
+
+.app-footer strong {
+    color: var(--primary);
+    font-weight: 700;
 }

@@ -494,6 +494,7 @@ function irParaEtapa(step) {
         p.classList.toggle('done', n < step);
     });
     if (step === 6) preencherRevisao();
+    try { sessionStorage.setItem('pedidoCerto_etapa', step); } catch {}
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1327,7 +1328,15 @@ inicializarIdentificacao();
 carregarProdutos();
 carregarCuponsDisponiveis();
 renderCarrinho();
-irParaEtapa(1);
+
+(function restaurarEtapa() {
+    try {
+        const salva = parseInt(sessionStorage.getItem('pedidoCerto_etapa'), 10);
+        irParaEtapa(salva >= 1 && salva <= 6 ? salva : 1);
+    } catch {
+        irParaEtapa(1);
+    }
+})();
 
 /* ===================================================================
    STATUS DA LOJA (ONLINE / OFFLINE)
