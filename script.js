@@ -52,8 +52,11 @@ const state = {
         nome: '',
         email: '',
         telefone: '',
-        existente: false
+        existente: false,
+        endereco: ''
     },
+    modoEntrega: 'novo',
+    enderecoLoja: '',
     endereco: {
         cep: '',
         logradouro: '',
@@ -275,7 +278,7 @@ function getResumo() {
     const quantidade = state.carrinho.reduce((a, i) => a + i.quantidade, 0);
     const subtotal = state.carrinho.reduce((a, i) => a + i.quantidade * i.preco, 0);
     const desconto = state.cupom.aplicado ? state.cupom.valorDesconto : 0;
-    const taxaEntrega = TAXA_ENTREGA_FIXA;
+    const taxaEntrega = state.modoEntrega === 'retirada' ? 0 : TAXA_ENTREGA_FIXA;
     const total = Math.max(subtotal - desconto + taxaEntrega, 0);
     return { itens, quantidade, subtotal, desconto, taxaEntrega, total };
 }
@@ -337,6 +340,7 @@ async function consultarCpf() {
             const cli = await resp.json();
             state.cliente.id = cli.id;
             state.cliente.existente = true;
+            state.cliente.endereco = cli.endereco || '';
 
             document.getElementById('nomeCliente').value = cli.nome || '';
             document.getElementById('telefoneCliente').value = cli.telefone || '';
@@ -352,6 +356,7 @@ async function consultarCpf() {
         if (resp.status === 404) {
             state.cliente.id = null;
             state.cliente.existente = false;
+            state.cliente.endereco = '';
             document.getElementById('clienteId').value = '';
             document.getElementById('nomeCliente').value = '';
             document.getElementById('telefoneCliente').value = '';
@@ -447,20 +452,57 @@ async function buscarCep(cep) {
     }
 }
 
+function selecionarModoEntrega(modo) {
+    state.modoEntrega = modo;
+    document.querySelectorAll('.address-tab').forEach(t => t.classList.toggle('active', t.dataset.modo === modo));
+    document.querySelectorAll('.address-panel').forEach(p => p.classList.add('hidden'));
+
+    if (modo === 'cadastrado') {
+        const panel = document.getElementById('panelCadastrado');
+        panel.classList.remove('hidden');
+        const texto = document.getElementById('enderecoCadastradoTexto');
+        texto.textContent = state.cliente.endereco || 'Nenhum endereço cadastrado para este cliente.';
+    } else if (modo === 'retirada') {
+        document.getElementById('panelRetirada').classList.remove('hidden');
+    } else {
+        document.getElementById('panelNovo').classList.remove('hidden');
+    }
+}
+
+function inicializarAbasEndereco() {
+    if (state.cliente.existente && state.cliente.endereco) {
+        selecionarModoEntrega('cadastrado');
+    } else {
+        selecionarModoEntrega('novo');
+    }
+}
+
 function capturarEndereco() {
-    state.endereco = {
-        cep: document.getElementById('cep').value.trim(),
-        logradouro: document.getElementById('logradouro').value.trim(),
-        numero: document.getElementById('numero').value.trim(),
-        bairro: document.getElementById('bairro').value.trim(),
-        cidade: document.getElementById('cidade').value.trim(),
-        uf: document.getElementById('uf').value.trim().toUpperCase(),
-        complemento: document.getElementById('complemento').value.trim(),
-        referencia: document.getElementById('referencia').value.trim()
-    };
+    if (state.modoEntrega === 'cadastrado') {
+        state.endereco = { cadastrado: true, texto: state.cliente.endereco };
+    } else if (state.modoEntrega === 'retirada') {
+        state.endereco = { retirada: true, texto: state.enderecoLoja };
+    } else {
+        state.endereco = {
+            cep: document.getElementById('cep').value.trim(),
+            logradouro: document.getElementById('logradouro').value.trim(),
+            numero: document.getElementById('numero').value.trim(),
+            bairro: document.getElementById('bairro').value.trim(),
+            cidade: document.getElementById('cidade').value.trim(),
+            uf: document.getElementById('uf').value.trim().toUpperCase(),
+            complemento: document.getElementById('complemento').value.trim(),
+            referencia: document.getElementById('referencia').value.trim()
+        };
+    }
 }
 
 function montarEnderecoString() {
+    if (state.modoEntrega === 'cadastrado') {
+        return state.cliente.endereco || '';
+    }
+    if (state.modoEntrega === 'retirada') {
+        return 'RETIRADA NO LOCAL - ' + (state.enderecoLoja || '');
+    }
     const e = state.endereco;
     let partes = [];
     if (e.logradouro) partes.push(e.logradouro);
@@ -493,6 +535,7 @@ function irParaEtapa(step) {
         p.classList.toggle('active', n === step);
         p.classList.toggle('done', n < step);
     });
+    if (step === 4) inicializarAbasEndereco();
     if (step === 6) preencherRevisao();
     try { sessionStorage.setItem('pedidoCerto_etapa', step); } catch {}
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -541,13 +584,25 @@ function validarEtapaAtual() {
     }
 
     if (s === 4) {
-        const obrig = ['cep', 'logradouro', 'numero', 'bairro', 'cidade', 'uf'];
-        for (const id of obrig) {
-            const el = document.getElementById(id);
-            if (!el.value.trim()) {
-                showToast('Preencha todos os campos de endereço obrigatórios.', 'error');
-                el.focus();
+        if (!state.modoEntrega) {
+            showToast('Selecione um modo de entrega.', 'error');
+            return false;
+        }
+        if (state.modoEntrega === 'cadastrado') {
+            if (!state.cliente.endereco) {
+                showToast('Este cliente não possui endereço cadastrado. Escolha outra opção.', 'error');
                 return false;
+            }
+        }
+        if (state.modoEntrega === 'novo') {
+            const obrig = ['cep', 'logradouro', 'numero', 'bairro', 'cidade', 'uf'];
+            for (const id of obrig) {
+                const el = document.getElementById(id);
+                if (!el.value.trim()) {
+                    showToast('Preencha todos os campos de endereço obrigatórios.', 'error');
+                    el.focus();
+                    return false;
+                }
             }
         }
         capturarEndereco();
@@ -601,13 +656,29 @@ function preencherRevisao() {
     `;
 
     const end = state.endereco;
-    document.getElementById('reviewEndereco').innerHTML = `
-        <p>${end.logradouro}, nº ${end.numero}</p>
-        <p>${end.bairro} — ${end.cidade}/${end.uf}</p>
-        <p>CEP: ${end.cep}</p>
-        ${end.complemento ? `<p>${end.complemento}</p>` : ''}
-        ${end.referencia ? `<p>Ref: ${end.referencia}</p>` : ''}
-    `;
+    let endHtml = '';
+    if (state.modoEntrega === 'cadastrado') {
+        endHtml = `
+            <p style="color:var(--accent);font-weight:700">📍 Endereço Cadastrado</p>
+            <p>${state.cliente.endereco}</p>
+        `;
+    } else if (state.modoEntrega === 'retirada') {
+        endHtml = `
+            <p style="color:var(--success);font-weight:700">🏪 Retirada no Estabelecimento</p>
+            <p>${state.enderecoLoja}</p>
+            <p style="color:var(--success);font-size:.85rem">✓ Sem taxa de entrega</p>
+        `;
+    } else {
+        endHtml = `
+            <p style="color:var(--primary);font-weight:700">📝 Novo Endereço</p>
+            <p>${end.logradouro}, nº ${end.numero}</p>
+            <p>${end.bairro} — ${end.cidade}/${end.uf}</p>
+            <p>CEP: ${end.cep}</p>
+            ${end.complemento ? `<p>${end.complemento}</p>` : ''}
+            ${end.referencia ? `<p>Ref: ${end.referencia}</p>` : ''}
+        `;
+    }
+    document.getElementById('reviewEndereco').innerHTML = endHtml;
 
     document.getElementById('reviewItens').innerHTML = state.carrinho.map(i =>
         `<p>${i.quantidade}× ${i.nome} — ${formatCurrency(i.quantidade * i.preco)}</p>`
@@ -644,7 +715,7 @@ function montarPayload(clienteId) {
         codigoCupom: state.cupom.aplicado ? state.cupom.codigo : '',
         observacao: state.observacao,
         formaPagamento: state.formaPagamento,
-        taxaEntrega: TAXA_ENTREGA_FIXA,
+        taxaEntrega: state.modoEntrega === 'retirada' ? 0 : TAXA_ENTREGA_FIXA,
         trocoPara: state.formaPagamento === 1 ? state.trocoPara : 0,
         enderecoEntrega: montarEnderecoString(),
         itens: state.carrinho.map(i => ({
@@ -1359,6 +1430,12 @@ async function verificarStatusLoja() {
         if (resp.ok) {
             const dados = await resp.json();
             const aberta = dados.aberta !== false;
+
+            if (dados.enderecoLoja) {
+                state.enderecoLoja = dados.enderecoLoja;
+                const lojaTexto = document.getElementById('enderecoLojaTexto');
+                if (lojaTexto) lojaTexto.textContent = dados.enderecoLoja;
+            }
 
             if (aberta) {
                 if (storeOnline !== true) {

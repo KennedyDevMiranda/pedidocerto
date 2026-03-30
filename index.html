@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>VMiranda Code </> - Novo Pedido</title>
+    <title>DevMiranda - Novo Pedido</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,7 +11,7 @@
         <header class="hero">
             <div class="hero-card">
                 <div>
-                    <span class="brand-badge">VMiranda · Sistema de Pedidos</span>
+                    <span class="brand-badge">DevMiranda · Sistema de Pedidos</span>
                     <div class="store-status" id="storeStatus">
                         <span class="status-dot"></span>
                         <span class="status-text">Verificando...</span>
@@ -186,52 +186,94 @@
                 <section class="step-card" data-step="4">
                     <div class="section-head">
                         <h2>Endereço de entrega</h2>
-                        <p>Informe o endereço para entrega do pedido.</p>
+                        <p>Escolha como deseja receber seu pedido.</p>
                     </div>
 
-                    <div class="form-grid">
-                        <div class="row two">
-                            <div class="form-group">
-                                <label for="cep">CEP</label>
-                                <input type="text" id="cep" maxlength="9" placeholder="00000-000" inputmode="numeric" />
-                                <small id="cepStatus">Digite o CEP para preencher automaticamente.</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="numero">Número</label>
-                                <input type="text" id="numero" maxlength="10" placeholder="Ex.: 123" />
+                    <!-- Abas de modo de entrega -->
+                    <div class="address-tabs" id="addressTabs">
+                        <button type="button" class="address-tab" data-modo="cadastrado" id="tabCadastrado">
+                            <span class="address-tab-icon">📍</span>
+                            <span>Endereço Cadastrado</span>
+                        </button>
+                        <button type="button" class="address-tab" data-modo="retirada" id="tabRetirada">
+                            <span class="address-tab-icon">🏪</span>
+                            <span>Retirar no Local</span>
+                        </button>
+                        <button type="button" class="address-tab" data-modo="novo" id="tabNovo">
+                            <span class="address-tab-icon">📝</span>
+                            <span>Novo Endereço</span>
+                        </button>
+                    </div>
+
+                    <!-- Painel: Endereço cadastrado -->
+                    <div class="address-panel hidden" id="panelCadastrado">
+                        <div class="address-info-card">
+                            <div class="address-info-icon">📍</div>
+                            <div>
+                                <strong>Endereço do cadastro</strong>
+                                <p id="enderecoCadastradoTexto">Nenhum endereço cadastrado.</p>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="logradouro">Logradouro</label>
-                            <input type="text" id="logradouro" placeholder="Rua, avenida, travessa..." />
-                        </div>
-
-                        <div class="row two">
-                            <div class="form-group">
-                                <label for="bairro">Bairro</label>
-                                <input type="text" id="bairro" placeholder="Bairro" />
-                            </div>
-                            <div class="form-group">
-                                <label for="cidade">Cidade</label>
-                                <input type="text" id="cidade" placeholder="Cidade" />
+                    <!-- Painel: Retirada no estabelecimento -->
+                    <div class="address-panel hidden" id="panelRetirada">
+                        <div class="address-info-card">
+                            <div class="address-info-icon">🏪</div>
+                            <div>
+                                <strong>Retirar no estabelecimento</strong>
+                                <p id="enderecoLojaTexto">Carregando endereço da loja...</p>
                             </div>
                         </div>
+                        <p class="address-info-note">⚠️ Sem taxa de entrega nesta opção.</p>
+                    </div>
 
-                        <div class="row two">
-                            <div class="form-group">
-                                <label for="uf">UF</label>
-                                <input type="text" id="uf" maxlength="2" placeholder="UF" />
+                    <!-- Painel: Novo endereço -->
+                    <div class="address-panel hidden" id="panelNovo">
+                        <div class="form-grid">
+                            <div class="row two">
+                                <div class="form-group">
+                                    <label for="cep">CEP</label>
+                                    <input type="text" id="cep" maxlength="9" placeholder="00000-000" inputmode="numeric" />
+                                    <small id="cepStatus">Digite o CEP para preencher automaticamente.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="numero">Número</label>
+                                    <input type="text" id="numero" maxlength="10" placeholder="Ex.: 123" />
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="complemento">Complemento</label>
-                                <input type="text" id="complemento" placeholder="Apto, bloco... (opcional)" />
-                            </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="referencia">Referência</label>
-                            <textarea id="referencia" placeholder="Ponto de referência ou observação sobre a entrega..."></textarea>
+                            <div class="form-group">
+                                <label for="logradouro">Logradouro</label>
+                                <input type="text" id="logradouro" placeholder="Rua, avenida, travessa..." />
+                            </div>
+
+                            <div class="row two">
+                                <div class="form-group">
+                                    <label for="bairro">Bairro</label>
+                                    <input type="text" id="bairro" placeholder="Bairro" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="cidade">Cidade</label>
+                                    <input type="text" id="cidade" placeholder="Cidade" />
+                                </div>
+                            </div>
+
+                            <div class="row two">
+                                <div class="form-group">
+                                    <label for="uf">UF</label>
+                                    <input type="text" id="uf" maxlength="2" placeholder="UF" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="complemento">Complemento</label>
+                                    <input type="text" id="complemento" placeholder="Apto, bloco... (opcional)" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="referencia">Referência</label>
+                                <textarea id="referencia" placeholder="Ponto de referência ou observação sobre a entrega..."></textarea>
+                            </div>
                         </div>
                     </div>
 
@@ -384,7 +426,7 @@
     </div>
 
     <footer class="app-footer">
-        <p>Desenvolvido por <strong>VMiranda Code </></strong></p>
+        <p>Desenvolvido por <strong>DevMiranda</strong></p>
     </footer>
 
     <div class="offline-overlay" id="offlineOverlay">
