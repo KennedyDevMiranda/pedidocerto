@@ -80,6 +80,42 @@ const state = {
     }
 };
 
+function resetarPedido() {
+    state.carrinho = [];
+    state.modoEntrega = 'novo';
+    state.endereco = { cep: '', logradouro: '', numero: '', bairro: '', cidade: '', uf: '', complemento: '', referencia: '' };
+    state.formaPagamento = 0;
+    state.taxaEntrega = TAXA_ENTREGA_FIXA;
+    state.trocoPara = 0;
+    state.observacao = '';
+    state.desconto = 0;
+    state.cupom = { codigo: '', aplicado: false, valorDesconto: 0, descricao: '' };
+
+    // Limpar campos de formulário
+    ['cep','logradouro','numero','bairro','cidade','uf','complemento'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    const ref = document.getElementById('referencia');
+    if (ref) ref.value = '';
+    const obs = document.getElementById('observacao');
+    if (obs) obs.value = '';
+    const troco = document.getElementById('trocoPara');
+    if (troco) troco.value = '';
+    const trocoGroup = document.getElementById('trocoGroup');
+    if (trocoGroup) trocoGroup.style.display = 'none';
+    const pixSection = document.getElementById('pixSection');
+    if (pixSection) pixSection.style.display = 'none';
+    const cupomInput = document.getElementById('codigoCupom');
+    if (cupomInput) cupomInput.value = '';
+
+    document.querySelectorAll('.payment-option').forEach(x => x.classList.remove('active'));
+    document.getElementById('formaPagamento').value = '0';
+
+    renderCarrinho();
+    irParaEtapa(1);
+}
+
 /* ---------- Referências DOM ---------- */
 
 const steps = Array.from(document.querySelectorAll('.step-card'));
@@ -840,7 +876,7 @@ async function enviarPedido(e) {
             }
 
             showToast(`Pedido ${num} criado com sucesso!`, 'success');
-            setTimeout(() => window.location.reload(), 1500);
+            setTimeout(() => resetarPedido(), 1500);
             return;
         }
 
@@ -977,7 +1013,10 @@ function exibirPagamentoConfirmado() {
     document.getElementById('pixResultado').classList.remove('hidden');
     showToast('Pagamento Pix confirmado automaticamente!', 'success');
 
-    setTimeout(() => window.location.reload(), 3000);
+    setTimeout(() => {
+        document.getElementById('pixOverlay').classList.remove('visible');
+        resetarPedido();
+    }, 3000);
 }
 
 async function confirmarPagamentoPix() {
@@ -1020,7 +1059,7 @@ function fecharOverlayPix() {
     pararPollingPix();
     document.getElementById('pixOverlay').classList.remove('visible');
     showToast('Você poderá pagar depois. O pedido foi criado com pagamento pendente.', 'success');
-    setTimeout(() => window.location.reload(), 2000);
+    setTimeout(() => resetarPedido(), 2000);
 }
 
 /* ===================================================================
