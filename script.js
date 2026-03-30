@@ -364,6 +364,46 @@ async function garantirClienteId() {
    ENDEREÇO — concatena campos em string única para EnderecoEntrega
    =================================================================== */
 
+async function buscarCep(cep) {
+    const digits = cep.replace(/\D/g, '');
+    if (digits.length !== 8) return;
+
+    const statusEl = document.getElementById('cepStatus');
+    if (statusEl) {
+        statusEl.textContent = 'Buscando endereço...';
+        statusEl.style.color = 'var(--muted)';
+    }
+
+    try {
+        const resp = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+        const data = await resp.json();
+
+        if (data.erro) {
+            if (statusEl) {
+                statusEl.textContent = 'CEP não encontrado.';
+                statusEl.style.color = 'var(--danger)';
+            }
+            return;
+        }
+
+        if (data.logradouro) document.getElementById('logradouro').value = data.logradouro;
+        if (data.bairro) document.getElementById('bairro').value = data.bairro;
+        if (data.localidade) document.getElementById('cidade').value = data.localidade;
+        if (data.uf) document.getElementById('uf').value = data.uf;
+
+        if (statusEl) {
+            statusEl.innerHTML = `<span style="color:var(--success)">✓ ${data.localidade}/${data.uf}</span>`;
+        }
+
+        document.getElementById('numero').focus();
+    } catch {
+        if (statusEl) {
+            statusEl.textContent = 'Erro ao buscar CEP. Preencha manualmente.';
+            statusEl.style.color = 'var(--warning)';
+        }
+    }
+}
+
 function capturarEndereco() {
     state.endereco = {
         cep: document.getElementById('cep').value.trim(),
@@ -1068,6 +1108,7 @@ document.getElementById('cpf').addEventListener('input', (e) => {
 document.getElementById('cep').addEventListener('input', (e) => {
     const d = onlyDigits(e.target.value).slice(0, 8);
     e.target.value = d.replace(/(\d{5})(\d)/, '$1-$2');
+    if (d.length === 8) buscarCep(d);
 });
 
 document.getElementById('btnConsultarCpf').addEventListener('click', consultarCpf);
