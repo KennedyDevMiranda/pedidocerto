@@ -1278,6 +1278,119 @@ body {
 }
 
 /* ===================================================================
+   ADDRESS TABS (Modo de entrega)
+   =================================================================== */
+
+.address-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.address-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 18px 14px;
+    border-radius: 18px;
+    background: #f8fbff;
+    border: 1.5px solid var(--border);
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.address-tab:hover {
+    border-color: var(--accent);
+    background: #eef4fb;
+}
+
+.address-tab.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 8px 18px rgba(18,58,111,.15);
+}
+
+.address-tab-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.address-panel {
+    margin-bottom: 10px;
+}
+
+.address-panel.hidden {
+    display: none;
+}
+
+.address-info-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: #f8fbff;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+}
+
+.address-info-card .address-info-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.address-info-card strong {
+    display: block;
+    font-size: .95rem;
+    color: var(--primary);
+    margin-bottom: 4px;
+}
+
+.address-info-card p {
+    font-size: .9rem;
+    color: var(--foreground);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.address-info-note {
+    margin-top: 10px;
+    font-size: .85rem;
+    color: var(--success);
+    font-weight: 600;
+}
+
+/* ---- Address Tabs responsivo ---- */
+
+@media (max-width: 768px) {
+    .address-tabs {
+        grid-template-columns: 1fr;
+    }
+
+    .address-tab {
+        flex-direction: row;
+        padding: 14px 16px;
+        gap: 10px;
+        justify-content: flex-start;
+    }
+
+    .address-tab-icon {
+        font-size: 1.3rem;
+    }
+
+    .address-info-card {
+        padding: 14px 16px;
+    }
+}
+
+/* ===================================================================
    FOOTER
    =================================================================== */
 
