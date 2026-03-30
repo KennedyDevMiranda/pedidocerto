@@ -15,7 +15,8 @@ const ENDPOINTS = {
         `${API_BASE}/api/clientes/documento/${encodeURIComponent(doc)}`,
     criarCliente: `${API_BASE}/api/clientes`,
     validarCupom: (codigo, subtotal) =>
-        `${API_BASE}/api/cupons/validar/${encodeURIComponent(codigo)}?subtotal=${subtotal}`
+        `${API_BASE}/api/cupons/validar/${encodeURIComponent(codigo)}?subtotal=${subtotal}`,
+    cuponsDisponiveis: `${API_BASE}/api/cupons/disponiveis`
 };
 
 /* ---------- Mapa de enums do backend ---------- */
@@ -34,9 +35,9 @@ const TAXA_ENTREGA_FIXA = 3.00;
 /* ---------- Configuração PIX ---------- */
 
 const PIX_CONFIG = {
-    chave: '18173582785',         // Chave PIX do recebedor (telefone, CPF, e-mail ou aleatória)
-    nome: 'KENNEDY MIRANDA VENANCIO',           // Nome do recebedor (até 25 caracteres, sem acentos)
-    cidade: 'BARRA DE SAO FRANCISCO'           // Cidade do recebedor (até 15 caracteres, sem acentos)
+    chave: '11999999999',         // Chave PIX do recebedor (telefone, CPF, e-mail ou aleatória)
+    nome: 'DEVMIRANDA',           // Nome do recebedor (até 25 caracteres, sem acentos)
+    cidade: 'SAO PAULO'           // Cidade do recebedor (até 15 caracteres, sem acentos)
 };
 
 /* ---------- Estado global ---------- */
@@ -154,8 +155,22 @@ function renderProdutos() {
         listaProdutos.innerHTML = '<div class="empty-state">Nenhum produto encontrado no estoque.</div>';
         return;
     }
-    listaProdutos.innerHTML = state.produtos.map(p => `
-        <button type="button" class="product-card" data-produto-id="${p.id}">
+    listaProdutos.innerHTML = state.produtos.map(p => {
+        const temOferta = p.ofertaAtiva && p.precoPromocional > 0;
+        const precoExibido = temOferta ? p.precoPromocional : p.preco;
+        const badgeOferta = temOferta && p.tipoOfertaNome
+            ? `<span class="offer-badge">${p.tipoOfertaNome}</span>` : '';
+        const precoHtml = temOferta
+            ? `<div class="product-price-wrap">
+                   ${badgeOferta}
+                   <span class="product-price-old">${formatCurrency(p.preco)}</span>
+                   <span class="product-price-new">${formatCurrency(precoExibido)}</span>
+                   <span class="product-discount-badge">-${p.percentualDesconto}%</span>
+               </div>`
+            : `<div class="product-price">${formatCurrency(p.preco)}</div>`;
+
+        return `
+        <button type="button" class="product-card${temOferta ? ' product-card--promo' : ''}" data-produto-id="${p.id}">
             ${p.imagemUrl
                 ? `<img src="${API_BASE}${p.imagemUrl}" alt="${p.nome}" class="product-img">`
                 : `<div class="product-img-placeholder">📦</div>`}
@@ -163,9 +178,9 @@ function renderProdutos() {
                 <h3>${p.nome}</h3>
                 <p>${p.descricao || ''} · Estoque: ${p.estoque}</p>
             </div>
-            <div class="product-price">${formatCurrency(p.preco)}</div>
-        </button>
-    `).join('');
+            ${precoHtml}
+        </button>`;
+    }).join('');
 }
 
 /* ===================================================================
@@ -286,7 +301,7 @@ async function consultarCpf() {
             document.getElementById('clienteId').value = cli.id;
 
             statusCliente.className = 'status-box success';
-            statusCliente.textContent = `Cliente localizado: ${cli.nome}.`;
+            statusCliente.textContent = `Cliente localizado: ${cli.nome} (ID ${cli.id}).`;
             showToast('Cliente encontrado no sistema.', 'success');
             return;
         }
@@ -824,7 +839,7 @@ function preencherDadosCliente(cli) {
     document.getElementById('clienteId').value = state.cliente.id || '';
 
     statusCliente.className = 'status-box success';
-    statusCliente.textContent = `Cliente localizado: ${state.cliente.nome}.`;
+    statusCliente.textContent = `Cliente localizado: ${state.cliente.nome} (ID ${state.cliente.id}).`;
 }
 
 function mostrarWizard() {
