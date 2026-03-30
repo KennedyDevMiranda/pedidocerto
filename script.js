@@ -1058,6 +1058,7 @@ function preencherDadosCliente(cli) {
     state.cliente.telefone = cli.telefone || '';
     state.cliente.email = cli.email || '';
     state.cliente.existente = true;
+    state.cliente.endereco = cli.endereco || '';
 
     document.getElementById('cpf').value = formatCpf(state.cliente.cpf);
     document.getElementById('nomeCliente').value = state.cliente.nome;
