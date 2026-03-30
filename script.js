@@ -739,13 +739,14 @@ async function enviarPedido(e) {
 }
 
 /* ===================================================================
-   OVERLAY PIX — Pagamento pós-pedido
+   OVERLAY PIX — Pagamento pós-pedido (Mercado Pago + polling)
    =================================================================== */
 
 let pixOverlayPedidoId = null;
 let pixOverlayValor = 0;
+let pixPollingInterval = null;
 
-function exibirOverlayPix(pedidoId, numeroPedido, valorTotal) {
+async function exibirOverlayPix(pedidoId, numeroPedido, valorTotal) {
     pixOverlayPedidoId = pedidoId;
     pixOverlayValor = valorTotal;
 
@@ -756,11 +757,63 @@ function exibirOverlayPix(pedidoId, numeroPedido, valorTotal) {
     document.getElementById('pixOverlayPedido').textContent = `Pedido ${numeroPedido}`;
     document.getElementById('pixOverlayAmount').textContent = formatCurrency(valorTotal);
 
-    // Gerar payload PIX
+    // Resetar estado visual
+    document.getElementById('pixResultado').classList.add('hidden');
+    document.querySelector('.pix-overlay-timer').style.display = '';
+    document.querySelector('.pix-overlay-actions').style.display = '';
+    document.querySelector('.pix-overlay-qr').style.display = '';
+    document.querySelector('.pix-overlay-copiacola').style.display = '';
+    document.getElementById('pixOverlayCopyStatus').style.display = 'none';
+    document.getElementById('btnConfirmarPix').disabled = false;
+    document.getElementById('btnConfirmarPix').textContent = '✅ Já paguei';
+
+    container.innerHTML = '<div class="empty-state" style="padding:20px">Gerando QR Code do Pix...</div>';
+    copiaCola.value = '';
+    overlay.classList.add('visible');
+
+    // Tentar criar cobrança dinâmica via Mercado Pago
+    try {
+        const resp = await fetch(`${API_BASE}/api/pix/cobranca`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                pedidoId,
+                valor: valorTotal,
+                numeroPedido: numeroPedido,
+                emailPagador: state.cliente.email || ''
+            })
+        });
+
+        const data = await resp.json();
+
+        if (resp.ok && data.sucesso) {
+            // QR Code dinâmico do Mercado Pago
+            container.innerHTML = '';
+            if (data.qrCodeBase64) {
+                const img = document.createElement('img');
+                img.src = `data:image/png;base64,${data.qrCodeBase64}`;
+                img.alt = 'QR Code PIX';
+                img.style.width = '220px';
+                img.style.height = '220px';
+                img.style.borderRadius = '12px';
+                container.appendChild(img);
+            }
+            copiaCola.value = data.qrCode || '';
+
+            // Iniciar polling automático a cada 5 segundos
+            iniciarPollingPix(pedidoId);
+
+            document.querySelector('.pix-overlay-timer small').textContent =
+                '⏱️ Aguardando pagamento... (atualiza automaticamente)';
+            return;
+        }
+    } catch {
+        // Falha na API — usar QR estático como fallback
+    }
+
+    // Fallback: QR Code estático (sem confirmação automática)
     const payload = gerarPixPayload(valorTotal);
     copiaCola.value = payload;
-
-    // Gerar QR Code
     container.innerHTML = '';
     if (typeof QRCode !== 'undefined') {
         new QRCode(container, {
@@ -773,17 +826,43 @@ function exibirOverlayPix(pedidoId, numeroPedido, valorTotal) {
         });
     }
 
-    // Resetar estado visual
-    document.getElementById('pixResultado').classList.add('hidden');
-    document.querySelector('.pix-overlay-timer').style.display = '';
-    document.querySelector('.pix-overlay-actions').style.display = '';
-    document.querySelector('.pix-overlay-qr').style.display = '';
-    document.querySelector('.pix-overlay-copiacola').style.display = '';
-    document.getElementById('pixOverlayCopyStatus').style.display = 'none';
-    document.getElementById('btnConfirmarPix').disabled = false;
-    document.getElementById('btnConfirmarPix').textContent = '✅ Já paguei';
+    document.querySelector('.pix-overlay-timer small').textContent =
+        '⏱️ QR estático — clique em "Já paguei" após efetuar o pagamento';
+}
 
-    overlay.classList.add('visible');
+function iniciarPollingPix(pedidoId) {
+    pararPollingPix();
+    pixPollingInterval = setInterval(async () => {
+        try {
+            const resp = await fetch(`${API_BASE}/api/pix/status/${pedidoId}`);
+            if (!resp.ok) return;
+            const data = await resp.json();
+
+            if (data.pago || data.status === 'approved') {
+                pararPollingPix();
+                exibirPagamentoConfirmado();
+            }
+        } catch { /* silencioso */ }
+    }, 5000);
+}
+
+function pararPollingPix() {
+    if (pixPollingInterval) {
+        clearInterval(pixPollingInterval);
+        pixPollingInterval = null;
+    }
+}
+
+function exibirPagamentoConfirmado() {
+    document.querySelector('.pix-overlay-timer').style.display = 'none';
+    document.querySelector('.pix-overlay-actions').style.display = 'none';
+    document.querySelector('.pix-overlay-qr').style.display = 'none';
+    document.querySelector('.pix-overlay-copiacola').style.display = 'none';
+
+    document.getElementById('pixResultado').classList.remove('hidden');
+    showToast('Pagamento Pix confirmado automaticamente!', 'success');
+
+    setTimeout(() => window.location.reload(), 3000);
 }
 
 async function confirmarPagamentoPix() {
@@ -807,16 +886,8 @@ async function confirmarPagamentoPix() {
         const data = await resp.json().catch(() => null);
 
         if (resp.ok && data?.sucesso) {
-            // Esconder elementos de pagamento e mostrar resultado
-            document.querySelector('.pix-overlay-timer').style.display = 'none';
-            document.querySelector('.pix-overlay-actions').style.display = 'none';
-            document.querySelector('.pix-overlay-qr').style.display = 'none';
-            document.querySelector('.pix-overlay-copiacola').style.display = 'none';
-
-            document.getElementById('pixResultado').classList.remove('hidden');
-            showToast('Pagamento Pix confirmado!', 'success');
-
-            setTimeout(() => window.location.reload(), 3000);
+            pararPollingPix();
+            exibirPagamentoConfirmado();
             return;
         }
 
@@ -831,6 +902,7 @@ async function confirmarPagamentoPix() {
 }
 
 function fecharOverlayPix() {
+    pararPollingPix();
     document.getElementById('pixOverlay').classList.remove('visible');
     showToast('Você poderá pagar depois. O pedido foi criado com pagamento pendente.', 'success');
     setTimeout(() => window.location.reload(), 2000);
