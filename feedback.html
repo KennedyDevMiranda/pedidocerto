@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>DevMiranda - Feedback & Fidelidade</title>
+    <link rel="stylesheet" href="feedback.css" />
+</head>
+<body>
+    <main class="app-shell">
+        <!-- ══ HERO ══ -->
+        <header class="hero">
+            <div class="hero-card">
+                <div>
+                    <span class="brand-badge">DevMiranda</span>
+                    <h1>Feedback & Fidelidade</h1>
+                    <p>Sua opinião vale pontos! Avalie, acumule e ganhe descontos.</p>
+                </div>
+                <div class="hero-icon">⭐</div>
+            </div>
+        </header>
+
+        <!-- ══ IDENTIFICAÇÃO POR CPF ══ -->
+        <section class="id-screen" id="telaIdentificacao">
+            <div class="id-card">
+                <div class="id-icon">👤</div>
+                <h2 class="id-title">Identificação</h2>
+                <p class="id-subtitle">Informe seu CPF para acessar sua área</p>
+                <div class="form-group">
+                    <input type="text" id="cpfInput" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" />
+                </div>
+                <button type="button" class="btn btn-primary" id="btnIdentificar">Entrar</button>
+            </div>
+        </section>
+
+        <!-- ══ PAINEL DO CLIENTE (oculto inicialmente) ══ -->
+        <section class="painel hidden" id="painelCliente">
+
+            <!-- Boas-vindas -->
+            <div class="welcome-bar">
+                <div>
+                    <span class="welcome-name" id="clienteNome">Cliente</span>
+                    <span class="welcome-badge" id="clientePontos">0 pts</span>
+                </div>
+                <button class="btn btn-sm btn-outline" id="btnSair">Trocar CPF</button>
+            </div>
+
+            <!-- ══ TABS ══ -->
+            <div class="tabs">
+                <button class="tab active" data-tab="fidelidade">🏆 Fidelidade</button>
+                <button class="tab" data-tab="feedback">💬 Feedback</button>
+                <button class="tab" data-tab="mural">📋 Mural</button>
+            </div>
+
+            <!-- ══ TAB: FIDELIDADE ══ -->
+            <div class="tab-content active" id="tabFidelidade" data-tab="fidelidade">
+
+                <!-- Cards de resumo -->
+                <div class="stats-grid">
+                    <div class="stat-card pontos">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-value" id="statPontos">0</div>
+                        <div class="stat-label">Pontos acumulados</div>
+                    </div>
+                    <div class="stat-card cashback">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value" id="statCashback">R$ 0,00</div>
+                        <div class="stat-label">Cashback disponível</div>
+                    </div>
+                    <div class="stat-card pedidos">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-value" id="statPedidos">0</div>
+                        <div class="stat-label">Pedidos realizados</div>
+                    </div>
+                </div>
+
+                <!-- Sequência de pedidos -->
+                <div class="card sequencia-card">
+                    <h3>🔥 Sequência de Pedidos</h3>
+                    <p class="sequencia-desc">Faça pedidos sem passar 7 dias sem pedir e ganhe <strong>10% de desconto</strong>!</p>
+
+                    <div class="sequencia-bar">
+                        <div class="sequencia-fill" id="sequenciaFill"></div>
+                    </div>
+                    <div class="sequencia-dias" id="sequenciaDias"></div>
+                    <div class="sequencia-info" id="sequenciaInfo"></div>
+                </div>
+
+                <!-- Como funciona -->
+                <div class="card como-funciona">
+                    <h3>📖 Como funciona</h3>
+                    <div class="regras-grid">
+                        <div class="regra">
+                            <span class="regra-icon">📦</span>
+                            <strong>Pedidos</strong>
+                            <p>Ganhe 1 ponto por cada R$1 gasto</p>
+                        </div>
+                        <div class="regra">
+                            <span class="regra-icon">💬</span>
+                            <strong>Feedback</strong>
+                            <p>+10 pontos por cada avaliação</p>
+                        </div>
+                        <div class="regra">
+                            <span class="regra-icon">🔥</span>
+                            <strong>Sequência 7 dias</strong>
+                            <p>Não perca a sequência e ganhe 10% OFF + 50 pts</p>
+                        </div>
+                        <div class="regra">
+                            <span class="regra-icon">💰</span>
+                            <strong>Cashback</strong>
+                            <p>1% do valor de cada pedido entregue volta para você</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Histórico de pontos -->
+                <div class="card">
+                    <h3>📊 Histórico de Pontos</h3>
+                    <div class="historico-lista" id="historicoPontos">
+                        <div class="empty-state">Nenhum ponto ainda.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══ TAB: ENVIAR FEEDBACK ══ -->
+            <div class="tab-content" id="tabFeedback" data-tab="feedback">
+                <div class="card feedback-form-card">
+                    <h3>💬 Deixe seu Feedback</h3>
+                    <p class="feedback-sub">Sua opinião nos ajuda a melhorar! <strong>+10 pontos</strong> por avaliação.</p>
+
+                    <form id="formFeedback" autocomplete="off">
+                        <!-- Tipo -->
+                        <div class="form-group">
+                            <label>Sobre o quê?</label>
+                            <div class="tipo-toggle">
+                                <button type="button" class="tipo-btn active" data-tipo="2">🏪 Estabelecimento</button>
+                                <button type="button" class="tipo-btn" data-tipo="1">📦 Pedido específico</button>
+                            </div>
+                        </div>
+
+                        <!-- Pedido ID (visível só se tipo = pedido) -->
+                        <div class="form-group hidden" id="campoPedidoId">
+                            <label for="feedbackPedidoId">Número do pedido</label>
+                            <input type="number" id="feedbackPedidoId" placeholder="Ex: 123" min="1" />
+                        </div>
+
+                        <!-- Nota com estrelas -->
+                        <div class="form-group">
+                            <label>Nota</label>
+                            <div class="star-rating" id="starRating">
+                                <span class="star active" data-star="1">★</span>
+                                <span class="star active" data-star="2">★</span>
+                                <span class="star active" data-star="3">★</span>
+                                <span class="star active" data-star="4">★</span>
+                                <span class="star active" data-star="5">★</span>
+                            </div>
+                            <input type="hidden" id="feedbackNota" value="5" />
+                        </div>
+
+                        <!-- Comentário -->
+                        <div class="form-group">
+                            <label for="feedbackComentario">Comentário</label>
+                            <textarea id="feedbackComentario" rows="4" placeholder="Conte como foi sua experiência..." maxlength="500"></textarea>
+                            <small class="char-count"><span id="charCount">0</span>/500</small>
+                        </div>
+
+                        <!-- Anônimo -->
+                        <div class="anonimo-toggle">
+                            <label class="switch">
+                                <input type="checkbox" id="feedbackAnonimo" />
+                                <span class="slider"></span>
+                            </label>
+                            <span>Enviar como <strong>anônimo</strong></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-full">📤 Enviar Feedback (+10 pts)</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ══ TAB: MURAL DE FEEDBACKS ══ -->
+            <div class="tab-content" id="tabMural" data-tab="mural">
+                <div class="mural-header">
+                    <div class="mural-media">
+                        <span class="mural-media-star">⭐</span>
+                        <span class="mural-media-valor" id="muralMedia">0.0</span>
+                        <span class="mural-media-total">(<span id="muralTotal">0</span> avaliações)</span>
+                    </div>
+                </div>
+
+                <div class="mural-lista" id="muralLista">
+                    <div class="empty-state">Nenhum feedback ainda. Seja o primeiro!</div>
+                </div>
+
+                <button class="btn btn-outline btn-full hidden" id="btnCarregarMais">Carregar mais</button>
+            </div>
+
+        </section>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <footer class="app-footer">
+        <p>Desenvolvido por <strong>DevMiranda</strong></p>
+    </footer>
+
+    <script src="feedback.js"></script>
+</body>
+</html>
