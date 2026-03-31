@@ -140,14 +140,22 @@
                             <label>Sobre o quê?</label>
                             <div class="tipo-toggle">
                                 <button type="button" class="tipo-btn active" data-tipo="2">🏪 Estabelecimento</button>
-                                <button type="button" class="tipo-btn" data-tipo="1">📦 Pedido específico</button>
+                                <button type="button" class="tipo-btn" data-tipo="1">📦 Produto específico</button>
                             </div>
                         </div>
 
-                        <!-- Pedido ID (visível só se tipo = pedido) -->
-                        <div class="form-group hidden" id="campoPedidoId">
-                            <label for="feedbackPedidoId">Número do pedido</label>
-                            <input type="number" id="feedbackPedidoId" placeholder="Ex: 123" min="1" />
+                        <!-- Produto (visível só se tipo = produto) -->
+                        <div class="form-group hidden" id="campoProduto">
+                            <label for="feedbackProdutoBusca">Pesquisar produto</label>
+                            <div class="produto-search-wrap">
+                                <input type="text" id="feedbackProdutoBusca" placeholder="Digite o nome do produto..." autocomplete="off" />
+                                <div class="produto-results hidden" id="produtoResults"></div>
+                            </div>
+                            <div class="produto-selecionado hidden" id="produtoSelecionado">
+                                <span id="produtoSelecionadoNome"></span>
+                                <button type="button" class="produto-remover" id="btnRemoverProduto">✕</button>
+                            </div>
+                            <input type="hidden" id="feedbackProdutoNome" value="" />
                         </div>
 
                         <!-- Nota com estrelas -->

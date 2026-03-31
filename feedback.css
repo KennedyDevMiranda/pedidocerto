@@ -333,6 +333,85 @@ body {
 
 .char-count { display: block; text-align: right; color: var(--muted); font-size: .78rem; margin-top: 4px; }
 
+/* Produto search */
+.produto-search-wrap {
+    position: relative;
+}
+
+.produto-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--card);
+    border: 2px solid var(--accent);
+    border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 50;
+    box-shadow: 0 8px 24px rgba(15, 52, 96, 0.15);
+}
+
+.produto-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background .15s;
+    border-bottom: 1px solid var(--border);
+}
+
+.produto-item:last-child { border-bottom: none; }
+.produto-item:hover { background: rgba(37, 99, 235, 0.06); }
+
+.produto-item-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: var(--bg);
+    flex-shrink: 0;
+}
+
+.produto-item-info { flex: 1; min-width: 0; }
+.produto-item-nome { font-weight: 600; font-size: .9rem; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.produto-item-preco { font-size: .78rem; color: var(--muted); }
+
+.produto-results .empty-state { padding: 16px; font-size: .88rem; }
+
+.produto-selecionado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 10px 14px;
+    background: rgba(37, 99, 235, 0.08);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: .9rem;
+    color: var(--accent);
+}
+
+.produto-remover {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--muted);
+    padding: 2px 6px;
+    border-radius: 6px;
+    transition: all .15s;
+}
+
+.produto-remover:hover {
+    background: var(--danger);
+    color: #fff;
+}
+
 /* Tipo toggle */
 .tipo-toggle { display: flex; gap: 8px; }
 

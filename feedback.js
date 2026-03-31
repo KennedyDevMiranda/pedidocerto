@@ -12,7 +12,9 @@ const ENDPOINTS = {
     feedbacksPaginado: (pagina, tam) =>
         `${API_BASE}/api/feedbacks?pagina=${pagina}&tamanhoPagina=${tam}`,
     fidelidade: (clienteId) =>
-        `${API_BASE}/api/fidelidade/${clienteId}`
+        `${API_BASE}/api/fidelidade/${clienteId}`,
+    produtos: (busca) =>
+        `${API_BASE}/api/produtos?busca=${encodeURIComponent(busca)}`
 };
 
 /* ──────────── Estado global ──────────── */
@@ -24,7 +26,8 @@ const state = {
     muralTamanho: 10,
     muralTotal: 0,
     feedbackNota: 5,
-    feedbackTipo: 2
+    feedbackTipo: 2,
+    feedbackProdutoNome: ''
 };
 
 const STORAGE_KEY = 'devmiranda_fb_cpf';
@@ -41,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     initStarRating();
     initTipoToggle();
+    initProdutoSearch();
     initFeedbackForm();
     initCharCount();
 
@@ -159,15 +163,103 @@ function initTipoToggle() {
             btn.classList.add('active');
             state.feedbackTipo = parseInt(btn.dataset.tipo);
 
-            const campoPedido = $('#campoPedidoId');
+            const campoProduto = $('#campoProduto');
             if (state.feedbackTipo === 1) {
-                campoPedido.classList.remove('hidden');
+                campoProduto.classList.remove('hidden');
             } else {
-                campoPedido.classList.add('hidden');
-                $('#feedbackPedidoId').value = '';
+                campoProduto.classList.add('hidden');
+                limparProdutoSelecionado();
             }
         });
     });
+}
+
+/* ──────────── Produto Search ──────────── */
+
+let _produtoSearchTimer = null;
+
+function initProdutoSearch() {
+    const input = $('#feedbackProdutoBusca');
+    const results = $('#produtoResults');
+    const btnRemover = $('#btnRemoverProduto');
+
+    input.addEventListener('input', () => {
+        clearTimeout(_produtoSearchTimer);
+        const termo = input.value.trim();
+        if (termo.length < 2) {
+            results.classList.add('hidden');
+            results.innerHTML = '';
+            return;
+        }
+        _produtoSearchTimer = setTimeout(() => buscarProdutos(termo), 350);
+    });
+
+    input.addEventListener('focus', () => {
+        if (results.innerHTML && input.value.trim().length >= 2) {
+            results.classList.remove('hidden');
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.produto-search-wrap')) {
+            results.classList.add('hidden');
+        }
+    });
+
+    btnRemover.addEventListener('click', limparProdutoSelecionado);
+}
+
+async function buscarProdutos(termo) {
+    const results = $('#produtoResults');
+    try {
+        const res = await fetch(ENDPOINTS.produtos(termo));
+        if (!res.ok) return;
+        const produtos = await res.json();
+
+        if (produtos.length === 0) {
+            results.innerHTML = '<div class="empty-state">Nenhum produto encontrado</div>';
+        } else {
+            results.innerHTML = produtos.slice(0, 8).map(p => `
+                <div class="produto-item" data-nome="${escapeAttr(p.nome)}">
+                    ${p.imagemUrl ? `<img class="produto-item-img" src="${escapeAttr(p.imagemUrl)}" alt="" />` : '<div class="produto-item-img" style="display:flex;align-items:center;justify-content:center;font-size:1.2rem">📦</div>'}
+                    <div class="produto-item-info">
+                        <div class="produto-item-nome">${escapeHtml(p.nome)}</div>
+                        <div class="produto-item-preco">R$ ${Number(p.precoFinal).toFixed(2).replace('.', ',')}</div>
+                    </div>
+                </div>`).join('');
+
+            results.querySelectorAll('.produto-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    selecionarProduto(item.dataset.nome);
+                });
+            });
+        }
+        results.classList.remove('hidden');
+    } catch (err) {
+        console.error('Erro ao buscar produtos:', err);
+    }
+}
+
+function selecionarProduto(nome) {
+    state.feedbackProdutoNome = nome;
+    $('#feedbackProdutoNome').value = nome;
+    $('#feedbackProdutoBusca').value = '';
+    $('#produtoResults').classList.add('hidden');
+    $('#produtoSelecionadoNome').textContent = '📦 ' + nome;
+    $('#produtoSelecionado').classList.remove('hidden');
+}
+
+function limparProdutoSelecionado() {
+    state.feedbackProdutoNome = '';
+    $('#feedbackProdutoNome').value = '';
+    $('#feedbackProdutoBusca').value = '';
+    $('#produtoSelecionado').classList.add('hidden');
+    $('#produtoResults').classList.add('hidden');
+}
+
+function escapeAttr(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 /* ──────────── Char Count ──────────── */
@@ -199,7 +291,7 @@ function initFeedbackForm() {
 
         const dto = {
             clienteId: state.cliente.id,
-            pedidoId: state.feedbackTipo === 1 ? (parseInt($('#feedbackPedidoId').value) || null) : null,
+            produtoNome: state.feedbackTipo === 1 ? (state.feedbackProdutoNome || null) : null,
             nota: state.feedbackNota,
             comentario: comentario,
             tipo: state.feedbackTipo,
@@ -224,6 +316,7 @@ function initFeedbackForm() {
                 $('#formFeedback').reset();
                 $('#charCount').textContent = '0';
                 state.feedbackNota = 5;
+                limparProdutoSelecionado();
                 $$('#starRating .star').forEach(s => s.classList.add('active'));
 
                 // Recarregar dados
@@ -389,7 +482,7 @@ function renderMuralCard(fb) {
             </div>
             <div class="mural-card-estrelas">${estrelas}</div>
             <div class="mural-card-comentario">${escapeHtml(fb.comentario)}</div>
-            <div class="mural-card-data">${dataFormatada}${fb.pedidoId ? ` · Pedido #${fb.pedidoId}` : ''}</div>
+            <div class="mural-card-data">${dataFormatada}${fb.produtoNome ? ` · 📦 ${escapeHtml(fb.produtoNome)}` : ''}</div>
         </div>`;
 }
 
