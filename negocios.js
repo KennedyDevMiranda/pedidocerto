@@ -195,4 +195,322 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(() => {});
     }
+
+    // Password rules validation
+    const newPassEl = document.getElementById('recoveryNewPass');
+    const confirmPassEl = document.getElementById('recoveryConfirmPass');
+    if (newPassEl && confirmPassEl) {
+        const validate = () => {
+            const ruleLength = document.getElementById('ruleLength');
+            const ruleMatch = document.getElementById('ruleMatch');
+            const pw = newPassEl.value;
+            const confirm = confirmPassEl.value;
+
+            if (ruleLength) {
+                ruleLength.classList.toggle('valid', pw.length >= 6);
+                ruleLength.querySelector('.rule-icon').textContent = pw.length >= 6 ? '✓' : '○';
+            }
+            if (ruleMatch) {
+                const matches = pw.length > 0 && confirm.length > 0 && pw === confirm;
+                ruleMatch.classList.toggle('valid', matches);
+                ruleMatch.querySelector('.rule-icon').textContent = matches ? '✓' : '○';
+            }
+        };
+        newPassEl.addEventListener('input', validate);
+        confirmPassEl.addEventListener('input', validate);
+    }
 });
+
+/* ===================================================================
+   RECUPERAÇÃO DE SENHA — Fluxo de 3 etapas
+   =================================================================== */
+
+let recoveryLogin = '';
+let recoveryCodeStored = '';
+let countdownInterval = null;
+
+/* ── Abrir painel de recuperação ── */
+function abrirRecuperacao() {
+    const loginView = document.getElementById('adminLoginView');
+    const recoveryView = document.getElementById('adminRecoveryView');
+    if (loginView) loginView.classList.add('hidden');
+    if (recoveryView) recoveryView.classList.remove('hidden');
+    irParaEtapa(1);
+
+    const loginField = document.getElementById('loginEmail');
+    const recoveryField = document.getElementById('recoveryLogin');
+    if (loginField && recoveryField && loginField.value.trim()) {
+        recoveryField.value = loginField.value.trim();
+    }
+}
+
+/* ── Voltar ao login normal ── */
+function voltarLogin() {
+    const loginView = document.getElementById('adminLoginView');
+    const recoveryView = document.getElementById('adminRecoveryView');
+    if (loginView) loginView.classList.remove('hidden');
+    if (recoveryView) recoveryView.classList.add('hidden');
+    limparRecuperacao();
+}
+
+/* ── Navegação entre etapas ── */
+function irParaEtapa(step) {
+    document.querySelectorAll('.recovery-step').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.recovery-step-dot').forEach(dot => {
+        const s = Number(dot.dataset.step);
+        dot.classList.remove('active', 'done');
+        if (s < step) dot.classList.add('done');
+        if (s === step) dot.classList.add('active');
+    });
+    document.querySelectorAll('.recovery-step-line').forEach((line, i) => {
+        line.classList.toggle('done', i < step - 1);
+    });
+
+    const target = step === 4 ? 'recoverySuccess'
+        : step === 3 ? 'recoveryStep3'
+        : step === 2 ? 'recoveryStep2'
+        : 'recoveryStep1';
+
+    const el = document.getElementById(target);
+    if (el) el.classList.add('active');
+}
+
+/* ── Limpar estado ── */
+function limparRecuperacao() {
+    recoveryLogin = '';
+    recoveryCodeStored = '';
+    if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+
+    ['recoveryLogin', 'recoveryCode', 'recoveryNewPass', 'recoveryConfirmPass'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    ['recoveryError1', 'recoveryError2', 'recoveryError3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.classList.add('hidden'); el.textContent = ''; }
+    });
+    document.querySelectorAll('.password-rule').forEach(r => {
+        r.classList.remove('valid');
+        const icon = r.querySelector('.rule-icon');
+        if (icon) icon.textContent = '○';
+    });
+}
+
+/* ── Mostrar mensagem ── */
+function mostrarMsg(id, texto, tipo) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = texto;
+    el.className = `recovery-msg ${tipo}`;
+    el.classList.remove('hidden');
+}
+
+/* ── Etapa 1: Solicitar código ── */
+async function solicitarCodigo(e) {
+    if (e) e.preventDefault();
+
+    const loginInput = document.getElementById('recoveryLogin');
+    const login = loginInput ? loginInput.value.trim() : '';
+    if (!login) return;
+
+    recoveryLogin = login;
+
+    const btn = document.getElementById('btnSolicitarCodigo');
+    const spanEl = btn ? btn.querySelector('span') : null;
+    const textoOriginal = spanEl ? spanEl.textContent : '';
+    if (spanEl) spanEl.textContent = 'Enviando...';
+    if (btn) btn.disabled = true;
+
+    const errEl = document.getElementById('recoveryError1');
+    if (errEl) errEl.classList.add('hidden');
+
+    try {
+        const resp = await fetch(`${API_BASE_LOGIN}/api/recuperar-senha/solicitar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ login })
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok || !data.sucesso) {
+            mostrarMsg('recoveryError1', data.mensagem || 'Erro ao solicitar código.', 'error');
+            return;
+        }
+
+        // Se o WhatsApp não estava configurado, mostra o código de teste
+        if (data.codigoTeste) {
+            recoveryCodeStored = data.codigoTeste;
+        }
+
+        // Vai para etapa 2
+        irParaEtapa(2);
+
+        const msg2 = document.getElementById('recoveryStep2Msg');
+        if (msg2) {
+            if (data.enviado && data.telefoneMascarado) {
+                msg2.textContent = `Código de 6 dígitos enviado para o WhatsApp terminado em ${data.telefoneMascarado}.`;
+            } else if (data.codigoTeste) {
+                msg2.innerHTML = `Seu código de verificação é: <strong style="font-size:1.2rem;color:var(--accent)">${data.codigoTeste}</strong>`;
+            } else {
+                msg2.textContent = 'Solicite o código ao administrador via WhatsApp.';
+            }
+        }
+
+        iniciarContagem();
+
+    } catch {
+        mostrarMsg('recoveryError1', 'Erro de conexão. Tente novamente.', 'error');
+    } finally {
+        if (spanEl) spanEl.textContent = textoOriginal;
+        if (btn) btn.disabled = false;
+    }
+}
+
+/* ── Reenviar código ── */
+function reenviarCodigo() {
+    solicitarCodigo(null);
+}
+
+/* ── Contagem regressiva de 10 min ── */
+function iniciarContagem() {
+    if (countdownInterval) clearInterval(countdownInterval);
+
+    let segundos = 600;
+    const countdownEl = document.getElementById('recoveryCountdown');
+    const reenviarBtn = document.getElementById('btnReenviar');
+    if (reenviarBtn) reenviarBtn.disabled = true;
+
+    const update = () => {
+        const min = Math.floor(segundos / 60);
+        const sec = segundos % 60;
+        if (countdownEl) countdownEl.textContent = `${min}:${String(sec).padStart(2, '0')}`;
+
+        if (segundos <= 0) {
+            clearInterval(countdownInterval);
+            if (countdownEl) countdownEl.textContent = 'Expirado';
+            if (reenviarBtn) reenviarBtn.disabled = false;
+        }
+        segundos--;
+    };
+
+    update();
+    countdownInterval = setInterval(update, 1000);
+
+    // Habilita reenviar após 30s
+    setTimeout(() => { if (reenviarBtn) reenviarBtn.disabled = false; }, 30000);
+}
+
+/* ── Etapa 2: Verificar código ── */
+async function verificarCodigo(e) {
+    if (e) e.preventDefault();
+
+    const codeInput = document.getElementById('recoveryCode');
+    const codigo = codeInput ? codeInput.value.trim() : '';
+    if (codigo.length !== 6) {
+        if (codeInput) { codeInput.style.borderColor = '#ef4444'; codeInput.focus(); }
+        return;
+    }
+
+    const btn = document.getElementById('btnVerificarCodigo');
+    const spanEl = btn ? btn.querySelector('span') : null;
+    const textoOriginal = spanEl ? spanEl.textContent : '';
+    if (spanEl) spanEl.textContent = 'Verificando...';
+    if (btn) btn.disabled = true;
+
+    const errEl = document.getElementById('recoveryError2');
+    if (errEl) errEl.classList.add('hidden');
+
+    try {
+        const resp = await fetch(`${API_BASE_LOGIN}/api/recuperar-senha/verificar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ login: recoveryLogin, codigo })
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok || !data.sucesso) {
+            mostrarMsg('recoveryError2', data.mensagem || 'Código inválido.', 'error');
+            if (codeInput) { codeInput.value = ''; codeInput.focus(); }
+            return;
+        }
+
+        recoveryCodeStored = codigo;
+        irParaEtapa(3);
+
+        // Mark all dots as done up to step 3
+        document.querySelectorAll('.recovery-step-dot').forEach(dot => {
+            const s = Number(dot.dataset.step);
+            dot.classList.remove('active', 'done');
+            if (s < 3) dot.classList.add('done');
+            if (s === 3) dot.classList.add('active');
+        });
+
+    } catch {
+        mostrarMsg('recoveryError2', 'Erro de conexão. Tente novamente.', 'error');
+    } finally {
+        if (spanEl) spanEl.textContent = textoOriginal;
+        if (btn) btn.disabled = false;
+    }
+}
+
+/* ── Etapa 3: Redefinir senha ── */
+async function redefinirSenha(e) {
+    if (e) e.preventDefault();
+
+    const newPassEl = document.getElementById('recoveryNewPass');
+    const confirmPassEl = document.getElementById('recoveryConfirmPass');
+    const novaSenha = newPassEl ? newPassEl.value : '';
+    const confirmar = confirmPassEl ? confirmPassEl.value : '';
+
+    if (novaSenha.length < 6) {
+        mostrarMsg('recoveryError3', 'A senha deve ter no mínimo 6 caracteres.', 'error');
+        return;
+    }
+    if (novaSenha !== confirmar) {
+        mostrarMsg('recoveryError3', 'As senhas não coincidem.', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('btnRedefinirSenha');
+    const spanEl = btn ? btn.querySelector('span') : null;
+    const textoOriginal = spanEl ? spanEl.textContent : '';
+    if (spanEl) spanEl.textContent = 'Redefinindo...';
+    if (btn) btn.disabled = true;
+
+    const errEl = document.getElementById('recoveryError3');
+    if (errEl) errEl.classList.add('hidden');
+
+    try {
+        const resp = await fetch(`${API_BASE_LOGIN}/api/recuperar-senha/redefinir`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                login: recoveryLogin,
+                codigo: recoveryCodeStored,
+                novaSenha
+            })
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok || !data.sucesso) {
+            mostrarMsg('recoveryError3', data.mensagem || 'Erro ao redefinir senha.', 'error');
+            return;
+        }
+
+        if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+        irParaEtapa(4);
+
+        // Mark all dots as done
+        document.querySelectorAll('.recovery-step-dot').forEach(dot => dot.classList.add('done'));
+        document.querySelectorAll('.recovery-step-line').forEach(line => line.classList.add('done'));
+
+    } catch {
+        mostrarMsg('recoveryError3', 'Erro de conexão. Tente novamente.', 'error');
+    } finally {
+        if (spanEl) spanEl.textContent = textoOriginal;
+        if (btn) btn.disabled = false;
+    }
+}

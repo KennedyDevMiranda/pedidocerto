@@ -141,33 +141,137 @@
                     </div>
                 </div>
 
-                <!-- ══ PAINEL: ADMIN (E-MAIL + SENHA) ══ -->
+                <!-- ══ PAINEL: ADMIN (LOGIN + SENHA + RECUPERAÇÃO) ══ -->
                 <div class="login-panel" id="panelAdmin">
-                    <h2>Entrar no Painel</h2>
-                    <p class="login-subtitle">Acesse sua conta para gerenciar seu negócio.</p>
+                    <!-- Vista: Login normal -->
+                    <div id="adminLoginView">
+                        <h2>Entrar no Painel</h2>
+                        <p class="login-subtitle">Acesse sua conta para gerenciar seu negócio.</p>
 
-                    <form id="loginForm" onsubmit="fazerLogin(event)">
-                        <div class="login-group">
-                            <label for="loginEmail">E-mail</label>
-                            <input type="email" id="loginEmail" placeholder="seu@email.com" required />
-                        </div>
-                        <div class="login-group">
-                            <label for="loginSenha">Senha</label>
-                            <input type="password" id="loginSenha" placeholder="Sua senha" required />
-                        </div>
-                        <div class="login-options">
-                            <label class="login-remember">
-                                <input type="checkbox" id="loginLembrar" /> Lembrar de mim
-                            </label>
-                            <a href="https://wa.me/5527995045666?text=Olá! Esqueci minha senha do Menu Central e preciso de ajuda." class="login-forgot" target="_blank">Esqueci a senha</a>
-                        </div>
-                        <button type="submit" class="login-btn" id="btnEntrarAdmin">Entrar</button>
-                    </form>
+                        <form id="loginForm" onsubmit="fazerLogin(event)">
+                            <div class="login-group">
+                                <label for="loginEmail">Login</label>
+                                <input type="text" id="loginEmail" placeholder="Seu login" required />
+                            </div>
+                            <div class="login-group">
+                                <label for="loginSenha">Senha</label>
+                                <input type="password" id="loginSenha" placeholder="Sua senha" required />
+                            </div>
+                            <div class="login-options">
+                                <label class="login-remember">
+                                    <input type="checkbox" id="loginLembrar" /> Lembrar de mim
+                                </label>
+                                <button type="button" class="login-forgot" onclick="abrirRecuperacao()">Esqueci a senha</button>
+                            </div>
+                            <button type="submit" class="login-btn" id="btnEntrarAdmin">Entrar</button>
+                        </form>
 
-                    <div class="login-divider">ou</div>
+                        <div class="login-divider">ou</div>
 
-                    <div class="login-register">
-                        Ainda não tem conta? <a href="https://wa.me/5527995045666?text=Olá! Gostaria de criar minha conta no Menu Central." target="_blank">Comece Grátis →</a>
+                        <div class="login-register">
+                            Ainda não tem conta? <a href="https://wa.me/5527995045666?text=Olá! Gostaria de criar minha conta no Menu Central." target="_blank">Comece Grátis →</a>
+                        </div>
+                    </div>
+
+                    <!-- Vista: Recuperação de Senha (3 etapas) -->
+                    <div id="adminRecoveryView" class="hidden">
+                        <!-- Indicador de etapas -->
+                        <div class="recovery-steps-bar">
+                            <div class="recovery-step-dot active" data-step="1">1</div>
+                            <div class="recovery-step-line"></div>
+                            <div class="recovery-step-dot" data-step="2">2</div>
+                            <div class="recovery-step-line"></div>
+                            <div class="recovery-step-dot" data-step="3">3</div>
+                        </div>
+
+                        <!-- Etapa 1: Solicitar código -->
+                        <div class="recovery-step active" id="recoveryStep1">
+                            <div class="recovery-icon">🔒</div>
+                            <h2>Recuperar Senha</h2>
+                            <p class="login-subtitle">Informe seu login para receber um código de verificação via WhatsApp.</p>
+
+                            <form onsubmit="solicitarCodigo(event)">
+                                <div class="login-group">
+                                    <label for="recoveryLogin">Login</label>
+                                    <input type="text" id="recoveryLogin" placeholder="Seu login" required />
+                                </div>
+                                <button type="submit" class="login-btn" id="btnSolicitarCodigo">
+                                    <span>Enviar Código via WhatsApp</span>
+                                </button>
+                            </form>
+
+                            <div class="recovery-msg hidden" id="recoveryError1"></div>
+
+                            <button type="button" class="recovery-back" onclick="voltarLogin()">← Voltar ao login</button>
+                        </div>
+
+                        <!-- Etapa 2: Verificar código -->
+                        <div class="recovery-step" id="recoveryStep2">
+                            <div class="recovery-icon">📱</div>
+                            <h2>Digite o Código</h2>
+                            <p class="login-subtitle" id="recoveryStep2Msg">Insira o código de 6 dígitos enviado para o seu WhatsApp.</p>
+
+                            <form onsubmit="verificarCodigo(event)">
+                                <div class="login-group">
+                                    <label for="recoveryCode">Código de Verificação</label>
+                                    <input type="text" id="recoveryCode" inputmode="numeric" maxlength="6" placeholder="000000" class="code-input" required autocomplete="one-time-code" />
+                                </div>
+                                <button type="submit" class="login-btn" id="btnVerificarCodigo">
+                                    <span>Verificar Código</span>
+                                </button>
+                            </form>
+
+                            <div class="recovery-msg hidden" id="recoveryError2"></div>
+
+                            <div class="recovery-timer" id="recoveryTimer">
+                                ⏱️ Código expira em <strong id="recoveryCountdown">10:00</strong>
+                            </div>
+
+                            <button type="button" class="recovery-resend" id="btnReenviar" onclick="reenviarCodigo()">Reenviar código</button>
+                            <button type="button" class="recovery-back" onclick="voltarLogin()">← Voltar ao login</button>
+                        </div>
+
+                        <!-- Etapa 3: Nova senha -->
+                        <div class="recovery-step" id="recoveryStep3">
+                            <div class="recovery-icon">🔑</div>
+                            <h2>Nova Senha</h2>
+                            <p class="login-subtitle">Crie uma nova senha segura para sua conta.</p>
+
+                            <form onsubmit="redefinirSenha(event)">
+                                <div class="login-group">
+                                    <label for="recoveryNewPass">Nova Senha</label>
+                                    <input type="password" id="recoveryNewPass" placeholder="Mínimo 6 caracteres" minlength="6" required />
+                                </div>
+                                <div class="login-group">
+                                    <label for="recoveryConfirmPass">Confirmar Senha</label>
+                                    <input type="password" id="recoveryConfirmPass" placeholder="Repita a nova senha" minlength="6" required />
+                                </div>
+                                <div class="password-rules">
+                                    <div class="password-rule" id="ruleLength">
+                                        <span class="rule-icon">○</span> Mínimo 6 caracteres
+                                    </div>
+                                    <div class="password-rule" id="ruleMatch">
+                                        <span class="rule-icon">○</span> As senhas coincidem
+                                    </div>
+                                </div>
+                                <button type="submit" class="login-btn" id="btnRedefinirSenha">
+                                    <span>Redefinir Senha</span>
+                                </button>
+                            </form>
+
+                            <div class="recovery-msg hidden" id="recoveryError3"></div>
+                        </div>
+
+                        <!-- Sucesso -->
+                        <div class="recovery-step" id="recoverySuccess">
+                            <div class="recovery-icon recovery-success-anim">✅</div>
+                            <h2>Senha Redefinida!</h2>
+                            <p class="login-subtitle">Sua senha foi atualizada com sucesso. Faça login com a nova senha.</p>
+                            <button type="button" class="login-btn" onclick="voltarLogin()">
+                                <span>Fazer Login</span>
+                                <span class="btn-arrow">→</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
