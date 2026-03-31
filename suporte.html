@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Menu Central — Suporte | Central de Ajuda</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .biz-shell { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        .page-hero {
+            position: relative;
+            padding: 120px 20px 60px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(18,58,111,.04), rgba(37,99,235,.06));
+            pointer-events: none;
+        }
+        .page-hero-content { position: relative; max-width: 700px; margin: 0 auto; }
+        .page-hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 999px; background: rgba(37,99,235,.08); border: 1px solid rgba(37,99,235,.15); font-size: .82rem; font-weight: 700; color: var(--accent); margin-bottom: 24px; }
+        .page-hero-title { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -.03em; color: var(--primary); margin-bottom: 18px; }
+        .page-hero-title span { background: linear-gradient(135deg, var(--accent), #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .page-hero-subtitle { font-size: 1.08rem; color: var(--muted); line-height: 1.6; max-width: 560px; margin: 0 auto; }
+
+        /* Quick Actions */
+        .quick-actions { padding: 48px 0; }
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .quick-card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            text-align: center;
+            box-shadow: 0 8px 28px rgba(15,52,96,.06);
+            border: 1px solid var(--border);
+            transition: transform .3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .quick-card:hover { transform: translateY(-4px); }
+        .quick-icon { font-size: 2.4rem; margin-bottom: 14px; }
+        .quick-card h3 { font-size: .95rem; color: var(--primary); margin-bottom: 6px; }
+        .quick-card p { color: var(--muted); font-size: .82rem; line-height: 1.4; }
+
+        /* FAQ */
+        .faq-section { padding: 48px 0; }
+        .faq-grid { max-width: 760px; margin: 0 auto; }
+        .faq-category-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 32px 0 16px;
+            padding-left: 4px;
+        }
+        .faq-category-title:first-child { margin-top: 0; }
+        .faq-item {
+            background: var(--card);
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 16px rgba(15,52,96,.04);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: box-shadow .2s;
+        }
+        .faq-item:hover { box-shadow: 0 8px 28px rgba(15,52,96,.08); }
+        .faq-q {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: .92rem;
+            color: var(--primary);
+        }
+        .faq-arrow { transition: transform .3s; font-size: .8rem; color: var(--muted); }
+        .faq-item.open .faq-arrow { transform: rotate(180deg); }
+        .faq-a {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease, margin .3s;
+            font-size: .86rem;
+            color: #475569;
+            line-height: 1.6;
+        }
+        .faq-item.open .faq-a { max-height: 400px; margin-top: 12px; }
+
+        /* Support CTA */
+        .support-cta { padding: 48px 0 80px; }
+        .support-cta-card {
+            background: linear-gradient(135deg, #0f3460 0%, #1d4f8f 100%);
+            color: #fff;
+            border-radius: 28px;
+            padding: 48px 32px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        .support-cta-card h2 { font-size: clamp(1.4rem, 3vw, 1.8rem); margin-bottom: 10px; }
+        .support-cta-card p { color: rgba(255,255,255,.8); margin-bottom: 24px; }
+        .support-cta-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .support-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border-radius: 999px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: .9rem;
+            transition: all .25s;
+        }
+        .support-btn-primary { background: #fff; color: var(--primary); }
+        .support-btn-primary:hover { background: #f0f4ff; transform: translateY(-2px); }
+        .support-btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.4); }
+        .support-btn-outline:hover { border-color: #fff; transform: translateY(-2px); }
+
+        .biz-footer { text-align: center; padding: 24px 0; font-size: .82rem; color: var(--muted); }
+        .biz-footer strong { color: var(--primary); }
+
+        @media (max-width: 768px) {
+            .quick-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .quick-grid { grid-template-columns: 1fr; }
+            .page-hero { padding: 80px 16px 40px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ══ HEADER ══ -->
+    <header class="top-header">
+        <div class="top-header-inner">
+            <a href="index.html" class="logo-link">
+                <span class="logo-icon">🍽️</span>
+                <span class="logo-text">Menu<strong>Central</strong></span>
+            </a>
+            <nav class="top-nav">
+                <a href="negocios.html" class="top-nav-link">Visão Geral</a>
+                <a href="recursos.html" class="top-nav-link">Recursos</a>
+                <a href="planos.html" class="top-nav-link">Planos</a>
+                <a href="contato.html" class="top-nav-link">Contato</a>
+                <a href="suporte.html" class="top-nav-link active">Suporte</a>
+            </nav>
+            <a href="entrar.html" class="header-cta">Entrar</a>
+        </div>
+    </header>
+
+    <!-- ══ HERO ══ -->
+    <section class="page-hero">
+        <div class="page-hero-content">
+            <div class="page-hero-badge">🛟 Suporte</div>
+            <h1 class="page-hero-title">Central de <span>Ajuda</span></h1>
+            <p class="page-hero-subtitle">Encontre respostas rápidas ou entre em contato com nossa equipe de suporte.</p>
+        </div>
+    </section>
+
+    <!-- ══ AÇÕES RÁPIDAS ══ -->
+    <section class="quick-actions">
+        <div class="biz-shell">
+            <div class="quick-grid">
+                <a href="https://wa.me/5527997873879?text=Olá! Preciso de suporte técnico com o Menu Central." class="quick-card" target="_blank">
+                    <div class="quick-icon">💬</div>
+                    <h3>Chat ao Vivo</h3>
+                    <p>Fale agora com nossa equipe via WhatsApp.</p>
+                </a>
+                <a href="mailto:suporte@menucentral.com.br" class="quick-card">
+                    <div class="quick-icon">📧</div>
+                    <h3>E-mail de Suporte</h3>
+                    <p>suporte@menucentral.com.br — resposta em até 24h.</p>
+                </a>
+                <a href="#faq" class="quick-card">
+                    <div class="quick-icon">❓</div>
+                    <h3>Perguntas Frequentes</h3>
+                    <p>Respostas para as dúvidas mais comuns.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ FAQ COMPLETO ══ -->
+    <section class="faq-section" id="faq">
+        <div class="biz-shell">
+            <div class="section-header" style="text-align:center;margin-bottom:40px;">
+                <span class="section-badge">FAQ</span>
+                <h2>Perguntas <span class="text-accent">Frequentes</span></h2>
+            </div>
+            <div class="faq-grid">
+                <!-- Primeiros Passos -->
+                <h3 class="faq-category-title">🚀 Primeiros Passos</h3>
+
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">Como começo a usar o Menu Central? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Basta entrar em contato pelo WhatsApp e solicitar o teste grátis de 7 dias. Nossa equipe configura tudo para você — cadastro de produtos, horários e personalização da página. Você recebe o link pronto para compartilhar com seus clientes.</div>
+                </div>
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">Preciso ter conhecimento técnico? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Não! O Menu Central é 100% gerenciado por uma interface simples. Você cadastra produtos, define horários e acompanha pedidos sem tocar em código. Se precisar de ajuda, nosso suporte está sempre disponível.</div>
+                </div>
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">Meus clientes precisam baixar algum aplicativo? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Não. Tudo funciona direto pelo navegador do celular. Seus clientes acessam o link, escolhem os produtos e fazem o pedido — sem instalar nada.</div>
+                </div>
+
+                <!-- Pagamentos -->
+                <h3 class="faq-category-title">💳 Pagamentos</h3>
+
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">Vocês cobram taxa sobre os pedidos? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Não! Zero taxa sobre vendas. Você paga apenas a mensalidade fixa do plano escolhido. O dinheiro dos pedidos vai 100% direto para a sua conta.</div>
+                </div>
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">Quais formas de pagamento do plano são aceitas? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Aceitamos PIX, cartão de crédito e boleto bancário para pagamento da mensalidade. Para planos anuais, oferecemos 20% de desconto.</div>
+                </div>
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">Como funciona o PIX integrado para meus clientes? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Ao finalizar o pedido, um QR Code PIX é gerado automaticamente com o valor do pedido. O pagamento cai direto na sua conta bancária, sem intermediários e sem taxas adicionais.</div>
+                </div>
+
+                <!-- Planos e Cobrança -->
+                <h3 class="faq-category-title">💎 Planos e Cobrança</h3>
+
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">Como funciona o teste grátis de 7 dias? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Você tem acesso completo a todas as funcionalidades do plano Pro por 7 dias. Não pedimos cartão de crédito. Ao final do período, escolha o plano que melhor se encaixa ou cancele sem custos.</div>
+                </div>
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">Posso mudar de plano depois? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Sim! Você pode fazer upgrade ou downgrade a qualquer momento. O valor é ajustado proporcionalmente no próximo ciclo de cobrança.</div>
+                </div>
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">Como cancelo meu plano? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Basta solicitar o cancelamento pelo WhatsApp ou e-mail de suporte. O cancelamento é processado imediatamente e não há multa ou taxa de fidelidade. Você mantém acesso até o final do período pago.</div>
+                </div>
+
+                <!-- Funcionalidades -->
+                <h3 class="faq-category-title">⚙️ Funcionalidades</h3>
+
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">Como funciona o programa de fidelidade? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Seus clientes acumulam pontos automaticamente a cada compra (0.5% de cashback em pontos). Além disso, ganham bônus por compras em dias consecutivos (streak). Os pontos podem ser usados como desconto em pedidos futuros.</div>
+                </div>
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">Posso criar cupons de desconto? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Sim! Você pode criar cupons com código personalizado, desconto percentual, quantidade máxima de usos e data de validade. Disponível nos planos Pro e Premium.</div>
+                </div>
+                <div class="faq-item" onclick="this.classList.toggle('open')">
+                    <div class="faq-q">O sistema funciona quando estou offline? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">A página dos seus clientes permite navegação mesmo offline — eles podem ver o cardápio, avaliações e informações com dados em cache. Porém, para fazer pedidos, a conexão com o servidor precisa estar ativa.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ CTA ══ -->
+    <section class="support-cta">
+        <div class="biz-shell">
+            <div class="support-cta-card">
+                <h2>Não encontrou o que procurava?</h2>
+                <p>Nossa equipe está pronta para ajudar com qualquer dúvida ou problema.</p>
+                <div class="support-cta-actions">
+                    <a href="https://wa.me/5527997873879?text=Olá! Preciso de ajuda com o Menu Central." class="support-btn support-btn-primary" target="_blank">Falar pelo WhatsApp</a>
+                    <a href="contato.html" class="support-btn support-btn-outline">Enviar Mensagem</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
+    <div class="biz-footer">
+        <p>Desenvolvido por <strong>DevMiranda</strong> · <a href="index.html" style="color:var(--accent);text-decoration:none;">Início</a> · <a href="recursos.html" style="color:var(--accent);text-decoration:none;">Recursos</a> · <a href="planos.html" style="color:var(--accent);text-decoration:none;">Planos</a> · <a href="contato.html" style="color:var(--accent);text-decoration:none;">Contato</a> · <a href="termos.html" style="color:var(--accent);text-decoration:none;">Termos de Uso</a></p>
+    </div>
+</body>
+</html>
