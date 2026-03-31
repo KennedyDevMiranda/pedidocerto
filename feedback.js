@@ -565,7 +565,7 @@ function formatarData(dateStr) {
    =================================================================== */
 
 (function initLiveActivity() {
-    const SESSION_ID = crypto.randomUUID ? crypto.randomUUID() : `s_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const SESSION_ID = sessionStorage.getItem('dm_session') || (function() { const id = crypto.randomUUID ? crypto.randomUUID() : `s_${Date.now()}_${Math.random().toString(36).slice(2)}`; sessionStorage.setItem('dm_session', id); return id; })();
     const HEARTBEAT_INTERVAL = 30000;
     const POLL_INTERVAL = 10000;
     const TOAST_DURATION = 5000;
