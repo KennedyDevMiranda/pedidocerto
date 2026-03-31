@@ -3,47 +3,29 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Menu Central — Para Negócios | Planos e Preços</title>
+    <title>Menu Central — Planos e Preços</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-        /* ===================================================================
-           NEGÓCIOS PAGE — Styles adicionais
-           =================================================================== */
         .biz-shell { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-        /* Hero */
-        .biz-hero {
+        .page-hero {
             position: relative;
             padding: 120px 20px 60px;
             text-align: center;
             overflow: hidden;
         }
-        .biz-hero::before {
+        .page-hero::before {
             content: '';
             position: absolute;
             inset: 0;
             background: linear-gradient(135deg, rgba(18,58,111,.04), rgba(37,99,235,.06));
             pointer-events: none;
         }
-        .biz-hero-content { position: relative; max-width: 700px; margin: 0 auto; }
-        .biz-hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 999px; background: rgba(37,99,235,.08); border: 1px solid rgba(37,99,235,.15); font-size: .82rem; font-weight: 700; color: var(--accent); margin-bottom: 24px; }
-        .biz-hero-title { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -.03em; color: var(--primary); margin-bottom: 18px; }
-        .biz-hero-title span { background: linear-gradient(135deg, var(--accent), #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .biz-hero-subtitle { font-size: 1.08rem; color: var(--muted); line-height: 1.6; max-width: 600px; margin: 0 auto 28px; }
-        .biz-hero-subtitle strong { color: var(--accent); }
-
-        .biz-hero-value {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-        .value-item { display: flex; align-items: center; gap: 8px; font-size: .88rem; font-weight: 600; color: var(--primary); }
-        .value-icon { font-size: 1.2rem; }
-
-        .biz-hero-actions { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+        .page-hero-content { position: relative; max-width: 700px; margin: 0 auto; }
+        .page-hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 999px; background: rgba(37,99,235,.08); border: 1px solid rgba(37,99,235,.15); font-size: .82rem; font-weight: 700; color: var(--accent); margin-bottom: 24px; }
+        .page-hero-title { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -.03em; color: var(--primary); margin-bottom: 18px; }
+        .page-hero-title span { background: linear-gradient(135deg, var(--accent), #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .page-hero-subtitle { font-size: 1.08rem; color: var(--muted); line-height: 1.6; max-width: 560px; margin: 0 auto; }
 
         /* Toggle Billing */
         .billing-toggle {
@@ -51,7 +33,7 @@
             align-items: center;
             justify-content: center;
             gap: 14px;
-            margin-bottom: 48px;
+            margin: 40px 0 48px;
         }
         .billing-label { font-size: .9rem; font-weight: 600; color: var(--muted); transition: color .2s; }
         .billing-label.active { color: var(--primary); }
@@ -87,7 +69,6 @@
             gap: 20px;
             margin-bottom: 60px;
         }
-
         .plan-card {
             background: var(--card);
             border-radius: var(--radius-lg);
@@ -100,11 +81,7 @@
             flex-direction: column;
         }
         .plan-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(15,52,96,.12); }
-        .plan-card.featured {
-            border-color: var(--accent);
-            box-shadow: 0 8px 28px rgba(37,99,235,.15);
-        }
-
+        .plan-card.featured { border-color: var(--accent); box-shadow: 0 8px 28px rgba(37,99,235,.15); }
         .plan-popular {
             position: absolute;
             top: -12px;
@@ -120,11 +97,9 @@
             letter-spacing: .05em;
             white-space: nowrap;
         }
-
         .plan-icon { font-size: 2rem; margin-bottom: 14px; }
         .plan-name { font-size: 1.1rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
         .plan-desc { font-size: .82rem; color: var(--muted); margin-bottom: 20px; line-height: 1.4; }
-
         .plan-price-wrap { margin-bottom: 20px; }
         .plan-price { font-size: 2rem; font-weight: 800; color: var(--primary); line-height: 1; }
         .plan-price .plan-currency { font-size: 1rem; vertical-align: super; }
@@ -132,7 +107,6 @@
         .plan-period { font-size: .78rem; color: var(--muted); font-weight: 600; }
         .plan-price-free { font-size: 2rem; font-weight: 800; color: var(--success); }
         .plan-trial-note { font-size: .78rem; color: var(--warning); font-weight: 700; margin-top: 4px; }
-
         .plan-features { list-style: none; padding: 0; margin: 0 0 24px; flex: 1; }
         .plan-features li {
             display: flex;
@@ -147,7 +121,6 @@
         .plan-features li:last-child { border-bottom: none; }
         .plan-check { color: var(--success); font-weight: 700; flex-shrink: 0; }
         .plan-cross { color: #cbd5e1; font-weight: 700; flex-shrink: 0; }
-
         .plan-cta {
             display: block;
             width: 100%;
@@ -173,63 +146,27 @@
         }
         .plan-cta.primary:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,99,235,.4); }
 
-        /* Features Section */
-        .features-detail { padding: 60px 0; }
-        .features-detail-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+        /* Comparison Table */
+        .compare-section { padding: 0 0 60px; }
+        .compare-table-wrap { overflow-x: auto; }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .84rem;
+            min-width: 600px;
         }
-        .feature-detail-card {
-            background: var(--card);
-            border-radius: var(--radius-lg);
-            padding: 28px 24px;
-            box-shadow: 0 8px 28px rgba(15,52,96,.06);
-            border: 1px solid var(--border);
-            transition: transform .3s;
+        .compare-table th, .compare-table td {
+            padding: 12px 16px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
         }
-        .feature-detail-card:hover { transform: translateY(-4px); }
-        .feature-detail-icon { font-size: 2rem; margin-bottom: 14px; }
-        .feature-detail-card h3 { font-size: .95rem; color: var(--primary); margin-bottom: 6px; }
-        .feature-detail-card p { color: var(--muted); font-size: .84rem; line-height: 1.5; }
+        .compare-table th { background: var(--bg); font-weight: 700; color: var(--primary); }
+        .compare-table th:first-child, .compare-table td:first-child { text-align: left; font-weight: 600; }
+        .compare-table .highlight { background: rgba(37,99,235,.04); }
 
-        /* FAQ */
-        .faq-section { padding: 60px 0 80px; }
-        .faq-grid { max-width: 720px; margin: 0 auto; }
-        .faq-item {
-            background: var(--card);
-            border-radius: var(--radius-md);
-            padding: 20px 24px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 16px rgba(15,52,96,.04);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: box-shadow .2s;
-        }
-        .faq-item:hover { box-shadow: 0 8px 28px rgba(15,52,96,.08); }
-        .faq-q {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-weight: 700;
-            font-size: .92rem;
-            color: var(--primary);
-        }
-        .faq-arrow { transition: transform .3s; font-size: .8rem; color: var(--muted); }
-        .faq-item.open .faq-arrow { transform: rotate(180deg); }
-        .faq-a {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height .3s ease, margin .3s;
-            font-size: .86rem;
-            color: #475569;
-            line-height: 1.6;
-        }
-        .faq-item.open .faq-a { max-height: 300px; margin-top: 12px; }
-
-        /* CTA final */
-        .biz-cta { padding: 0 0 80px; }
-        .biz-cta-card {
+        /* CTA */
+        .plans-cta { padding: 0 0 80px; }
+        .plans-cta-card {
             background: linear-gradient(135deg, #0f3460 0%, #1d4f8f 100%);
             color: #fff;
             border-radius: 28px;
@@ -237,24 +174,30 @@
             text-align: center;
             box-shadow: var(--shadow);
         }
-        .biz-cta-card h2 { font-size: clamp(1.4rem, 3vw, 1.8rem); margin-bottom: 10px; }
-        .biz-cta-card p { color: rgba(255,255,255,.8); margin-bottom: 24px; }
-        .biz-cta-card .plan-cta.primary { background: #fff; color: var(--primary); border-color: #fff; }
-        .biz-cta-card .plan-cta.primary:hover { background: #f0f4ff; }
+        .plans-cta-card h2 { font-size: clamp(1.4rem, 3vw, 1.8rem); margin-bottom: 10px; }
+        .plans-cta-card p { color: rgba(255,255,255,.8); margin-bottom: 24px; }
+        .plans-cta-btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 999px;
+            background: #fff;
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+            font-size: .9rem;
+            transition: all .25s;
+        }
+        .plans-cta-btn:hover { background: #f0f4ff; transform: translateY(-2px); }
 
-        /* Footer inline */
         .biz-footer { text-align: center; padding: 24px 0; font-size: .82rem; color: var(--muted); }
         .biz-footer strong { color: var(--primary); }
 
-        /* Responsive */
         @media (max-width: 900px) {
             .plans-grid { grid-template-columns: repeat(2, 1fr); }
-            .features-detail-grid { grid-template-columns: 1fr 1fr; }
         }
         @media (max-width: 600px) {
             .plans-grid { grid-template-columns: 1fr; max-width: 380px; margin-left: auto; margin-right: auto; }
-            .features-detail-grid { grid-template-columns: 1fr; }
-            .biz-hero { padding: 80px 16px 40px; }
+            .page-hero { padding: 80px 16px 40px; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -273,9 +216,9 @@
                 <span class="logo-text">Menu<strong>Central</strong></span>
             </a>
             <nav class="top-nav">
-                <a href="negocios.html" class="top-nav-link active">Visão Geral</a>
+                <a href="negocios.html" class="top-nav-link">Visão Geral</a>
                 <a href="recursos.html" class="top-nav-link">Recursos</a>
-                <a href="planos.html" class="top-nav-link">Planos</a>
+                <a href="planos.html" class="top-nav-link active">Planos</a>
                 <a href="contato.html" class="top-nav-link">Contato</a>
                 <a href="suporte.html" class="top-nav-link">Suporte</a>
             </nav>
@@ -283,27 +226,17 @@
         </div>
     </header>
 
-    <!-- ══ HERO — PROPOSTA DE VALOR ══ -->
-    <section class="biz-hero">
-        <div class="biz-hero-content">
-            <div class="biz-hero-badge">🚀 Para Negócios</div>
-            <h1 class="biz-hero-title">Venda mais com seu <span>cardápio digital</span></h1>
-            <p class="biz-hero-subtitle">O Menu Central é o sistema completo para você receber pedidos online, fidelizar clientes e crescer sem pagar taxa sobre vendas — só uma mensalidade fixa. Comece com <strong>7 dias grátis</strong>.</p>
-            <div class="biz-hero-value">
-                <div class="value-item"><span class="value-icon">💸</span><span>Zero taxa sobre vendas</span></div>
-                <div class="value-item"><span class="value-icon">⚡</span><span>Pronto em 24h</span></div>
-                <div class="value-item"><span class="value-icon">📱</span><span>Funciona em qualquer celular</span></div>
-            </div>
-            <div class="biz-hero-actions">
-                <a href="https://wa.me/5527997873879?text=Olá! Gostaria de testar o Menu Central por 7 dias grátis." class="plan-cta primary" target="_blank" style="max-width:280px;margin:0 auto;">Teste Grátis 7 Dias</a>
-                <a href="planos.html" class="plan-cta" style="max-width:280px;margin:0 auto;">Ver Planos e Preços</a>
-            </div>
+    <!-- ══ HERO ══ -->
+    <section class="page-hero">
+        <div class="page-hero-content">
+            <div class="page-hero-badge">💎 Planos</div>
+            <h1 class="page-hero-title">Escolha o plano ideal para <span>seu negócio</span></h1>
+            <p class="page-hero-subtitle">Zero taxa sobre vendas. Mensalidade fixa. Cancele quando quiser. Comece com 7 dias grátis.</p>
         </div>
     </section>
 
     <!-- ══ PLANOS ══ -->
-    <section class="biz-shell" id="planos">
-        <!-- Toggle Mensal/Anual -->
+    <section class="biz-shell">
         <div class="billing-toggle">
             <span class="billing-label active" id="lblMensal">Mensal</span>
             <div class="billing-switch" id="billingSwitch" onclick="toggleBilling()"></div>
@@ -409,98 +342,121 @@
         </div>
     </section>
 
-    <!-- ══ FUNCIONALIDADES ══ -->
-    <section class="features-detail">
+    <!-- ══ TABELA COMPARATIVA ══ -->
+    <section class="compare-section">
         <div class="biz-shell">
-            <div class="section-header" style="text-align:center;margin-bottom:40px;">
-                <span class="section-badge">Funcionalidades</span>
-                <h2>Tudo incluso no <span class="text-accent">Menu Central</span></h2>
+            <div class="section-header" style="text-align:center;margin-bottom:32px;">
+                <h2>Compare os <span class="text-accent">planos</span></h2>
             </div>
-            <div class="features-detail-grid">
-                <div class="feature-detail-card">
-                    <div class="feature-detail-icon">📱</div>
-                    <h3>Site Responsivo</h3>
-                    <p>Seu cardápio online funciona perfeitamente em qualquer dispositivo — celular, tablet ou desktop.</p>
-                </div>
-                <div class="feature-detail-card">
-                    <div class="feature-detail-icon">💳</div>
-                    <h3>PIX Integrado</h3>
-                    <p>QR Code PIX gerado automaticamente no pedido. Pagamento rápido e sem intermediários.</p>
-                </div>
-                <div class="feature-detail-card">
-                    <div class="feature-detail-icon">📊</div>
-                    <h3>Dashboard em Tempo Real</h3>
-                    <p>Acompanhe pedidos, faturamento, produtos mais vendidos e clientes ativos ao vivo.</p>
-                </div>
-                <div class="feature-detail-card">
-                    <div class="feature-detail-icon">🏆</div>
-                    <h3>Fidelidade + Cashback</h3>
-                    <p>Sistema de pontos, sequência de compras e cashback automático que mantém seus clientes voltando.</p>
-                </div>
-                <div class="feature-detail-card">
-                    <div class="feature-detail-icon">📢</div>
-                    <h3>WhatsApp Integrado</h3>
-                    <p>Notificações automáticas de pedidos e promoções direto no WhatsApp dos seus clientes.</p>
-                </div>
-                <div class="feature-detail-card">
-                    <div class="feature-detail-icon">⭐</div>
-                    <h3>Avaliações Públicas</h3>
-                    <p>Mural de feedbacks que gera prova social e confiança para novos clientes.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ══ FAQ ══ -->
-    <section class="faq-section">
-        <div class="biz-shell">
-            <div class="section-header" style="text-align:center;margin-bottom:40px;">
-                <span class="section-badge">Dúvidas</span>
-                <h2>Perguntas <span class="text-accent">Frequentes</span></h2>
-            </div>
-            <div class="faq-grid">
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Preciso ter conhecimento técnico? <span class="faq-arrow">▼</span></div>
-                    <div class="faq-a">Não! O Menu Central é 100% gerenciado por uma interface simples. Você cadastra produtos, define horários e acompanha pedidos sem tocar em código.</div>
-                </div>
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Como funciona o teste grátis de 7 dias? <span class="faq-arrow">▼</span></div>
-                    <div class="faq-a">Você tem acesso completo a todas as funcionalidades do plano Pro por 7 dias. Não pedimos cartão de crédito. Ao final do período, escolha o plano que melhor se encaixa ou cancele sem custos.</div>
-                </div>
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Posso mudar de plano depois? <span class="faq-arrow">▼</span></div>
-                    <div class="faq-a">Sim! Você pode fazer upgrade ou downgrade a qualquer momento. O valor é ajustado proporcionalmente no próximo ciclo de cobrança.</div>
-                </div>
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Qual a forma de pagamento? <span class="faq-arrow">▼</span></div>
-                    <div class="faq-a">Aceitamos PIX, cartão de crédito e boleto bancário. Para planos anuais, oferecemos 20% de desconto com pagamento à vista.</div>
-                </div>
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Meus clientes precisam baixar algum aplicativo? <span class="faq-arrow">▼</span></div>
-                    <div class="faq-a">Não. Tudo funciona direto pelo navegador do celular. Seus clientes acessam o link, escolhem os produtos e fazem o pedido — sem instalar nada.</div>
-                </div>
-                <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Vocês cobram taxa sobre os pedidos? <span class="faq-arrow">▼</span></div>
-                    <div class="faq-a">Não! Zero taxa sobre vendas. Você paga apenas a mensalidade fixa do plano escolhido. O dinheiro dos pedidos vai direto para você.</div>
-                </div>
+            <div class="compare-table-wrap">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>Recurso</th>
+                            <th>Teste Grátis</th>
+                            <th>Starter</th>
+                            <th class="highlight">Pro</th>
+                            <th>Premium</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Pedidos</td>
+                            <td>50 total</td>
+                            <td>200/mês</td>
+                            <td class="highlight">Ilimitados</td>
+                            <td>Ilimitados</td>
+                        </tr>
+                        <tr>
+                            <td>Catálogo de Produtos</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td class="highlight">✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td>PIX Integrado</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td class="highlight">✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td>WhatsApp Integrado</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td class="highlight">✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td>Domínio Próprio</td>
+                            <td>✗</td>
+                            <td>✗</td>
+                            <td class="highlight">✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td>Fidelidade + Cashback</td>
+                            <td>✓</td>
+                            <td>✗</td>
+                            <td class="highlight">✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td>Cupons de Desconto</td>
+                            <td>✓</td>
+                            <td>✗</td>
+                            <td class="highlight">✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td>Relatórios de Vendas</td>
+                            <td>✓</td>
+                            <td>✗</td>
+                            <td class="highlight">✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td>Multi-estabelecimentos</td>
+                            <td>✗</td>
+                            <td>✗</td>
+                            <td class="highlight">✗</td>
+                            <td>Até 5</td>
+                        </tr>
+                        <tr>
+                            <td>API de Integração</td>
+                            <td>✗</td>
+                            <td>✗</td>
+                            <td class="highlight">✗</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td>Suporte Prioritário</td>
+                            <td>E-mail</td>
+                            <td>E-mail</td>
+                            <td class="highlight">WhatsApp</td>
+                            <td>WhatsApp VIP</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
 
     <!-- ══ CTA FINAL ══ -->
-    <section class="biz-cta">
+    <section class="plans-cta">
         <div class="biz-shell">
-            <div class="biz-cta-card">
-                <h2>Pronto para transformar seu negócio?</h2>
-                <p>Comece com 7 dias grátis — sem cartão de crédito, sem compromisso.</p>
-                <a href="https://wa.me/5527997873879?text=Olá! Gostaria de saber mais sobre o Menu Central para meu negócio." class="plan-cta primary" target="_blank" style="max-width:340px;margin:0 auto;">Falar com Consultor</a>
+            <div class="plans-cta-card">
+                <h2>Ainda tem dúvidas?</h2>
+                <p>Fale com um consultor e descubra o plano perfeito para o seu negócio.</p>
+                <a href="https://wa.me/5527997873879?text=Olá! Gostaria de saber mais sobre os planos do Menu Central." class="plans-cta-btn" target="_blank">Falar com Consultor →</a>
             </div>
         </div>
     </section>
 
     <!-- ══ FOOTER ══ -->
     <div class="biz-footer">
-        <p>Desenvolvido por <strong>DevMiranda</strong> · <a href="index.html" style="color:var(--accent);text-decoration:none;">Início</a> · <a href="recursos.html" style="color:var(--accent);text-decoration:none;">Recursos</a> · <a href="planos.html" style="color:var(--accent);text-decoration:none;">Planos</a> · <a href="contato.html" style="color:var(--accent);text-decoration:none;">Contato</a> · <a href="suporte.html" style="color:var(--accent);text-decoration:none;">Suporte</a> · <a href="termos.html" style="color:var(--accent);text-decoration:none;">Termos de Uso</a></p>
+        <p>Desenvolvido por <strong>DevMiranda</strong> · <a href="index.html" style="color:var(--accent);text-decoration:none;">Início</a> · <a href="recursos.html" style="color:var(--accent);text-decoration:none;">Recursos</a> · <a href="contato.html" style="color:var(--accent);text-decoration:none;">Contato</a> · <a href="suporte.html" style="color:var(--accent);text-decoration:none;">Suporte</a> · <a href="termos.html" style="color:var(--accent);text-decoration:none;">Termos de Uso</a></p>
     </div>
 
     <script>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Menu Central — Contato</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .biz-shell { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        .page-hero {
+            position: relative;
+            padding: 120px 20px 60px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(18,58,111,.04), rgba(37,99,235,.06));
+            pointer-events: none;
+        }
+        .page-hero-content { position: relative; max-width: 700px; margin: 0 auto; }
+        .page-hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 999px; background: rgba(37,99,235,.08); border: 1px solid rgba(37,99,235,.15); font-size: .82rem; font-weight: 700; color: var(--accent); margin-bottom: 24px; }
+        .page-hero-title { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -.03em; color: var(--primary); margin-bottom: 18px; }
+        .page-hero-title span { background: linear-gradient(135deg, var(--accent), #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .page-hero-subtitle { font-size: 1.08rem; color: var(--muted); line-height: 1.6; max-width: 560px; margin: 0 auto; }
+
+        /* Contact Grid */
+        .contact-section { padding: 48px 0 80px; }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .contact-channels {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .channel-card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            box-shadow: 0 8px 28px rgba(15,52,96,.06);
+            border: 1px solid var(--border);
+            transition: transform .3s;
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+        }
+        .channel-card:hover { transform: translateY(-3px); }
+        .channel-icon { font-size: 2rem; flex-shrink: 0; }
+        .channel-card h3 { font-size: .95rem; color: var(--primary); margin-bottom: 6px; }
+        .channel-card p { color: var(--muted); font-size: .84rem; line-height: 1.5; margin-bottom: 10px; }
+        .channel-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .84rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            transition: gap .2s;
+        }
+        .channel-link:hover { gap: 10px; }
+
+        /* Contact Form */
+        .contact-form-card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: 0 8px 28px rgba(15,52,96,.06);
+            border: 1px solid var(--border);
+        }
+        .contact-form-card h2 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .contact-form-card .form-subtitle {
+            color: var(--muted);
+            font-size: .86rem;
+            margin-bottom: 24px;
+        }
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: .88rem;
+            color: var(--primary);
+            background: var(--bg);
+            transition: border-color .2s;
+            box-sizing: border-box;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .form-group textarea { min-height: 120px; resize: vertical; }
+        .form-submit {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: 999px;
+            font-family: inherit;
+            font-size: .9rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(37,99,235,.3);
+            transition: all .25s;
+        }
+        .form-submit:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,99,235,.4); }
+
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .form-success.show { display: block; }
+        .form-success .success-icon { font-size: 3rem; margin-bottom: 16px; }
+        .form-success h3 { color: var(--primary); margin-bottom: 8px; }
+        .form-success p { color: var(--muted); font-size: .88rem; }
+
+        .biz-footer { text-align: center; padding: 24px 0; font-size: .82rem; color: var(--muted); }
+        .biz-footer strong { color: var(--primary); }
+
+        @media (max-width: 768px) {
+            .contact-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .page-hero { padding: 80px 16px 40px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ══ HEADER ══ -->
+    <header class="top-header">
+        <div class="top-header-inner">
+            <a href="index.html" class="logo-link">
+                <span class="logo-icon">🍽️</span>
+                <span class="logo-text">Menu<strong>Central</strong></span>
+            </a>
+            <nav class="top-nav">
+                <a href="negocios.html" class="top-nav-link">Visão Geral</a>
+                <a href="recursos.html" class="top-nav-link">Recursos</a>
+                <a href="planos.html" class="top-nav-link">Planos</a>
+                <a href="contato.html" class="top-nav-link active">Contato</a>
+                <a href="suporte.html" class="top-nav-link">Suporte</a>
+            </nav>
+            <a href="entrar.html" class="header-cta">Entrar</a>
+        </div>
+    </header>
+
+    <!-- ══ HERO ══ -->
+    <section class="page-hero">
+        <div class="page-hero-content">
+            <div class="page-hero-badge">📞 Contato</div>
+            <h1 class="page-hero-title">Fale com a <span>nossa equipe</span></h1>
+            <p class="page-hero-subtitle">Estamos prontos para ajudar você a começar. Escolha o melhor canal de contato.</p>
+        </div>
+    </section>
+
+    <!-- ══ CONTATO ══ -->
+    <section class="contact-section">
+        <div class="biz-shell">
+            <div class="contact-grid">
+                <!-- Canais -->
+                <div class="contact-channels">
+                    <div class="channel-card">
+                        <div class="channel-icon">💬</div>
+                        <div>
+                            <h3>WhatsApp</h3>
+                            <p>Fale diretamente com um consultor. Atendimento rápido e personalizado.</p>
+                            <a href="https://wa.me/5527997873879?text=Olá! Gostaria de saber mais sobre o Menu Central." class="channel-link" target="_blank">Iniciar Conversa →</a>
+                        </div>
+                    </div>
+                    <div class="channel-card">
+                        <div class="channel-icon">📧</div>
+                        <div>
+                            <h3>E-mail</h3>
+                            <p>Envie sua dúvida ou proposta. Respondemos em até 24 horas úteis.</p>
+                            <a href="mailto:contato@menucentral.com.br" class="channel-link">contato@menucentral.com.br →</a>
+                        </div>
+                    </div>
+                    <div class="channel-card">
+                        <div class="channel-icon">⏰</div>
+                        <div>
+                            <h3>Horário de Atendimento</h3>
+                            <p>Segunda a Sexta: 08:00 — 18:00<br>Sábado: 09:00 — 13:00</p>
+                        </div>
+                    </div>
+                    <div class="channel-card">
+                        <div class="channel-icon">🏢</div>
+                        <div>
+                            <h3>Sobre Nós</h3>
+                            <p>O Menu Central é desenvolvido pela DevMiranda, especialista em soluções digitais para food service e varejo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulário -->
+                <div class="contact-form-card">
+                    <div id="contactFormContent">
+                        <h2>Envie uma Mensagem</h2>
+                        <p class="form-subtitle">Preencha o formulário e entraremos em contato rapidamente.</p>
+                        <form id="contactForm" onsubmit="enviarContato(event)">
+                            <div class="form-group">
+                                <label for="contatoNome">Nome Completo</label>
+                                <input type="text" id="contatoNome" placeholder="Seu nome" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="contatoEmail">E-mail</label>
+                                <input type="email" id="contatoEmail" placeholder="seu@email.com" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="contatoTelefone">WhatsApp / Telefone</label>
+                                <input type="tel" id="contatoTelefone" placeholder="(27) 99999-9999" />
+                            </div>
+                            <div class="form-group">
+                                <label for="contatoAssunto">Assunto</label>
+                                <select id="contatoAssunto" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="demo">Quero uma demonstração</option>
+                                    <option value="planos">Dúvida sobre planos</option>
+                                    <option value="parceria">Proposta de parceria</option>
+                                    <option value="suporte">Suporte técnico</option>
+                                    <option value="outro">Outro assunto</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="contatoMensagem">Mensagem</label>
+                                <textarea id="contatoMensagem" placeholder="Conte-nos como podemos ajudar..." required></textarea>
+                            </div>
+                            <button type="submit" class="form-submit">Enviar Mensagem</button>
+                        </form>
+                    </div>
+                    <div class="form-success" id="contactSuccess">
+                        <div class="success-icon">✅</div>
+                        <h3>Mensagem Enviada!</h3>
+                        <p>Recebemos sua mensagem e retornaremos em breve. Obrigado pelo interesse no Menu Central!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
+    <div class="biz-footer">
+        <p>Desenvolvido por <strong>DevMiranda</strong> · <a href="index.html" style="color:var(--accent);text-decoration:none;">Início</a> · <a href="recursos.html" style="color:var(--accent);text-decoration:none;">Recursos</a> · <a href="planos.html" style="color:var(--accent);text-decoration:none;">Planos</a> · <a href="suporte.html" style="color:var(--accent);text-decoration:none;">Suporte</a> · <a href="termos.html" style="color:var(--accent);text-decoration:none;">Termos de Uso</a></p>
+    </div>
+
+    <script>
+        function enviarContato(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById('contatoNome').value.trim();
+            const email = document.getElementById('contatoEmail').value.trim();
+            const telefone = document.getElementById('contatoTelefone').value.trim();
+            const assunto = document.getElementById('contatoAssunto').value;
+            const mensagem = document.getElementById('contatoMensagem').value.trim();
+
+            const assuntos = {
+                demo: 'Quero uma demonstração',
+                planos: 'Dúvida sobre planos',
+                parceria: 'Proposta de parceria',
+                suporte: 'Suporte técnico',
+                outro: 'Outro assunto'
+            };
+
+            const texto = `Olá! Sou ${nome}.%0A%0A` +
+                `📧 E-mail: ${email}%0A` +
+                (telefone ? `📱 Telefone: ${telefone}%0A` : '') +
+                `📋 Assunto: ${assuntos[assunto] || assunto}%0A%0A` +
+                `💬 Mensagem:%0A${encodeURIComponent(mensagem)}`;
+
+            window.open(`https://wa.me/5527997873879?text=${texto}`, '_blank');
+
+            document.getElementById('contactFormContent').style.display = 'none';
+            document.getElementById('contactSuccess').classList.add('show');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Menu Central — Recursos | Funcionalidades Completas</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .biz-shell { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        .page-hero {
+            position: relative;
+            padding: 120px 20px 60px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(18,58,111,.04), rgba(37,99,235,.06));
+            pointer-events: none;
+        }
+        .page-hero-content { position: relative; max-width: 700px; margin: 0 auto; }
+        .page-hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 999px; background: rgba(37,99,235,.08); border: 1px solid rgba(37,99,235,.15); font-size: .82rem; font-weight: 700; color: var(--accent); margin-bottom: 24px; }
+        .page-hero-title { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -.03em; color: var(--primary); margin-bottom: 18px; }
+        .page-hero-title span { background: linear-gradient(135deg, var(--accent), #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .page-hero-subtitle { font-size: 1.08rem; color: var(--muted); line-height: 1.6; max-width: 560px; margin: 0 auto; }
+
+        /* Feature Categories */
+        .feat-category { padding: 48px 0; }
+        .feat-category:nth-child(even) { background: rgba(37,99,235,.02); }
+        .feat-category-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .feat-category-title span { color: var(--accent); }
+
+        .feat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .feat-card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            box-shadow: 0 8px 28px rgba(15,52,96,.06);
+            border: 1px solid var(--border);
+            transition: transform .3s;
+        }
+        .feat-card:hover { transform: translateY(-4px); }
+        .feat-icon { font-size: 2rem; margin-bottom: 14px; }
+        .feat-card h3 { font-size: .95rem; color: var(--primary); margin-bottom: 6px; }
+        .feat-card p { color: var(--muted); font-size: .84rem; line-height: 1.5; }
+
+        .feat-cta { padding: 60px 0; text-align: center; }
+        .feat-cta-card {
+            background: linear-gradient(135deg, #0f3460 0%, #1d4f8f 100%);
+            color: #fff;
+            border-radius: 28px;
+            padding: 48px 32px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        .feat-cta-card h2 { font-size: clamp(1.4rem, 3vw, 1.8rem); margin-bottom: 10px; }
+        .feat-cta-card p { color: rgba(255,255,255,.8); margin-bottom: 24px; }
+        .feat-cta-btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 999px;
+            background: #fff;
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+            font-size: .9rem;
+            transition: all .25s;
+        }
+        .feat-cta-btn:hover { background: #f0f4ff; transform: translateY(-2px); }
+
+        .biz-footer { text-align: center; padding: 24px 0; font-size: .82rem; color: var(--muted); }
+        .biz-footer strong { color: var(--primary); }
+
+        @media (max-width: 768px) {
+            .feat-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .feat-grid { grid-template-columns: 1fr; }
+            .page-hero { padding: 80px 16px 40px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ══ HEADER ══ -->
+    <header class="top-header">
+        <div class="top-header-inner">
+            <a href="index.html" class="logo-link">
+                <span class="logo-icon">🍽️</span>
+                <span class="logo-text">Menu<strong>Central</strong></span>
+            </a>
+            <nav class="top-nav">
+                <a href="negocios.html" class="top-nav-link">Visão Geral</a>
+                <a href="recursos.html" class="top-nav-link active">Recursos</a>
+                <a href="planos.html" class="top-nav-link">Planos</a>
+                <a href="contato.html" class="top-nav-link">Contato</a>
+                <a href="suporte.html" class="top-nav-link">Suporte</a>
+            </nav>
+            <a href="entrar.html" class="header-cta">Entrar</a>
+        </div>
+    </header>
+
+    <!-- ══ HERO ══ -->
+    <section class="page-hero">
+        <div class="page-hero-content">
+            <div class="page-hero-badge">📦 Recursos</div>
+            <h1 class="page-hero-title">Tudo que você precisa para <span>vender online</span></h1>
+            <p class="page-hero-subtitle">Conheça cada funcionalidade do Menu Central e descubra como seu negócio pode crescer mais rápido.</p>
+        </div>
+    </section>
+
+    <!-- ══ PEDIDOS E CARDÁPIO ══ -->
+    <section class="feat-category">
+        <div class="biz-shell">
+            <h2 class="feat-category-title">Pedidos & <span>Cardápio</span></h2>
+            <div class="feat-grid">
+                <div class="feat-card">
+                    <div class="feat-icon">📱</div>
+                    <h3>Site Responsivo</h3>
+                    <p>Cardápio digital que funciona perfeitamente em celular, tablet e desktop — sem precisar de app.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">🖼️</div>
+                    <h3>Fotos de Produtos</h3>
+                    <p>Upload de imagens HD para cada produto. Clientes veem exatamente o que vão receber.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">🏷️</div>
+                    <h3>Promoções e Ofertas</h3>
+                    <p>Crie ofertas do dia, da semana ou do mês com desconto automático no checkout.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">📋</div>
+                    <h3>Gestão de Estoque</h3>
+                    <p>Controle automático de estoque. Produtos esgotados saem do catálogo automaticamente.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">🔍</div>
+                    <h3>Busca Inteligente</h3>
+                    <p>Clientes encontram produtos pelo nome ou descrição com busca instantânea.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">🛒</div>
+                    <h3>Carrinho Inteligente</h3>
+                    <p>Adição rápida ao carrinho, edição de quantidades e cálculo automático do total.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ PAGAMENTO E ENTREGA ══ -->
+    <section class="feat-category">
+        <div class="biz-shell">
+            <h2 class="feat-category-title">Pagamento & <span>Entrega</span></h2>
+            <div class="feat-grid">
+                <div class="feat-card">
+                    <div class="feat-icon">💳</div>
+                    <h3>PIX Integrado</h3>
+                    <p>QR Code PIX gerado automaticamente. Pagamento rápido e sem intermediários — dinheiro direto na sua conta.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">💵</div>
+                    <h3>Múltiplas Formas</h3>
+                    <p>PIX, cartão de crédito/débito e dinheiro com troco. Flexibilidade para seus clientes.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">🚚</div>
+                    <h3>Entrega ou Retirada</h3>
+                    <p>Seus clientes escolhem entre receber em casa (com taxa configurável) ou retirar na loja.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ FIDELIDADE E ENGAJAMENTO ══ -->
+    <section class="feat-category">
+        <div class="biz-shell">
+            <h2 class="feat-category-title">Fidelidade & <span>Engajamento</span></h2>
+            <div class="feat-grid">
+                <div class="feat-card">
+                    <div class="feat-icon">🏆</div>
+                    <h3>Programa de Pontos</h3>
+                    <p>Clientes acumulam pontos a cada compra e trocam por descontos exclusivos. Mais retorno ao seu negócio.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">💰</div>
+                    <h3>Cashback 0.5%</h3>
+                    <p>Cashback automático em pontos a cada pedido entregue. Incentivo contínuo para voltar.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">🔥</div>
+                    <h3>Sequência de Compras</h3>
+                    <p>Bônus diário de sequência (streak). Quanto mais dias seguidos, mais pontos extras o cliente ganha.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">🎟️</div>
+                    <h3>Cupons de Desconto</h3>
+                    <p>Crie cupons com quantidade limitada, validade e desconto percentual para campanhas promocionais.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">⭐</div>
+                    <h3>Avaliações Públicas</h3>
+                    <p>Mural de feedbacks com notas de 1 a 5 estrelas. Gera prova social e confiança para novos clientes.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">📢</div>
+                    <h3>WhatsApp Integrado</h3>
+                    <p>Notificações automáticas de pedidos e promoções direto no WhatsApp dos seus clientes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ GESTÃO E DASHBOARD ══ -->
+    <section class="feat-category">
+        <div class="biz-shell">
+            <h2 class="feat-category-title">Gestão & <span>Dashboard</span></h2>
+            <div class="feat-grid">
+                <div class="feat-card">
+                    <div class="feat-icon">📊</div>
+                    <h3>Dashboard em Tempo Real</h3>
+                    <p>Acompanhe pedidos, faturamento, produtos mais vendidos e clientes ativos ao vivo.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">👥</div>
+                    <h3>Visitantes Online</h3>
+                    <p>Veja quantas pessoas estão navegando no seu site agora e notificações de compras em tempo real.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon">📄</div>
+                    <h3>Exportação de Dados</h3>
+                    <p>Exporte relatórios de pedidos e clientes em PDF e Excel para análise completa.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ CTA ══ -->
+    <section class="feat-cta">
+        <div class="biz-shell">
+            <div class="feat-cta-card">
+                <h2>Quer ver tudo isso funcionando?</h2>
+                <p>Teste grátis por 7 dias — sem cartão de crédito, sem compromisso.</p>
+                <a href="https://wa.me/5527997873879?text=Olá! Gostaria de testar o Menu Central por 7 dias grátis." class="feat-cta-btn" target="_blank">Começar Teste Grátis →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
+    <div class="biz-footer">
+        <p>Desenvolvido por <strong>DevMiranda</strong> · <a href="index.html" style="color:var(--accent);text-decoration:none;">Início</a> · <a href="planos.html" style="color:var(--accent);text-decoration:none;">Planos</a> · <a href="contato.html" style="color:var(--accent);text-decoration:none;">Contato</a> · <a href="suporte.html" style="color:var(--accent);text-decoration:none;">Suporte</a> · <a href="termos.html" style="color:var(--accent);text-decoration:none;">Termos de Uso</a></p>
+    </div>
+</body>
+</html>

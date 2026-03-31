@@ -182,8 +182,11 @@ function renderProdutosDestaque(lista, container) {
         return;
     }
 
-    // Mostrar até 8 produtos (priorizar promoções)
+    // Mostrar até 8 produtos (mais vendidos primeiro, depois promoções)
     const ordenados = [...lista].sort((a, b) => {
+        const vendA = a.totalVendido || 0;
+        const vendB = b.totalVendido || 0;
+        if (vendB !== vendA) return vendB - vendA;
         if (a.ofertaAtiva && !b.ofertaAtiva) return -1;
         if (!a.ofertaAtiva && b.ofertaAtiva) return 1;
         return 0;
@@ -193,6 +196,7 @@ function renderProdutosDestaque(lista, container) {
     container.innerHTML = destaques.map((p, i) => {
         const temOferta = p.ofertaAtiva && p.precoPromocional > 0;
         const precoExibido = temOferta ? p.precoPromocional : p.preco;
+        const vendidos = p.totalVendido || 0;
 
         const imgHtml = p.imagemUrl
             ? `<img src="${API_BASE}${p.imagemUrl}" alt="${p.nome}" class="showcase-img" loading="lazy">`
@@ -202,18 +206,27 @@ function renderProdutosDestaque(lista, container) {
             ? `<span class="showcase-promo-badge">-${p.percentualDesconto}% OFF</span>`
             : '';
 
+        const bestSellerBadge = vendidos >= 5
+            ? `<span class="showcase-bestseller-badge">🔥 Mais Vendido</span>`
+            : '';
+
         const priceHtml = temOferta
             ? `<span class="showcase-price-old">${formatCurrency(p.preco)}</span><span class="showcase-price">${formatCurrency(precoExibido)}</span>`
             : `<span class="showcase-price">${formatCurrency(precoExibido)}</span>`;
+
+        const soldHtml = vendidos > 0
+            ? `<span class="showcase-sold">${vendidos} vendido${vendidos > 1 ? 's' : ''}</span>`
+            : '';
 
         return `
         <a href="pedido.html" class="showcase-card animate-on-scroll" style="animation-delay:${i * 80}ms">
             ${imgHtml}
             <div class="showcase-body">
+                ${bestSellerBadge}
                 ${promoBadge}
                 <h3>${p.nome}</h3>
                 <p class="showcase-desc">${p.descricao || ''}</p>
-                <div>${priceHtml}</div>
+                <div class="showcase-price-row">${priceHtml}${soldHtml}</div>
             </div>
         </a>`;
     }).join('');
@@ -454,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarAvaliacoes();
     carregarStatPedidos();
 
-    // Animações dos cards estáticos (steps, perks)
+    // Animações dos cards estáticos (módulos, perks)
     document.querySelectorAll('.step-card, .perk-card, .horario-card').forEach(el => {
         el.classList.add('animate-on-scroll');
     });
