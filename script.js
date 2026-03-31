@@ -16,7 +16,8 @@ const ENDPOINTS = {
     criarCliente: `${API_BASE}/api/clientes`,
     validarCupom: (codigo, subtotal) =>
         `${API_BASE}/api/cupons/validar/${encodeURIComponent(codigo)}?subtotal=${subtotal}`,
-    cuponsDisponiveis: `${API_BASE}/api/cupons/disponiveis`
+    cuponsDisponiveis: `${API_BASE}/api/cupons/disponiveis`,
+    fidelidade: (clienteId) => `${API_BASE}/api/fidelidade/${clienteId}`
 };
 
 /* ---------- Mapa de enums do backend ---------- */
@@ -77,7 +78,9 @@ const state = {
         aplicado: false,
         valorDesconto: 0,
         descricao: ''
-    }
+    },
+    pontosDisponiveis: 0,
+    pontosUsados: 0
 };
 
 function resetarPedido() {
@@ -90,6 +93,7 @@ function resetarPedido() {
     state.observacao = '';
     state.desconto = 0;
     state.cupom = { codigo: '', aplicado: false, valorDesconto: 0, descricao: '' };
+    state.pontosUsados = 0;
 
     // Limpar campos de formulário
     ['cep','logradouro','numero','bairro','cidade','uf','complemento'].forEach(id => {
@@ -108,6 +112,10 @@ function resetarPedido() {
     if (pixSection) pixSection.style.display = 'none';
     const cupomInput = document.getElementById('codigoCupom');
     if (cupomInput) cupomInput.value = '';
+    const pontosInput = document.getElementById('pontosUsar');
+    if (pontosInput) pontosInput.value = '';
+    const pontosSection = document.getElementById('pontosSection');
+    if (pontosSection) pontosSection.style.display = 'none';
 
     document.querySelectorAll('.payment-option').forEach(x => x.classList.remove('active'));
     document.getElementById('formaPagamento').value = '0';
@@ -315,8 +323,9 @@ function getResumo() {
     const subtotal = state.carrinho.reduce((a, i) => a + i.quantidade * i.preco, 0);
     const desconto = state.cupom.aplicado ? state.cupom.valorDesconto : 0;
     const taxaEntrega = state.modoEntrega === 'retirada' ? 0 : TAXA_ENTREGA_FIXA;
-    const total = Math.max(subtotal - desconto + taxaEntrega, 0);
-    return { itens, quantidade, subtotal, desconto, taxaEntrega, total };
+    const descontoPontos = state.pontosUsados / 100;
+    const total = Math.max(subtotal - desconto - descontoPontos + taxaEntrega, 0);
+    return { itens, quantidade, subtotal, desconto, descontoPontos, taxaEntrega, total };
 }
 
 function renderCarrinho() {
@@ -1145,6 +1154,7 @@ async function identificarCliente() {
             }
 
             preencherDadosCliente({ ...cli, cpf: cpfRaw });
+            carregarPontosCliente(cli.id);
             showToast(`Bem-vindo(a), ${cli.nome}!`, 'success');
             mostrarWizard();
             return;
