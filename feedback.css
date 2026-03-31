@@ -520,6 +520,88 @@ body {
 .mural-media-valor { font-size: 2rem; font-weight: 800; color: var(--primary); }
 .mural-media-total { font-size: .88rem; color: var(--muted); }
 
+/* ── Filtro por estrelas ── */
+.star-filter {
+    display: flex;
+    gap: 8px;
+    padding: 12px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.star-filter::-webkit-scrollbar { display: none; }
+
+.star-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 2px solid var(--border);
+    border-radius: 999px;
+    background: var(--card);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    transition: all .25s ease;
+    flex-shrink: 0;
+}
+
+.star-filter-btn:hover {
+    border-color: var(--gold);
+    color: var(--text);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, .12);
+}
+
+.star-filter-btn.active {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(245, 158, 11, .08), rgba(245, 158, 11, .16));
+    color: var(--primary);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, .18);
+}
+
+.star-filter-stars {
+    color: var(--gold);
+    font-size: .9rem;
+    letter-spacing: 1px;
+    line-height: 1;
+}
+
+.star-filter-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--bg);
+    font-size: .72rem;
+    font-weight: 700;
+    color: var(--muted);
+    transition: all .25s ease;
+}
+
+.star-filter-btn.active .star-filter-count {
+    background: var(--gold);
+    color: #fff;
+}
+
+@media (max-width: 640px) {
+    .star-filter {
+        gap: 6px;
+        padding: 10px 0;
+    }
+    .star-filter-btn {
+        padding: 6px 10px;
+        font-size: .78rem;
+    }
+}
+
 .mural-lista { display: flex; flex-direction: column; gap: 12px; }
 
 .mural-card {

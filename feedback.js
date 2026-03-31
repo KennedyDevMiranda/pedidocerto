@@ -9,8 +9,8 @@ const ENDPOINTS = {
     buscarClientePorDocumento: (doc) =>
         `${API_BASE}/api/clientes/documento/${encodeURIComponent(doc)}`,
     feedbacks: `${API_BASE}/api/feedbacks`,
-    feedbacksPaginado: (pagina, tam) =>
-        `${API_BASE}/api/feedbacks?pagina=${pagina}&tamanhoPagina=${tam}`,
+    feedbacksPaginado: (pagina, tam, nota = 0) =>
+        `${API_BASE}/api/feedbacks?pagina=${pagina}&tamanhoPagina=${tam}${nota > 0 ? `&nota=${nota}` : ''}`,
     fidelidade: (clienteId) =>
         `${API_BASE}/api/fidelidade/${clienteId}`,
     produtos: (busca) =>
@@ -25,6 +25,7 @@ const state = {
     muralPagina: 1,
     muralTamanho: 10,
     muralTotal: 0,
+    muralFiltroNota: 0,
     feedbackNota: 5,
     feedbackTipo: 2,
     feedbackProdutoNome: ''
@@ -47,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initProdutoSearch();
     initFeedbackForm();
     initCharCount();
+    initStarFilter();
 
     // Carregar mural sempre (visível para todos)
     carregarMural();
@@ -429,13 +431,37 @@ function renderHistoricoPontos(lista) {
     }).join('');
 }
 
+/* ──────────── Filtro por Estrelas ──────────── */
+
+function initStarFilter() {
+    const container = $('#starFilter');
+    if (!container) return;
+
+    container.addEventListener('click', (e) => {
+        const btn = e.target.closest('.star-filter-btn');
+        if (!btn) return;
+
+        const nota = Number(btn.dataset.nota);
+        state.muralFiltroNota = nota;
+        state.muralPagina = 1;
+
+        // Atualizar estado visual dos botões
+        container.querySelectorAll('.star-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Recarregar mural com filtro
+        carregarMural();
+    });
+}
+
 /* ──────────── Carregar Mural ──────────── */
 
 async function carregarMural(append = false) {
     try {
         const res = await fetch(ENDPOINTS.feedbacksPaginado(
             append ? state.muralPagina : 1,
-            state.muralTamanho
+            state.muralTamanho,
+            state.muralFiltroNota
         ));
         if (!res.ok) return;
 
@@ -448,6 +474,14 @@ async function carregarMural(append = false) {
         $('#muralMedia').textContent = data.mediaGeral.toFixed(1);
         $('#muralTotal').textContent = data.total;
 
+        // Contagem por estrela
+        if (data.contagemEstrelas) {
+            data.contagemEstrelas.forEach(item => {
+                const el = document.getElementById(`filterCount${item.estrela}`);
+                if (el) el.textContent = item.quantidade;
+            });
+        }
+
         // Lista
         const container = $('#muralLista');
         const html = data.feedbacks.map(fb => renderMuralCard(fb)).join('');
@@ -455,8 +489,14 @@ async function carregarMural(append = false) {
         if (append) {
             container.insertAdjacentHTML('beforeend', html);
         } else {
-            container.innerHTML = data.feedbacks.length > 0 ? html
-                : '<div class="empty-state">Nenhum feedback ainda. Seja o primeiro! ⭐</div>';
+            if (data.feedbacks.length > 0) {
+                container.innerHTML = html;
+            } else {
+                const msg = state.muralFiltroNota > 0
+                    ? `Nenhum feedback com ${'★'.repeat(state.muralFiltroNota)} ainda.`
+                    : 'Nenhum feedback ainda. Seja o primeiro! ⭐';
+                container.innerHTML = `<div class="empty-state">${msg}</div>`;
+            }
         }
 
         // Botão carregar mais
