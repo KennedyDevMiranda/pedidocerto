@@ -1269,6 +1269,23 @@ body {
     padding: 14px 16px;
 }
 
+.pontos-card input[type="number"] {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    outline: none;
+    transition: .2s ease;
+    background: #fbfdff;
+}
+
+.pontos-card input[type="number"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+    background: #fff;
+}
+
 .pontos-header {
     display: flex;
     align-items: center;
