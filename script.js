@@ -224,10 +224,11 @@ function renderCupons(cupons) {
         <div class="cupons-header">
             <span class="cupons-icon">🎟️</span>
             <strong>Cupons disponíveis</strong>
+            <small style="color:var(--muted);margin-left:auto">Toque para copiar</small>
         </div>
         <div class="cupons-list">
             ${cupons.map(c => `
-                <div class="cupom-card">
+                <div class="cupom-card" data-cupom="${c.codigo}" title="Clique para copiar o código">
                     <span class="cupom-codigo">${c.codigo}</span>
                     <span class="cupom-valor">${c.valorFormatado}</span>
                     <span class="cupom-desc">${c.descricao || ''}</span>
@@ -235,6 +236,20 @@ function renderCupons(cupons) {
                 </div>
             `).join('')}
         </div>`;
+
+    bannerCupons.querySelectorAll('.cupom-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const codigo = card.dataset.cupom;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(codigo).catch(() => {});
+            }
+            const cupomInput = document.getElementById('codigoCupom');
+            if (cupomInput && !cupomInput.disabled) {
+                cupomInput.value = codigo;
+            }
+            showToast(`Cupom "${codigo}" copiado! Cole no campo de cupom.`, 'success');
+        });
+    });
 }
 
 function renderProdutos() {
@@ -395,6 +410,7 @@ async function consultarCpf() {
             statusCliente.className = 'status-box success';
             statusCliente.textContent = `Cliente localizado: ${cli.nome}.`;
             showToast('Cliente encontrado no sistema.', 'success');
+            carregarPontosCliente(cli.id);
             return;
         }
 
@@ -581,6 +597,7 @@ function irParaEtapa(step) {
         p.classList.toggle('done', n < step);
     });
     if (step === 4) inicializarAbasEndereco();
+    if (step === 5) atualizarTotalPagamento();
     if (step === 6) preencherRevisao();
     try { sessionStorage.setItem('pedidoCerto_etapa', step); } catch {}
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -690,7 +707,7 @@ function validarEtapaAtual() {
    =================================================================== */
 
 function preencherRevisao() {
-    const { subtotal, desconto, taxaEntrega, total } = getResumo();
+    const { subtotal, desconto, descontoPontos, taxaEntrega, total } = getResumo();
 
     document.getElementById('reviewCliente').innerHTML = `
         <p><strong>${state.cliente.nome}</strong></p>
@@ -735,6 +752,8 @@ function preencherRevisao() {
     let valoresHtml = `<p>Subtotal: ${formatCurrency(subtotal)}</p>`;
     if (desconto > 0)
         valoresHtml += `<p>Cupom (${state.cupom.codigo}): -${formatCurrency(desconto)}</p>`;
+    if (descontoPontos > 0)
+        valoresHtml += `<p>🎯 Pontos (${state.pontosUsados} pts): -${formatCurrency(descontoPontos)}</p>`;
     if (taxaEntrega > 0)
         valoresHtml += `<p>🚚 Taxa de entrega: ${formatCurrency(taxaEntrega)}</p>`;
     valoresHtml += `<p style="font-size:1.2rem"><strong>Total: ${formatCurrency(total)}</strong></p>`;
@@ -762,6 +781,7 @@ function montarPayload(clienteId) {
         formaPagamento: state.formaPagamento,
         taxaEntrega: state.modoEntrega === 'retirada' ? 0 : TAXA_ENTREGA_FIXA,
         trocoPara: state.formaPagamento === 1 ? state.trocoPara : 0,
+        pontosUsados: state.pontosUsados || 0,
         enderecoEntrega: montarEnderecoString(),
         itens: state.carrinho.map(i => ({
             produtoId: i.produtoId,
@@ -1205,6 +1225,77 @@ function inicializarIdentificacao() {
 }
 
 /* ===================================================================
+   PONTOS – Carregar saldo e usar como desconto (100 pts = R$ 1,00)
+   =================================================================== */
+
+async function carregarPontosCliente(clienteId) {
+    try {
+        const resp = await fetch(ENDPOINTS.fidelidade(clienteId));
+        if (!resp.ok) return;
+        const data = await resp.json();
+        state.pontosDisponiveis = data.totalPontos || 0;
+        atualizarPontosUI();
+    } catch {
+        state.pontosDisponiveis = 0;
+    }
+}
+
+function atualizarPontosUI() {
+    const section = document.getElementById('pontosSection');
+    const info = document.getElementById('pontosInfo');
+    if (!section || !info) return;
+
+    if (state.pontosDisponiveis <= 0) {
+        section.style.display = 'none';
+        return;
+    }
+
+    section.style.display = '';
+    const maxValor = (state.pontosDisponiveis / 100).toFixed(2).replace('.', ',');
+    info.textContent = `Você tem ${state.pontosDisponiveis} pontos (equivale a R$ ${maxValor}).`;
+
+    const input = document.getElementById('pontosUsar');
+    if (input) {
+        input.max = state.pontosDisponiveis;
+        if (!input.value) input.value = '';
+    }
+    atualizarDescontoPontos();
+}
+
+function atualizarDescontoPontos() {
+    const input = document.getElementById('pontosUsar');
+    const valorEl = document.getElementById('pontosValor');
+    if (!input || !valorEl) return;
+
+    const val = parseInt(input.value) || 0;
+
+    if (val > state.pontosDisponiveis) {
+        input.value = state.pontosDisponiveis;
+        state.pontosUsados = state.pontosDisponiveis;
+    } else {
+        state.pontosUsados = Math.max(0, val);
+    }
+
+    const desconto = state.pontosUsados / 100;
+    if (desconto > 0) {
+        valorEl.innerHTML = `<span style="color:var(--success)">✅ Desconto de ${formatCurrency(desconto)} será aplicado.</span>`;
+    } else {
+        valorEl.textContent = '';
+    }
+
+    renderCarrinho();
+    atualizarTotalPagamento();
+}
+
+function atualizarTotalPagamento() {
+    const el = document.getElementById('totalPagamento');
+    if (el) {
+        const { total } = getResumo();
+        el.textContent = formatCurrency(total);
+    }
+}
+
+/* ===================================================================
    PIX — Gerador de payload EMV (padrão BACEN) + QR Code
    =================================================================== */
 
@@ -1374,6 +1465,8 @@ document.querySelectorAll('.payment-option').forEach(btn => {
         } else {
             document.getElementById('pixSection').style.display = 'none';
         }
+
+        atualizarTotalPagamento();
     });
 });
 
@@ -1384,6 +1477,9 @@ document.querySelectorAll('.address-tab').forEach(tab => {
 });
 
 document.getElementById('trocoPara').addEventListener('input', atualizarTrocoInfo);
+
+const pontosUsar = document.getElementById('pontosUsar');
+if (pontosUsar) pontosUsar.addEventListener('input', atualizarDescontoPontos);
 
 function atualizarTrocoInfo() {
     const trocoInput = document.getElementById('trocoPara');

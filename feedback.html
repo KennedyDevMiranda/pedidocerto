@@ -55,7 +55,6 @@
             <div class="tabs">
                 <button class="tab active" data-tab="fidelidade">🏆 Fidelidade</button>
                 <button class="tab" data-tab="feedback">💬 Feedback</button>
-                <button class="tab" data-tab="mural">📋 Mural</button>
             </div>
 
             <!-- ══ TAB: FIDELIDADE ══ -->
@@ -192,23 +191,24 @@
                 </div>
             </div>
 
-            <!-- ══ TAB: MURAL DE FEEDBACKS ══ -->
-            <div class="tab-content" id="tabMural" data-tab="mural">
-                <div class="mural-header">
-                    <div class="mural-media">
-                        <span class="mural-media-star">⭐</span>
-                        <span class="mural-media-valor" id="muralMedia">0.0</span>
-                        <span class="mural-media-total">(<span id="muralTotal">0</span> avaliações)</span>
-                    </div>
-                </div>
+        </section>
 
-                <div class="mural-lista" id="muralLista">
-                    <div class="empty-state">Nenhum feedback ainda. Seja o primeiro!</div>
+        <!-- ══ MURAL DE FEEDBACKS (sempre visível) ══ -->
+        <section class="mural-section" id="muralSection">
+            <div class="mural-header">
+                <h2 style="margin-bottom:8px">📋 Mural de Feedbacks</h2>
+                <div class="mural-media">
+                    <span class="mural-media-star">⭐</span>
+                    <span class="mural-media-valor" id="muralMedia">0.0</span>
+                    <span class="mural-media-total">(<span id="muralTotal">0</span> avaliações)</span>
                 </div>
-
-                <button class="btn btn-outline btn-full hidden" id="btnCarregarMais">Carregar mais</button>
             </div>
 
+            <div class="mural-lista" id="muralLista">
+                <div class="empty-state">Nenhum feedback ainda. Seja o primeiro!</div>
+            </div>
+
+            <button class="btn btn-outline btn-full hidden" id="btnCarregarMais">Carregar mais</button>
         </section>
     </main>
 

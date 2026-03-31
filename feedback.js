@@ -48,6 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initFeedbackForm();
     initCharCount();
 
+    // Carregar mural sempre (visível para todos)
+    carregarMural();
+
     // Auto-login se CPF salvo
     const cpfSalvo = localStorage.getItem(STORAGE_KEY);
     if (cpfSalvo) {
@@ -323,11 +326,9 @@ function initFeedbackForm() {
                 carregarFidelidade();
                 carregarMural();
 
-                // Mudar para aba Mural
-                $$('.tab').forEach(t => t.classList.remove('active'));
-                $$('.tab-content').forEach(tc => tc.classList.remove('active'));
-                document.querySelector('.tab[data-tab="mural"]').classList.add('active');
-                document.querySelector('.tab-content[data-tab="mural"]').classList.add('active');
+                // Scroll até o mural
+                const muralEl = document.getElementById('muralSection');
+                if (muralEl) muralEl.scrollIntoView({ behavior: 'smooth' });
             } else {
                 showToast(data.mensagem || 'Erro ao enviar feedback.', 'error');
             }

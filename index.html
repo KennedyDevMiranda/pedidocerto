@@ -296,6 +296,11 @@
                         <p>Selecione como o cliente deseja pagar este pedido.</p>
                     </div>
 
+                    <!-- Valor total do pedido -->
+                    <div class="status-box highlight" style="font-size:1.1rem;font-weight:800;text-align:center;margin-bottom:14px;padding:14px;background:linear-gradient(135deg,rgba(37,99,235,.06),rgba(37,99,235,.12));border:1px solid var(--accent);border-radius:var(--radius-sm);">
+                        💰 Valor total: <span id="totalPagamento">R$ 0,00</span>
+                    </div>
+
                     <div class="payment-grid" id="formasPagamento">
                         <button type="button" class="payment-option" data-value="1">💵 Dinheiro</button>
                         <button type="button" class="payment-option" data-value="2">📱 Pix</button>
@@ -305,6 +310,22 @@
                     </div>
 
                     <input type="hidden" id="formaPagamento" value="" />
+
+                    <!-- Usar pontos como desconto -->
+                    <div class="pontos-section" id="pontosSection" style="display:none;margin-top:14px">
+                        <div class="pontos-card">
+                            <div class="pontos-header">
+                                <span>🎯</span>
+                                <strong>Usar pontos de fidelidade</strong>
+                            </div>
+                            <p class="pontos-info" id="pontosInfo" style="font-size:.85rem;color:var(--muted);margin:6px 0"></p>
+                            <div class="inline-group" style="max-width:320px">
+                                <input type="number" id="pontosUsar" min="0" step="1" value="" placeholder="Quantidade de pontos" />
+                            </div>
+                            <small id="pontosValor" style="display:block;margin-top:4px;font-size:.85rem"></small>
+                            <small style="color:var(--muted)">100 pontos = R$ 1,00 de desconto.</small>
+                        </div>
+                    </div>
 
                     <div class="form-grid" style="margin-top:14px">
                         <div class="row two">

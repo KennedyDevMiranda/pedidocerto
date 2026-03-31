@@ -1220,6 +1220,17 @@ body {
     padding: 10px 14px;
     min-width: 150px;
     max-width: 200px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+}
+
+.cupom-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, .15);
+}
+
+.cupom-card:active {
+    transform: scale(.97);
 }
 
 .cupom-codigo {
@@ -1245,6 +1256,26 @@ body {
     font-size: .72rem;
     color: var(--warning);
     font-weight: 600;
+}
+
+/* ===================================================================
+   PONTOS DE FIDELIDADE (PAGAMENTO)
+   =================================================================== */
+
+.pontos-card {
+    background: linear-gradient(135deg, rgba(245, 158, 11, .05), rgba(245, 158, 11, .12));
+    border: 1px solid var(--gold);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+}
+
+.pontos-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .95rem;
+    color: var(--primary);
+    margin-bottom: 4px;
 }
 
 /* ===================================================================
