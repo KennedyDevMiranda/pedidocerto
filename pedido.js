@@ -1666,6 +1666,7 @@ async function verificarStatusLoja() {
                 if (storeOnline !== true) {
                     badge.className = 'store-status online';
                     text.textContent = 'Loja Online';
+                    badge.style.opacity = '1';
                     storeOnline = true;
                     carregarProdutos();
                 }
@@ -1675,6 +1676,7 @@ async function verificarStatusLoja() {
                     ? `Horário: ${dados.horaAbertura} - ${dados.horaFechamento}`
                     : 'Fechado hoje';
                 text.textContent = 'Loja Fechada';
+                badge.style.opacity = '1';
                 storeOnline = false;
 
                 // Loja fechada mas sistema online → mostrar banner informativo (não bloqueia)
@@ -1701,6 +1703,7 @@ async function verificarStatusLoja() {
         if (storeOnline !== false) {
             badge.className = 'store-status offline';
             text.textContent = 'Sistema Offline';
+            badge.style.opacity = '1';
             storeOnline = false;
         }
 

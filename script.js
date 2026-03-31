@@ -72,6 +72,8 @@ async function carregarStatusLoja() {
         } else {
             const text = document.getElementById('storeStatusText');
             if (text) text.textContent = 'Indisponível';
+            const badge = document.getElementById('storeStatusBadge');
+            if (badge) badge.style.opacity = '1';
             const horarioTexto = document.getElementById('horarioTexto');
             if (horarioTexto) horarioTexto.textContent = 'Não foi possível verificar o horário.';
             const hCard = document.getElementById('horarioCard');
@@ -97,6 +99,8 @@ function aplicarStatusLoja(dados, live) {
             dot.className = 'hero-badge-dot offline';
             text.textContent = 'Loja Fechada';
         }
+        const badge = document.getElementById('storeStatusBadge');
+        if (badge) badge.style.opacity = '1';
     }
 
     // Card de horário

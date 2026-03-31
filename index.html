@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Menu Central — Peça Online, Receba Rápido</title>
+    <title>Menu Central</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>" />
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -24,12 +25,12 @@
     <!-- ══ HEADER / NAV ══ -->
     <header class="top-header">
         <div class="top-header-inner">
-            <a href="index.html" class="logo-link">
+            <a href="/" class="logo-link">
                 <span class="logo-icon">🍽️</span>
                 <span class="logo-text">Menu<strong>Central</strong></span>
             </a>
             <nav class="top-nav">
-                <a href="index.html" class="top-nav-link active">Início</a>
+                <a href="/" class="top-nav-link active">Início</a>
                 <a href="pedido.html" class="top-nav-link">Fazer Pedido</a>
                 <a href="feedback.html" class="top-nav-link">Avaliações</a>
                 <a href="negocios.html" class="top-nav-link">Para Negócios</a>
@@ -46,9 +47,9 @@
             <div class="hero-shape hero-shape--3"></div>
         </div>
         <div class="hero-content">
-            <div class="hero-badge" id="storeStatusBadge">
+            <div class="hero-badge" id="storeStatusBadge" style="opacity:0;transition:opacity .4s">
                 <span class="hero-badge-dot"></span>
-                <span id="storeStatusText">Verificando...</span>
+                <span id="storeStatusText"></span>
             </div>
             <h1 class="hero-title">Peça online,<br><span class="hero-highlight">receba rápido</span></h1>
             <p class="hero-subtitle">Escolha seus produtos, faça o pedido em poucos cliques e acompanhe tudo em tempo real. Simples, rápido e confiável.</p>
@@ -266,7 +267,7 @@
                 </div>
                 <div class="footer-links">
                     <h4>Navegação</h4>
-                    <a href="index.html">Início</a>
+                    <a href="/">Início</a>
                     <a href="pedido.html">Fazer Pedido</a>
                     <a href="feedback.html">Avaliações</a>
                     <a href="negocios.html">Para Negócios</a>

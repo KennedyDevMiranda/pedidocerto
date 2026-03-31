@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>Menu Central · Faça seu Pedido</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>" />
     <link rel="stylesheet" href="pedido.css" />
 </head>
 <body>
@@ -24,7 +25,7 @@
     <main class="app-shell">
         <!-- ══ NAVEGAÇÃO ══ -->
         <nav class="site-nav">
-            <a href="index.html" class="nav-link">🏠 Início</a>
+            <a href="/" class="nav-link">🏠 Início</a>
             <a href="pedido.html" class="nav-link active">🛒 Pedidos</a>
             <a href="feedback.html" class="nav-link">⭐ Feedback & Fidelidade</a>
         </nav>
@@ -33,9 +34,9 @@
             <div class="hero-card">
                 <div>
                     <span class="brand-badge">Menu Central · Cardápio Online</span>
-                    <div class="store-status" id="storeStatus">
+                    <div class="store-status" id="storeStatus" style="opacity:0;transition:opacity .4s">
                         <span class="status-dot"></span>
-                        <span class="status-text">Verificando...</span>
+                        <span class="status-text"></span>
                     </div>
                     <h1>Faça seu Pedido</h1>
                     <p>Escolha seus produtos favoritos, informe seu CPF e finalize com a forma de pagamento desejada.</p>
