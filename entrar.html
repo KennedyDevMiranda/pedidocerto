@@ -5,217 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>Menu Central — Entrar | Painel do Negócio</title>
     <link rel="stylesheet" href="style.css" />
-    <style>
-        .login-page {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .login-content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 100px 20px 60px;
-            position: relative;
-        }
-        .login-content::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(18,58,111,.04), rgba(37,99,235,.06));
-            pointer-events: none;
-        }
-
-        .login-grid {
-            position: relative;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 48px;
-            max-width: 960px;
-            width: 100%;
-            align-items: center;
-        }
-
-        /* Left side — branding */
-        .login-branding {
-            text-align: left;
-        }
-        .login-branding .logo-icon { font-size: 3rem; display: block; margin-bottom: 16px; }
-        .login-branding h1 {
-            font-size: clamp(1.8rem, 4vw, 2.4rem);
-            line-height: 1.1;
-            letter-spacing: -.03em;
-            color: var(--primary);
-            margin-bottom: 16px;
-        }
-        .login-branding h1 span {
-            background: linear-gradient(135deg, var(--accent), #6366f1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .login-branding p {
-            font-size: 1rem;
-            color: var(--muted);
-            line-height: 1.6;
-            margin-bottom: 28px;
-            max-width: 400px;
-        }
-        .login-perks {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .login-perk {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: .88rem;
-            color: #475569;
-        }
-        .login-perk-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(37,99,235,.08);
-            display: grid;
-            place-items: center;
-            font-size: .9rem;
-            flex-shrink: 0;
-        }
-
-        /* Right side — login card */
-        .login-card {
-            background: var(--card);
-            border-radius: var(--radius-lg);
-            padding: 40px 32px;
-            box-shadow: 0 16px 48px rgba(15,52,96,.1);
-            border: 1px solid var(--border);
-        }
-        .login-card h2 {
-            font-size: 1.3rem;
-            color: var(--primary);
-            margin-bottom: 6px;
-            text-align: center;
-        }
-        .login-card .login-subtitle {
-            text-align: center;
-            color: var(--muted);
-            font-size: .86rem;
-            margin-bottom: 28px;
-        }
-
-        .login-group { margin-bottom: 20px; }
-        .login-group label {
-            display: block;
-            font-size: .82rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 6px;
-        }
-        .login-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-md);
-            font-family: inherit;
-            font-size: .88rem;
-            color: var(--primary);
-            background: var(--bg);
-            transition: border-color .2s;
-            box-sizing: border-box;
-        }
-        .login-group input:focus { outline: none; border-color: var(--accent); }
-
-        .login-options {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-            font-size: .82rem;
-        }
-        .login-remember {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--muted);
-            cursor: pointer;
-        }
-        .login-remember input { width: auto; margin: 0; }
-        .login-forgot { color: var(--accent); text-decoration: none; font-weight: 600; }
-        .login-forgot:hover { text-decoration: underline; }
-
-        .login-btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            border-radius: 999px;
-            font-family: inherit;
-            font-size: .9rem;
-            font-weight: 700;
-            text-align: center;
-            cursor: pointer;
-            border: none;
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 4px 16px rgba(37,99,235,.3);
-            transition: all .25s;
-        }
-        .login-btn:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,99,235,.4); }
-
-        .login-divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 24px 0;
-            color: var(--muted);
-            font-size: .78rem;
-        }
-        .login-divider::before,
-        .login-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .login-register {
-            text-align: center;
-            font-size: .86rem;
-            color: var(--muted);
-        }
-        .login-register a {
-            color: var(--accent);
-            font-weight: 700;
-            text-decoration: none;
-        }
-        .login-register a:hover { text-decoration: underline; }
-
-        .biz-footer { text-align: center; padding: 24px 0; font-size: .82rem; color: var(--muted); }
-        .biz-footer strong { color: var(--primary); }
-
-        @media (max-width: 768px) {
-            .login-grid {
-                grid-template-columns: 1fr;
-                max-width: 440px;
-            }
-            .login-branding { text-align: center; }
-            .login-branding p { margin-left: auto; margin-right: auto; }
-            .login-perks { align-items: center; }
-        }
-        @media (max-width: 480px) {
-            .login-content { padding: 80px 16px 40px; }
-            .login-card { padding: 28px 20px; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="negocios.css" />
 </head>
 <body class="login-page">
     <!-- ══ HEADER ══ -->
@@ -282,7 +72,7 @@
                         <label class="login-remember">
                             <input type="checkbox" id="loginLembrar" /> Lembrar de mim
                         </label>
-                        <a href="https://wa.me/5527997873879?text=Olá! Esqueci minha senha do Menu Central e preciso de ajuda." class="login-forgot" target="_blank">Esqueci a senha</a>
+                        <a href="https://wa.me/5527995045666?text=Olá! Esqueci minha senha do Menu Central e preciso de ajuda." class="login-forgot" target="_blank">Esqueci a senha</a>
                     </div>
                     <button type="submit" class="login-btn">Entrar</button>
                 </form>
@@ -290,7 +80,7 @@
                 <div class="login-divider">ou</div>
 
                 <div class="login-register">
-                    Ainda não tem conta? <a href="https://wa.me/5527997873879?text=Olá! Gostaria de criar minha conta no Menu Central." target="_blank">Comece Grátis →</a>
+                    Ainda não tem conta? <a href="https://wa.me/5527995045666?text=Olá! Gostaria de criar minha conta no Menu Central." target="_blank">Comece Grátis →</a>
                 </div>
             </div>
         </div>
@@ -298,30 +88,9 @@
 
     <!-- ══ FOOTER ══ -->
     <div class="biz-footer">
-        <p>Desenvolvido por <strong>DevMiranda</strong> · <a href="index.html" style="color:var(--accent);text-decoration:none;">Início</a> · <a href="negocios.html" style="color:var(--accent);text-decoration:none;">Para Negócios</a> · <a href="suporte.html" style="color:var(--accent);text-decoration:none;">Suporte</a> · <a href="termos.html" style="color:var(--accent);text-decoration:none;">Termos de Uso</a></p>
+        <p>Desenvolvido por <strong>DevMiranda</strong> · <a href="index.html">Início</a> · <a href="negocios.html">Para Negócios</a> · <a href="suporte.html">Suporte</a> · <a href="termos.html">Termos de Uso</a></p>
     </div>
 
-    <script>
-        function fazerLogin(e) {
-            e.preventDefault();
-
-            const email = document.getElementById('loginEmail').value.trim();
-            const senha = document.getElementById('loginSenha').value;
-
-            if (!email || !senha) return;
-
-            const btn = e.target.querySelector('.login-btn');
-            const textoOriginal = btn.textContent;
-            btn.textContent = 'Entrando...';
-            btn.disabled = true;
-
-            // Simulação — em produção, será integrado com a API de autenticação
-            setTimeout(() => {
-                alert('⚠️ O painel de gestão está em desenvolvimento. Entre em contato pelo WhatsApp para acessar seu painel.');
-                btn.textContent = textoOriginal;
-                btn.disabled = false;
-            }, 1500);
-        }
-    </script>
+    <script src="negocios.js"></script>
 </body>
 </html>
