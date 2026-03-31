@@ -636,6 +636,7 @@ function formatarData(dateStr) {
 
             const countEl = document.getElementById('liveCount');
             if (countEl) countEl.textContent = data.online;
+            salvarCache('dm_cache_online', data.online);
 
             if (data.compras && data.compras.length > 0) {
                 data.compras.forEach(c => {
@@ -648,7 +649,13 @@ function formatarData(dateStr) {
 
                 processarToastQueue();
             }
-        } catch {}
+        } catch {
+            const countEl = document.getElementById('liveCount');
+            if (countEl && countEl.textContent === '0') {
+                const cached = lerCache('dm_cache_online');
+                countEl.textContent = cached && cached > 0 ? cached : 1;
+            }
+        }
     }
 
     function processarToastQueue() {
