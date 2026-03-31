@@ -3,6 +3,8 @@
    Usado por: negocios, planos, contato, entrar
    =================================================================== */
 
+const API_BASE = 'https://api.pedidocerto.uk';
+
 /* ── Billing Toggle (planos, negocios) ── */
 let anual = false;
 
@@ -82,7 +84,6 @@ function fazerLogin(e) {
    =================================================================== */
 
 const CPF_STORAGE_KEY = 'devmiranda_cpf_salvo';
-const API_BASE_LOGIN = 'https://api.pedidocerto.uk';
 
 /* ── Trocar entre Cliente e Admin ── */
 function trocarPerfil(role) {
@@ -220,6 +221,211 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmPassEl.addEventListener('input', validate);
     }
 });
+
+/* ===================================================================
+   ASSINATURA + BOLETO — Fluxo de planos
+   =================================================================== */
+
+let assinarPlanoId = 0;
+let assinarPlanoNome = '';
+let assinarCicloSelecionado = 'mensal';
+
+/* Preços em centavos */
+const PRECOS = {
+    1: { mensal: 0, anual: 0 },
+    2: { mensal: 4990, anual: 3990 },
+    3: { mensal: 9990, anual: 7990 },
+    4: { mensal: 19990, anual: 15990 }
+};
+
+function assinarPlano(planoId, planoNome) {
+    assinarPlanoId = planoId;
+    assinarPlanoNome = planoNome;
+    assinarCicloSelecionado = 'mensal';
+
+    const modal = document.getElementById('modalAssinatura');
+    if (!modal) return;
+
+    // Resetar etapas
+    const etapa1 = document.getElementById('assinarEtapa1');
+    const etapa2 = document.getElementById('assinarEtapa2');
+    const etapaTrial = document.getElementById('assinarEtapaTrial');
+    if (etapa1) etapa1.classList.remove('hidden');
+    if (etapa2) etapa2.classList.add('hidden');
+    if (etapaTrial) etapaTrial.classList.add('hidden');
+
+    // Preencher dados
+    const nomeEl = document.getElementById('assinarPlanoNome');
+    if (nomeEl) nomeEl.textContent = planoNome;
+
+    // Reset ciclo buttons
+    document.querySelectorAll('.ciclo-btn').forEach(b => b.classList.toggle('active', b.dataset.ciclo === 'mensal'));
+
+    // Trial: pula direto para ativação
+    if (planoId === 1) {
+        if (etapa1) etapa1.classList.add('hidden');
+        ativarTrial(modal);
+        return;
+    }
+
+    atualizarResumo();
+
+    const erroEl = document.getElementById('assinarErro');
+    if (erroEl) erroEl.classList.add('hidden');
+
+    modal.classList.add('show');
+}
+
+async function ativarTrial(modal) {
+    try {
+        const resp = await fetch(`${API_BASE}/api/planos/assinar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ planoId: 1 })
+        });
+        const data = await resp.json();
+
+        if (data.sucesso) {
+            const etapaTrial = document.getElementById('assinarEtapaTrial');
+            if (etapaTrial) etapaTrial.classList.remove('hidden');
+            const dataFimEl = document.getElementById('trialDataFim');
+            if (dataFimEl && data.dataFim) {
+                const dt = new Date(data.dataFim + 'T00:00:00');
+                dataFimEl.textContent = dt.toLocaleDateString('pt-BR');
+            }
+        }
+    } catch { /* silencioso */ }
+
+    modal.classList.add('show');
+}
+
+function selecionarCiclo(ciclo) {
+    assinarCicloSelecionado = ciclo;
+    document.querySelectorAll('.ciclo-btn').forEach(b => b.classList.toggle('active', b.dataset.ciclo === ciclo));
+    atualizarResumo();
+}
+
+function atualizarResumo() {
+    const preco = PRECOS[assinarPlanoId];
+    if (!preco) return;
+
+    const valor = assinarCicloSelecionado === 'anual' ? preco.anual : preco.mensal;
+    const reais = Math.floor(valor / 100);
+    const centavos = String(valor % 100).padStart(2, '0');
+    const totalFormatado = `R$ ${reais},${centavos}`;
+
+    const resumoPlano = document.getElementById('resumoPlano');
+    const resumoCiclo = document.getElementById('resumoCiclo');
+    const resumoTotal = document.getElementById('resumoTotal');
+    const precoEl = document.getElementById('assinarPlanoPreco');
+
+    if (resumoPlano) resumoPlano.textContent = assinarPlanoNome;
+    if (resumoCiclo) resumoCiclo.textContent = assinarCicloSelecionado === 'anual' ? 'Anual (-20%)' : 'Mensal';
+    if (resumoTotal) resumoTotal.textContent = assinarCicloSelecionado === 'anual' ? `${totalFormatado}/mês (cobrado anualmente)` : `${totalFormatado}/mês`;
+    if (precoEl) precoEl.textContent = `${totalFormatado}/mês`;
+}
+
+async function confirmarAssinatura(e) {
+    if (e) e.preventDefault();
+
+    const email = (document.getElementById('assinarEmail')?.value || '').trim();
+    const cpfRaw = (document.getElementById('assinarCpf')?.value || '').replace(/\D/g, '');
+    const erroEl = document.getElementById('assinarErro');
+    const btn = document.getElementById('btnConfirmarAssinar');
+    const spanEl = btn?.querySelector('span');
+    const textoOriginal = spanEl?.textContent || '';
+
+    if (!email) {
+        if (erroEl) { erroEl.textContent = 'Informe seu e-mail.'; erroEl.classList.remove('hidden'); }
+        return;
+    }
+    if (cpfRaw.length !== 11) {
+        if (erroEl) { erroEl.textContent = 'CPF inválido.'; erroEl.classList.remove('hidden'); }
+        return;
+    }
+
+    if (erroEl) erroEl.classList.add('hidden');
+    if (spanEl) spanEl.textContent = 'Processando...';
+    if (btn) btn.disabled = true;
+
+    try {
+        // 1. Criar assinatura
+        const respAss = await fetch(`${API_BASE}/api/planos/assinar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                planoId: assinarPlanoId,
+                ciclo: assinarCicloSelecionado,
+                email
+            })
+        });
+        const dataAss = await respAss.json();
+
+        if (!respAss.ok || !dataAss.sucesso) {
+            if (erroEl) { erroEl.textContent = dataAss.mensagem || 'Erro ao criar assinatura.'; erroEl.classList.remove('hidden'); }
+            return;
+        }
+
+        // 2. Gerar boleto
+        const respBoleto = await fetch(`${API_BASE}/api/boletos/gerar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                assinaturaId: dataAss.assinaturaId,
+                cpf: cpfRaw
+            })
+        });
+        const dataBoleto = await respBoleto.json();
+
+        if (!respBoleto.ok || !dataBoleto.sucesso) {
+            if (erroEl) { erroEl.textContent = dataBoleto.mensagem || 'Erro ao gerar boleto.'; erroEl.classList.remove('hidden'); }
+            return;
+        }
+
+        // 3. Mostrar etapa 2 (boleto gerado)
+        const etapa1 = document.getElementById('assinarEtapa1');
+        const etapa2 = document.getElementById('assinarEtapa2');
+        if (etapa1) etapa1.classList.add('hidden');
+        if (etapa2) etapa2.classList.remove('hidden');
+
+        const boletoPlano = document.getElementById('boletoPlano');
+        const boletoValor = document.getElementById('boletoValor');
+        const boletoVenc = document.getElementById('boletoVenc');
+        const boletoLinha = document.getElementById('boletoLinha');
+        const boletoLink = document.getElementById('boletoLink');
+
+        if (boletoPlano) boletoPlano.textContent = dataBoleto.planoNome;
+        if (boletoValor) boletoValor.textContent = dataBoleto.valorFormatado;
+        if (boletoVenc) boletoVenc.textContent = dataBoleto.dataVencimento;
+        if (boletoLinha) boletoLinha.textContent = dataBoleto.linhaDigitavel || 'N/A';
+        if (boletoLink) boletoLink.href = dataBoleto.linkBoleto || '#';
+
+    } catch {
+        if (erroEl) { erroEl.textContent = 'Erro de conexão. Tente novamente.'; erroEl.classList.remove('hidden'); }
+    } finally {
+        if (spanEl) spanEl.textContent = textoOriginal;
+        if (btn) btn.disabled = false;
+    }
+}
+
+function copiarLinhaDigitavel() {
+    const code = document.getElementById('boletoLinha');
+    if (!code) return;
+    navigator.clipboard.writeText(code.textContent).then(() => {
+        const btn = document.querySelector('.boleto-copiar');
+        if (btn) {
+            const original = btn.textContent;
+            btn.textContent = '✓ Copiado!';
+            setTimeout(() => { btn.textContent = original; }, 2000);
+        }
+    });
+}
+
+function fecharModalAssinar(e) {
+    if (e && e.target !== e.currentTarget) return;
+    const modal = document.getElementById('modalAssinatura');
+    if (modal) modal.classList.remove('show');
+}
 
 /* ===================================================================
    RECUPERAÇÃO DE SENHA — Fluxo de 3 etapas

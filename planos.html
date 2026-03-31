@@ -62,7 +62,7 @@
                     <li><span class="plan-check">✓</span> Suporte por e-mail</li>
                     <li><span class="plan-check">✓</span> Cancele a qualquer momento</li>
                 </ul>
-                <a href="https://wa.me/5527995045666?text=Olá! Gostaria de testar o Menu Central por 7 dias grátis." class="plan-cta" target="_blank">Começar Teste Grátis</a>
+                <a href="javascript:void(0)" class="plan-cta" onclick="assinarPlano(1, 'Teste Grátis')">Começar Teste Grátis</a>
             </div>
 
             <!-- Starter -->
@@ -86,7 +86,7 @@
                     <li><span class="plan-cross">✗</span> Cupons de desconto</li>
                     <li><span class="plan-cross">✗</span> Relatórios avançados</li>
                 </ul>
-                <a href="https://wa.me/5527995045666?text=Olá! Tenho interesse no plano Starter do Menu Central." class="plan-cta" target="_blank">Assinar Starter</a>
+                <a href="javascript:void(0)" class="plan-cta" onclick="assinarPlano(2, 'Starter')">Assinar Starter</a>
             </div>
 
             <!-- Pro -->
@@ -113,7 +113,7 @@
                     <li><span class="plan-check">✓</span> Relatórios de vendas</li>
                     <li><span class="plan-cross">✗</span> Multi-estabelecimentos</li>
                 </ul>
-                <a href="https://wa.me/5527995045666?text=Olá! Quero assinar o plano Pro do Menu Central." class="plan-cta primary" target="_blank">Assinar Pro</a>
+                <a href="javascript:void(0)" class="plan-cta primary" onclick="assinarPlano(3, 'Pro')">Assinar Pro</a>
             </div>
 
             <!-- Premium -->
@@ -137,7 +137,7 @@
                     <li><span class="plan-check">✓</span> Personalização completa da marca</li>
                     <li><span class="plan-check">✓</span> Treinamento de equipe incluso</li>
                 </ul>
-                <a href="https://wa.me/5527995045666?text=Olá! Tenho interesse no plano Premium do Menu Central." class="plan-cta" target="_blank">Assinar Premium</a>
+                <a href="javascript:void(0)" class="plan-cta" onclick="assinarPlano(4, 'Premium')">Assinar Premium</a>
             </div>
         </div>
     </section>
@@ -253,6 +253,90 @@
             </div>
         </div>
     </section>
+
+    <!-- ══ MODAL ASSINATURA + BOLETO ══ -->
+    <div class="modal-overlay" id="modalAssinatura" onclick="fecharModalAssinar(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button type="button" class="modal-close" onclick="fecharModalAssinar()">&times;</button>
+
+            <!-- Etapa 1: Dados do assinante -->
+            <div id="assinarEtapa1">
+                <div class="modal-icon">📋</div>
+                <h2 class="modal-title">Assinar Plano <span id="assinarPlanoNome"></span></h2>
+                <p class="modal-subtitle" id="assinarPlanoPreco"></p>
+
+                <form id="formAssinar" onsubmit="confirmarAssinatura(event)">
+                    <div class="modal-group">
+                        <label>E-mail</label>
+                        <input type="email" id="assinarEmail" placeholder="seu@email.com" required />
+                    </div>
+                    <div class="modal-group">
+                        <label>CPF</label>
+                        <input type="text" id="assinarCpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required />
+                    </div>
+                    <div class="modal-group">
+                        <label>Ciclo de cobrança</label>
+                        <div class="modal-ciclo">
+                            <button type="button" class="ciclo-btn active" data-ciclo="mensal" onclick="selecionarCiclo('mensal')">Mensal</button>
+                            <button type="button" class="ciclo-btn" data-ciclo="anual" onclick="selecionarCiclo('anual')">Anual <small>(-20%)</small></button>
+                        </div>
+                    </div>
+                    <div class="modal-resumo">
+                        <div class="resumo-linha"><span>Plano</span><strong id="resumoPlano"></strong></div>
+                        <div class="resumo-linha"><span>Ciclo</span><strong id="resumoCiclo">Mensal</strong></div>
+                        <div class="resumo-linha total"><span>Total</span><strong id="resumoTotal"></strong></div>
+                    </div>
+                    <button type="submit" class="modal-btn" id="btnConfirmarAssinar">
+                        <span>Gerar Boleto</span>
+                    </button>
+                </form>
+
+                <div class="modal-msg hidden" id="assinarErro"></div>
+            </div>
+
+            <!-- Etapa 2: Boleto gerado -->
+            <div id="assinarEtapa2" class="hidden">
+                <div class="modal-icon">✅</div>
+                <h2 class="modal-title">Boleto Gerado!</h2>
+                <p class="modal-subtitle">Pague o boleto para ativar sua assinatura.</p>
+
+                <div class="boleto-card">
+                    <div class="boleto-info">
+                        <div class="boleto-linha"><span>Plano</span><strong id="boletoPlano"></strong></div>
+                        <div class="boleto-linha"><span>Valor</span><strong id="boletoValor"></strong></div>
+                        <div class="boleto-linha"><span>Vencimento</span><strong id="boletoVenc"></strong></div>
+                    </div>
+
+                    <div class="boleto-codigo">
+                        <label>Linha Digitável (copiar e colar)</label>
+                        <div class="boleto-linha-digitavel">
+                            <code id="boletoLinha"></code>
+                            <button type="button" class="boleto-copiar" onclick="copiarLinhaDigitavel()">📋 Copiar</button>
+                        </div>
+                    </div>
+
+                    <a href="#" id="boletoLink" class="modal-btn" target="_blank">
+                        <span>📄 Abrir Boleto PDF</span>
+                    </a>
+                </div>
+
+                <p class="boleto-aviso">⏳ Após o pagamento, sua assinatura será ativada automaticamente em até 2 dias úteis.</p>
+
+                <button type="button" class="modal-btn-secondary" onclick="fecharModalAssinar()">Fechar</button>
+            </div>
+
+            <!-- Etapa: Trial ativado -->
+            <div id="assinarEtapaTrial" class="hidden">
+                <div class="modal-icon modal-success-anim">🎉</div>
+                <h2 class="modal-title">Teste Grátis Ativado!</h2>
+                <p class="modal-subtitle">Aproveite todos os recursos do plano Pro por 7 dias. Sem compromisso.</p>
+                <div class="trial-badge">
+                    <span>✓</span> Válido até <strong id="trialDataFim"></strong>
+                </div>
+                <button type="button" class="modal-btn" onclick="fecharModalAssinar()">Entendi, vamos lá! →</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ══ FOOTER ══ -->
     <div class="biz-footer">
