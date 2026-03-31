@@ -13,7 +13,10 @@ function formatCurrency(v) {
 }
 
 function timeAgo(dateStr) {
-    const diff = Date.now() - new Date(dateStr).getTime();
+    if (!dateStr) return '';
+    const parsed = new Date(dateStr.replace(' ', 'T'));
+    if (isNaN(parsed.getTime())) return '';
+    const diff = Date.now() - parsed.getTime();
     const min = Math.floor(diff / 60000);
     if (min < 1) return 'agora mesmo';
     if (min < 60) return `há ${min} min`;
@@ -284,7 +287,8 @@ function renderAvaliacoes(data, carousel) {
     }
 
     carousel.innerHTML = feedbacks.map((fb, i) => {
-        const iniciais = (fb.nomeCliente || '?')
+        const nome = fb.nomeExibicao || fb.nomeCliente || 'Cliente';
+        const iniciais = (nome === 'Cliente' ? '?' : nome)
             .split(' ')
             .map(n => n[0])
             .slice(0, 2)
@@ -300,13 +304,13 @@ function renderAvaliacoes(data, carousel) {
             <div class="review-header">
                 <div class="review-avatar">${iniciais}</div>
                 <div class="review-meta">
-                    <div class="review-name">${fb.nomeCliente || 'Cliente'}</div>
+                    <div class="review-name">${nome}</div>
                     <div class="review-stars">${gerarEstrelas(fb.nota)}</div>
                 </div>
             </div>
             ${produtoTag}
             <p class="review-comment">${fb.comentario || ''}</p>
-            <div class="review-date">${timeAgo(fb.criadoEm)}</div>
+            <div class="review-date">${timeAgo(fb.dataCriacao || fb.criadoEm)}</div>
         </div>`;
     }).join('');
 
