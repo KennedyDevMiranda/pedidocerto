@@ -471,7 +471,7 @@ async function carregarMural(append = false) {
 
 function renderMuralCard(fb) {
     const estrelas = '★'.repeat(fb.nota) + '☆'.repeat(5 - fb.nota);
-    const badgeCls = fb.tipo === 1 ? 'pedido' : 'estabelecimento';
+    const badgeCls = fb.tipo === 1 ? 'produto' : 'estabelecimento';
     const dataFormatada = formatarData(fb.dataCriacao);
 
     return `

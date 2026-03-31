@@ -544,7 +544,7 @@ body {
     font-weight: 700;
 }
 
-.mural-card-badge.pedido { background: rgba(37, 99, 235, 0.1); color: var(--accent); }
+.mural-card-badge.produto { background: rgba(37, 99, 235, 0.1); color: var(--accent); }
 .mural-card-badge.estabelecimento { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
 
 .mural-card-estrelas { margin-bottom: 8px; color: var(--gold); font-size: 1.1rem; letter-spacing: 2px; }
