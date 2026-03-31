@@ -1733,4 +1733,12 @@ window.removerDoCarrinho = removerDoCarrinho;
     pollStatus();
     setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
     setInterval(pollStatus, POLL_INTERVAL);
+
+    // ── Desconectar ao fechar a aba ──
+    window.addEventListener('beforeunload', () => {
+        const body = JSON.stringify({ sessionId: SESSION_ID });
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon(`${API_BASE}/api/site/disconnect`, new Blob([body], { type: 'application/json' }));
+        }
+    });
 })();

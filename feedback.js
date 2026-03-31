@@ -32,6 +32,7 @@ const state = {
 };
 
 const STORAGE_KEY = 'devmiranda_fb_cpf';
+const STORAGE_KEY_PEDIDOS = 'devmiranda_cpf_salvo';
 
 /* ──────────── DOM refs ──────────── */
 
@@ -53,10 +54,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Carregar mural sempre (visível para todos)
     carregarMural();
 
-    // Auto-login se CPF salvo
-    const cpfSalvo = localStorage.getItem(STORAGE_KEY);
+    // Auto-login se CPF salvo (próprio ou da página de pedidos)
+    let cpfSalvo = localStorage.getItem(STORAGE_KEY);
+    if (!cpfSalvo) {
+        try {
+            const dadosPedidos = JSON.parse(localStorage.getItem(STORAGE_KEY_PEDIDOS) || '');
+            if (dadosPedidos && dadosPedidos.cpf) cpfSalvo = dadosPedidos.cpf;
+        } catch { /* ignora */ }
+    }
     if (cpfSalvo) {
-        $('#cpfInput').value = cpfSalvo;
+        $('#cpfInput').value = maskCPF(cpfSalvo);
         identificarCliente(cpfSalvo);
     }
 });
@@ -97,6 +104,7 @@ function initIdentificacao() {
 
     btnSair.addEventListener('click', () => {
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STORAGE_KEY_PEDIDOS);
         state.cliente = { id: null, nome: '', documento: '' };
         state.fidelidade = null;
         $('#telaIdentificacao').classList.remove('hidden');
@@ -639,4 +647,12 @@ function formatarData(dateStr) {
     pollStatus();
     setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
     setInterval(pollStatus, POLL_INTERVAL);
+
+    // ── Desconectar ao fechar a aba ──
+    window.addEventListener('beforeunload', () => {
+        const body = JSON.stringify({ sessionId: SESSION_ID });
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon(`${API_BASE}/api/site/disconnect`, new Blob([body], { type: 'application/json' }));
+        }
+    });
 })();
