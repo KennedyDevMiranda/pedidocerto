@@ -3,39 +3,40 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Menu Central — Planos e Preços</title>
+    <title>Menu Central â€” Planos e PreÃ§os</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="negocios.css" />
 </head>
 <body>
-    <!-- ══ HEADER ══ -->
+    <!-- â•â• HEADER â•â• -->
     <header class="top-header">
         <div class="top-header-inner">
             <a href="index.html" class="logo-link">
-                <span class="logo-icon">🍽️</span>
+                <span class="logo-icon">ðŸ½ï¸</span>
                 <span class="logo-text">Menu<strong>Central</strong></span>
             </a>
             <nav class="top-nav">
-                <a href="negocios.html" class="top-nav-link">Visão Geral</a>
+                <a href="negocios.html" class="top-nav-link">VisÃ£o Geral</a>
                 <a href="recursos.html" class="top-nav-link">Recursos</a>
                 <a href="planos.html" class="top-nav-link active">Planos</a>
                 <a href="contato.html" class="top-nav-link">Contato</a>
                 <a href="suporte.html" class="top-nav-link">Suporte</a>
+                <a href="sobre.html" class="top-nav-link">Sobre</a>
             </nav>
             <a href="entrar.html" class="header-cta">Entrar</a>
         </div>
     </header>
 
-    <!-- ══ HERO ══ -->
+    <!-- â•â• HERO â•â• -->
     <section class="page-hero">
         <div class="page-hero-content">
-            <div class="page-hero-badge">💎 Planos</div>
-            <h1 class="page-hero-title">Escolha o plano ideal para <span>seu negócio</span></h1>
-            <p class="page-hero-subtitle">Zero taxa sobre vendas. Mensalidade fixa. Cancele quando quiser. Comece com 7 dias grátis.</p>
+            <div class="page-hero-badge">ðŸ’Ž Planos</div>
+            <h1 class="page-hero-title">Escolha o plano ideal para <span>seu negÃ³cio</span></h1>
+            <p class="page-hero-subtitle">Zero taxa sobre vendas. Mensalidade fixa. Cancele quando quiser. Comece com 7 dias grÃ¡tis.</p>
         </div>
     </section>
 
-    <!-- ══ PLANOS ══ -->
+    <!-- â•â• PLANOS â•â• -->
     <section class="biz-shell">
         <div class="billing-toggle">
             <span class="billing-label active" id="lblMensal">Mensal</span>
@@ -47,102 +48,102 @@
         <div class="plans-grid" id="plansGrid">
             <!-- Trial -->
             <div class="plan-card">
-                <div class="plan-icon">🎯</div>
-                <div class="plan-name">Teste Grátis</div>
+                <div class="plan-icon">ðŸŽ¯</div>
+                <div class="plan-name">Teste GrÃ¡tis</div>
                 <div class="plan-desc">Experimente o sistema completo sem compromisso.</div>
                 <div class="plan-price-wrap">
                     <div class="plan-price-free">R$ 0</div>
                     <div class="plan-period">por 7 dias</div>
-                    <div class="plan-trial-note">Sem cartão de crédito</div>
+                    <div class="plan-trial-note">Sem cartÃ£o de crÃ©dito</div>
                 </div>
                 <ul class="plan-features">
-                    <li><span class="plan-check">✓</span> Todos os recursos do plano Pro</li>
-                    <li><span class="plan-check">✓</span> Até 50 pedidos no período</li>
-                    <li><span class="plan-check">✓</span> 1 estabelecimento</li>
-                    <li><span class="plan-check">✓</span> Suporte por e-mail</li>
-                    <li><span class="plan-check">✓</span> Cancele a qualquer momento</li>
+                    <li><span class="plan-check">âœ“</span> Todos os recursos do plano Pro</li>
+                    <li><span class="plan-check">âœ“</span> AtÃ© 50 pedidos no perÃ­odo</li>
+                    <li><span class="plan-check">âœ“</span> 1 estabelecimento</li>
+                    <li><span class="plan-check">âœ“</span> Suporte por e-mail</li>
+                    <li><span class="plan-check">âœ“</span> Cancele a qualquer momento</li>
                 </ul>
-                <a href="javascript:void(0)" class="plan-cta" onclick="assinarPlano(1, 'Teste Grátis')">Começar Teste Grátis</a>
+                <a href="javascript:void(0)" class="plan-cta" onclick="assinarPlano(1, 'Teste GrÃ¡tis')">ComeÃ§ar Teste GrÃ¡tis</a>
             </div>
 
             <!-- Starter -->
             <div class="plan-card">
-                <div class="plan-icon">⚡</div>
+                <div class="plan-icon">âš¡</div>
                 <div class="plan-name">Starter</div>
-                <div class="plan-desc">Ideal para pequenos negócios começando no digital.</div>
+                <div class="plan-desc">Ideal para pequenos negÃ³cios comeÃ§ando no digital.</div>
                 <div class="plan-price-wrap">
                     <div class="plan-price" data-monthly="7990" data-yearly="6990">
                         <span class="plan-currency">R$</span>79<span class="plan-cents">,90</span>
                     </div>
-                    <div class="plan-period">/mês</div>
+                    <div class="plan-period">/mÃªs</div>
                 </div>
                 <ul class="plan-features">
-                    <li><span class="plan-check">✓</span> Até 200 pedidos/mês</li>
-                    <li><span class="plan-check">✓</span> Catálogo de produtos ilimitado</li>
-                    <li><span class="plan-check">✓</span> Página de pedidos personalizada</li>
-                    <li><span class="plan-check">✓</span> Notificações por WhatsApp</li>
-                    <li><span class="plan-check">✓</span> Pagamento via PIX integrado</li>
-                    <li><span class="plan-cross">✗</span> Programa de fidelidade</li>
-                    <li><span class="plan-cross">✗</span> Cupons de desconto</li>
-                    <li><span class="plan-cross">✗</span> Relatórios avançados</li>
+                    <li><span class="plan-check">âœ“</span> AtÃ© 200 pedidos/mÃªs</li>
+                    <li><span class="plan-check">âœ“</span> CatÃ¡logo de produtos ilimitado</li>
+                    <li><span class="plan-check">âœ“</span> PÃ¡gina de pedidos personalizada</li>
+                    <li><span class="plan-check">âœ“</span> NotificaÃ§Ãµes por WhatsApp</li>
+                    <li><span class="plan-check">âœ“</span> Pagamento via PIX integrado</li>
+                    <li><span class="plan-cross">âœ—</span> Programa de fidelidade</li>
+                    <li><span class="plan-cross">âœ—</span> Cupons de desconto</li>
+                    <li><span class="plan-cross">âœ—</span> RelatÃ³rios avanÃ§ados</li>
                 </ul>
                 <a href="javascript:void(0)" class="plan-cta" onclick="assinarPlano(2, 'Starter')">Assinar Starter</a>
             </div>
 
             <!-- Pro -->
             <div class="plan-card featured">
-                <div class="plan-popular">⭐ Mais Popular</div>
-                <div class="plan-icon">🚀</div>
+                <div class="plan-popular">â­ Mais Popular</div>
+                <div class="plan-icon">ðŸš€</div>
                 <div class="plan-name">Pro</div>
-                <div class="plan-desc">Tudo que você precisa para crescer e fidelizar clientes.</div>
+                <div class="plan-desc">Tudo que vocÃª precisa para crescer e fidelizar clientes.</div>
                 <div class="plan-price-wrap">
                     <div class="plan-price" data-monthly="12990" data-yearly="10990">
                         <span class="plan-currency">R$</span>129<span class="plan-cents">,90</span>
                     </div>
-                    <div class="plan-period">/mês</div>
+                    <div class="plan-period">/mÃªs</div>
                 </div>
                 <ul class="plan-features">
-                    <li><span class="plan-check">✓</span> Pedidos ilimitados</li>
-                    <li><span class="plan-check">✓</span> Catálogo de produtos ilimitado</li>
-                    <li><span class="plan-check">✓</span> Página personalizada + domínio próprio</li>
-                    <li><span class="plan-check">✓</span> Notificações por WhatsApp</li>
-                    <li><span class="plan-check">✓</span> Pagamento via PIX integrado</li>
-                    <li><span class="plan-check">✓</span> Programa de fidelidade + cashback</li>
-                    <li><span class="plan-check">✓</span> Cupons de desconto</li>
-                    <li><span class="plan-check">✓</span> Avaliações e mural de feedbacks</li>
-                    <li><span class="plan-check">✓</span> Relatórios de vendas</li>
-                    <li><span class="plan-cross">✗</span> Multi-estabelecimentos</li>
+                    <li><span class="plan-check">âœ“</span> Pedidos ilimitados</li>
+                    <li><span class="plan-check">âœ“</span> CatÃ¡logo de produtos ilimitado</li>
+                    <li><span class="plan-check">âœ“</span> PÃ¡gina personalizada + domÃ­nio prÃ³prio</li>
+                    <li><span class="plan-check">âœ“</span> NotificaÃ§Ãµes por WhatsApp</li>
+                    <li><span class="plan-check">âœ“</span> Pagamento via PIX integrado</li>
+                    <li><span class="plan-check">âœ“</span> Programa de fidelidade + cashback</li>
+                    <li><span class="plan-check">âœ“</span> Cupons de desconto</li>
+                    <li><span class="plan-check">âœ“</span> AvaliaÃ§Ãµes e mural de feedbacks</li>
+                    <li><span class="plan-check">âœ“</span> RelatÃ³rios de vendas</li>
+                    <li><span class="plan-cross">âœ—</span> Multi-estabelecimentos</li>
                 </ul>
                 <a href="javascript:void(0)" class="plan-cta primary" onclick="assinarPlano(3, 'Pro')">Assinar Pro</a>
             </div>
 
             <!-- Premium -->
             <div class="plan-card">
-                <div class="plan-icon">👑</div>
+                <div class="plan-icon">ðŸ‘‘</div>
                 <div class="plan-name">Premium</div>
-                <div class="plan-desc">Solução completa para operações com múltiplas unidades.</div>
+                <div class="plan-desc">SoluÃ§Ã£o completa para operaÃ§Ãµes com mÃºltiplas unidades.</div>
                 <div class="plan-price-wrap">
                     <div class="plan-price" data-monthly="22990" data-yearly="18990">
                         <span class="plan-currency">R$</span>229<span class="plan-cents">,90</span>
                     </div>
-                    <div class="plan-period">/mês</div>
+                    <div class="plan-period">/mÃªs</div>
                 </div>
                 <ul class="plan-features">
-                    <li><span class="plan-check">✓</span> Tudo do plano Pro</li>
-                    <li><span class="plan-check">✓</span> Até 5 estabelecimentos</li>
-                    <li><span class="plan-check">✓</span> Dashboard multi-loja</li>
-                    <li><span class="plan-check">✓</span> API de integração</li>
-                    <li><span class="plan-check">✓</span> Relatórios avançados + exportação</li>
-                    <li><span class="plan-check">✓</span> Suporte prioritário via WhatsApp</li>
-                    <li><span class="plan-check">✓</span> Personalização completa da marca</li>
-                    <li><span class="plan-check">✓</span> Treinamento de equipe incluso</li>
+                    <li><span class="plan-check">âœ“</span> Tudo do plano Pro</li>
+                    <li><span class="plan-check">âœ“</span> AtÃ© 5 estabelecimentos</li>
+                    <li><span class="plan-check">âœ“</span> Dashboard multi-loja</li>
+                    <li><span class="plan-check">âœ“</span> API de integraÃ§Ã£o</li>
+                    <li><span class="plan-check">âœ“</span> RelatÃ³rios avanÃ§ados + exportaÃ§Ã£o</li>
+                    <li><span class="plan-check">âœ“</span> Suporte prioritÃ¡rio via WhatsApp</li>
+                    <li><span class="plan-check">âœ“</span> PersonalizaÃ§Ã£o completa da marca</li>
+                    <li><span class="plan-check">âœ“</span> Treinamento de equipe incluso</li>
                 </ul>
                 <a href="javascript:void(0)" class="plan-cta" onclick="assinarPlano(4, 'Premium')">Assinar Premium</a>
             </div>
         </div>
     </section>
 
-    <!-- ══ TABELA COMPARATIVA ══ -->
+    <!-- â•â• TABELA COMPARATIVA â•â• -->
     <section class="compare-section">
         <div class="biz-shell">
             <div class="section-header" style="text-align:center;margin-bottom:32px;">
@@ -153,7 +154,7 @@
                     <thead>
                         <tr>
                             <th>Recurso</th>
-                            <th>Teste Grátis</th>
+                            <th>Teste GrÃ¡tis</th>
                             <th>Starter</th>
                             <th class="highlight">Pro</th>
                             <th>Premium</th>
@@ -163,75 +164,75 @@
                         <tr>
                             <td>Pedidos</td>
                             <td>50 total</td>
-                            <td>200/mês</td>
+                            <td>200/mÃªs</td>
                             <td class="highlight">Ilimitados</td>
                             <td>Ilimitados</td>
                         </tr>
                         <tr>
-                            <td>Catálogo de Produtos</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td class="highlight">✓</td>
-                            <td>✓</td>
+                            <td>CatÃ¡logo de Produtos</td>
+                            <td>âœ“</td>
+                            <td>âœ“</td>
+                            <td class="highlight">âœ“</td>
+                            <td>âœ“</td>
                         </tr>
                         <tr>
                             <td>PIX Integrado</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td class="highlight">✓</td>
-                            <td>✓</td>
+                            <td>âœ“</td>
+                            <td>âœ“</td>
+                            <td class="highlight">âœ“</td>
+                            <td>âœ“</td>
                         </tr>
                         <tr>
                             <td>WhatsApp Integrado</td>
-                            <td>✓</td>
-                            <td>✓</td>
-                            <td class="highlight">✓</td>
-                            <td>✓</td>
+                            <td>âœ“</td>
+                            <td>âœ“</td>
+                            <td class="highlight">âœ“</td>
+                            <td>âœ“</td>
                         </tr>
                         <tr>
-                            <td>Domínio Próprio</td>
-                            <td>✗</td>
-                            <td>✗</td>
-                            <td class="highlight">✓</td>
-                            <td>✓</td>
+                            <td>DomÃ­nio PrÃ³prio</td>
+                            <td>âœ—</td>
+                            <td>âœ—</td>
+                            <td class="highlight">âœ“</td>
+                            <td>âœ“</td>
                         </tr>
                         <tr>
                             <td>Fidelidade + Cashback</td>
-                            <td>✓</td>
-                            <td>✗</td>
-                            <td class="highlight">✓</td>
-                            <td>✓</td>
+                            <td>âœ“</td>
+                            <td>âœ—</td>
+                            <td class="highlight">âœ“</td>
+                            <td>âœ“</td>
                         </tr>
                         <tr>
                             <td>Cupons de Desconto</td>
-                            <td>✓</td>
-                            <td>✗</td>
-                            <td class="highlight">✓</td>
-                            <td>✓</td>
+                            <td>âœ“</td>
+                            <td>âœ—</td>
+                            <td class="highlight">âœ“</td>
+                            <td>âœ“</td>
                         </tr>
                         <tr>
-                            <td>Relatórios de Vendas</td>
-                            <td>✓</td>
-                            <td>✗</td>
-                            <td class="highlight">✓</td>
-                            <td>✓</td>
+                            <td>RelatÃ³rios de Vendas</td>
+                            <td>âœ“</td>
+                            <td>âœ—</td>
+                            <td class="highlight">âœ“</td>
+                            <td>âœ“</td>
                         </tr>
                         <tr>
                             <td>Multi-estabelecimentos</td>
-                            <td>✗</td>
-                            <td>✗</td>
-                            <td class="highlight">✗</td>
-                            <td>Até 5</td>
+                            <td>âœ—</td>
+                            <td>âœ—</td>
+                            <td class="highlight">âœ—</td>
+                            <td>AtÃ© 5</td>
                         </tr>
                         <tr>
-                            <td>API de Integração</td>
-                            <td>✗</td>
-                            <td>✗</td>
-                            <td class="highlight">✗</td>
-                            <td>✓</td>
+                            <td>API de IntegraÃ§Ã£o</td>
+                            <td>âœ—</td>
+                            <td>âœ—</td>
+                            <td class="highlight">âœ—</td>
+                            <td>âœ“</td>
                         </tr>
                         <tr>
-                            <td>Suporte Prioritário</td>
+                            <td>Suporte PrioritÃ¡rio</td>
                             <td>E-mail</td>
                             <td>E-mail</td>
                             <td class="highlight">WhatsApp</td>
@@ -243,25 +244,25 @@
         </div>
     </section>
 
-    <!-- ══ CTA FINAL ══ -->
+    <!-- â•â• CTA FINAL â•â• -->
     <section class="plans-cta">
         <div class="biz-shell">
             <div class="plans-cta-card">
-                <h2>Ainda tem dúvidas?</h2>
-                <p>Fale com um consultor e descubra o plano perfeito para o seu negócio.</p>
-                <a href="https://wa.me/5527995045666?text=Olá! Gostaria de saber mais sobre os planos do Menu Central." class="plans-cta-btn" target="_blank">Falar com Consultor →</a>
+                <h2>Ainda tem dÃºvidas?</h2>
+                <p>Fale com um consultor e descubra o plano perfeito para o seu negÃ³cio.</p>
+                <a href="https://wa.me/5527995045666?text=OlÃ¡! Gostaria de saber mais sobre os planos do Menu Central." class="plans-cta-btn" target="_blank">Falar com Consultor â†’</a>
             </div>
         </div>
     </section>
 
-    <!-- ══ MODAL ASSINATURA + BOLETO ══ -->
+    <!-- â•â• MODAL ASSINATURA + BOLETO â•â• -->
     <div class="modal-overlay" id="modalAssinatura" onclick="fecharModalAssinar(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button type="button" class="modal-close" onclick="fecharModalAssinar()">&times;</button>
 
             <!-- Etapa 1: Dados do assinante -->
             <div id="assinarEtapa1">
-                <div class="modal-icon">📋</div>
+                <div class="modal-icon">ðŸ“‹</div>
                 <h2 class="modal-title">Assinar Plano <span id="assinarPlanoNome"></span></h2>
                 <p class="modal-subtitle" id="assinarPlanoPreco"></p>
 
@@ -275,7 +276,7 @@
                         <input type="text" id="assinarCpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required />
                     </div>
                     <div class="modal-group">
-                        <label>Ciclo de cobrança</label>
+                        <label>Ciclo de cobranÃ§a</label>
                         <div class="modal-ciclo">
                             <button type="button" class="ciclo-btn active" data-ciclo="mensal" onclick="selecionarCiclo('mensal')">Mensal</button>
                             <button type="button" class="ciclo-btn" data-ciclo="anual" onclick="selecionarCiclo('anual')">Anual <small>(-20%)</small></button>
@@ -296,7 +297,7 @@
 
             <!-- Etapa 2: Boleto gerado -->
             <div id="assinarEtapa2" class="hidden">
-                <div class="modal-icon">✅</div>
+                <div class="modal-icon">âœ…</div>
                 <h2 class="modal-title">Boleto Gerado!</h2>
                 <p class="modal-subtitle">Pague o boleto para ativar sua assinatura.</p>
 
@@ -308,39 +309,39 @@
                     </div>
 
                     <div class="boleto-codigo">
-                        <label>Linha Digitável (copiar e colar)</label>
+                        <label>Linha DigitÃ¡vel (copiar e colar)</label>
                         <div class="boleto-linha-digitavel">
                             <code id="boletoLinha"></code>
-                            <button type="button" class="boleto-copiar" onclick="copiarLinhaDigitavel()">📋 Copiar</button>
+                            <button type="button" class="boleto-copiar" onclick="copiarLinhaDigitavel()">ðŸ“‹ Copiar</button>
                         </div>
                     </div>
 
                     <a href="#" id="boletoLink" class="modal-btn" target="_blank">
-                        <span>📄 Abrir Boleto PDF</span>
+                        <span>ðŸ“„ Abrir Boleto PDF</span>
                     </a>
                 </div>
 
-                <p class="boleto-aviso">⏳ Após o pagamento, sua assinatura será ativada automaticamente em até 2 dias úteis.</p>
+                <p class="boleto-aviso">â³ ApÃ³s o pagamento, sua assinatura serÃ¡ ativada automaticamente em atÃ© 2 dias Ãºteis.</p>
 
                 <button type="button" class="modal-btn-secondary" onclick="fecharModalAssinar()">Fechar</button>
             </div>
 
             <!-- Etapa: Trial ativado -->
             <div id="assinarEtapaTrial" class="hidden">
-                <div class="modal-icon modal-success-anim">🎉</div>
-                <h2 class="modal-title">Teste Grátis Ativado!</h2>
+                <div class="modal-icon modal-success-anim">ðŸŽ‰</div>
+                <h2 class="modal-title">Teste GrÃ¡tis Ativado!</h2>
                 <p class="modal-subtitle">Aproveite todos os recursos do plano Pro por 7 dias. Sem compromisso.</p>
                 <div class="trial-badge">
-                    <span>✓</span> Válido até <strong id="trialDataFim"></strong>
+                    <span>âœ“</span> VÃ¡lido atÃ© <strong id="trialDataFim"></strong>
                 </div>
-                <button type="button" class="modal-btn" onclick="fecharModalAssinar()">Entendi, vamos lá! →</button>
+                <button type="button" class="modal-btn" onclick="fecharModalAssinar()">Entendi, vamos lÃ¡! â†’</button>
             </div>
         </div>
     </div>
 
-    <!-- ══ FOOTER ══ -->
+    <!-- â•â• FOOTER â•â• -->
     <div class="biz-footer">
-        <p><a href="index.html">Início</a> · <a href="recursos.html">Recursos</a> · <a href="contato.html">Contato</a> · <a href="suporte.html">Suporte</a> · <a href="termos.html">Termos de Uso</a></p>
+        <p><a href="index.html">InÃ­cio</a> Â· <a href="recursos.html">Recursos</a> Â· <a href="contato.html">Contato</a> Â· <a href="suporte.html">Suporte</a> Â· <a href="sobre.html">Sobre</a> · <a href="termos.html">Termos de Uso</a></p>
     </div>
 
     <script src="negocios.js"></script>

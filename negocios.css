@@ -1121,6 +1121,24 @@
 .biz-footer a { color: var(--accent); text-decoration: none; }
 .biz-footer a:hover { text-decoration: underline; }
 
+/* ── Sobre (About) ── */
+.about-text-block { max-width: 720px; margin: 0 auto; }
+.about-text-block p { color: var(--muted); font-size: 1.05rem; line-height: 1.75; margin-bottom: 16px; }
+.about-text-block p:last-child { margin-bottom: 0; }
+
+.about-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.about-stat-card {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.06);
+    border-radius: 16px;
+    padding: 32px 16px;
+    text-align: center;
+    transition: transform .2s;
+}
+.about-stat-card:hover { transform: translateY(-4px); }
+.about-stat-value { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; color: var(--accent); margin-bottom: 6px; }
+.about-stat-label { font-size: .88rem; color: var(--muted); }
+
 /* ===================================================================
    RESPONSIVO
    =================================================================== */
@@ -1138,6 +1156,7 @@
     .login-branding p { margin-left: auto; margin-right: auto; }
     .login-perks { align-items: center; }
     .login-quick-links { grid-template-columns: 1fr; }
+    .about-stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 600px) {
@@ -1152,6 +1171,7 @@
     .page-hero { padding: 80px 16px 40px; }
     .login-content { padding: 80px 16px 40px; }
     .login-card { padding: 28px 20px; }
+    .about-stats-grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
