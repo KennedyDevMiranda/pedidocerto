@@ -24,6 +24,28 @@ function timeAgo(dateStr) {
 }
 
 /* ===================================================================
+   CACHE LOCAL (acessível com sistema fechado)
+   =================================================================== */
+
+const CACHE_KEYS = {
+    produtos: 'dm_cache_produtos',
+    status: 'dm_cache_status',
+    feedbacks: 'dm_cache_feedbacks_home'
+};
+
+function salvarCache(key, data) {
+    try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data })); } catch {}
+}
+
+function lerCache(key) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        return JSON.parse(raw).data;
+    } catch { return null; }
+}
+
+/* ===================================================================
    STATUS DA LOJA
    =================================================================== */
 
@@ -37,28 +59,65 @@ async function carregarStatusLoja() {
         if (!resp.ok) throw new Error();
 
         const dados = await resp.json();
-        const aberta = dados.aberta !== false;
+        salvarCache(CACHE_KEYS.status, dados);
+        aplicarStatusLoja(dados, true);
+    } catch {
+        // Tentar cache
+        const cached = lerCache(CACHE_KEYS.status);
+        if (cached) {
+            aplicarStatusLoja(cached, false);
+        } else {
+            const text = document.getElementById('storeStatusText');
+            if (text) text.textContent = 'Indisponível';
+            const horarioTexto = document.getElementById('horarioTexto');
+            if (horarioTexto) horarioTexto.textContent = 'Não foi possível verificar o horário.';
+        }
+    }
+}
 
-        // Badge do hero
-        const dot = document.querySelector('.hero-badge-dot');
-        const text = document.getElementById('storeStatusText');
-        if (dot && text) {
-            if (aberta) {
-                dot.className = 'hero-badge-dot online';
-                text.textContent = 'Loja Aberta Agora';
+function aplicarStatusLoja(dados, live) {
+    const aberta = live ? (dados.aberta !== false) : false;
+
+    // Badge do hero
+    const dot = document.querySelector('.hero-badge-dot');
+    const text = document.getElementById('storeStatusText');
+    if (dot && text) {
+        if (!live) {
+            dot.className = 'hero-badge-dot offline';
+            text.textContent = 'Sistema Offline — Navegue à vontade';
+        } else if (aberta) {
+            dot.className = 'hero-badge-dot online';
+            text.textContent = 'Loja Aberta Agora';
+        } else {
+            dot.className = 'hero-badge-dot offline';
+            text.textContent = 'Loja Fechada';
+        }
+    }
+
+    // Card de horário
+    const horarioTexto = document.getElementById('horarioTexto');
+    const statusPill = document.getElementById('statusPill');
+
+    if (!live) {
+        if (statusPill) {
+            statusPill.textContent = '● Offline';
+            statusPill.className = 'status-pill fechada';
+        }
+        if (horarioTexto) {
+            if (dados.diaAberto && dados.horaAbertura) {
+                const virada = dados.horaFechamento <= dados.horaAbertura;
+                const ate = virada ? `${dados.horaFechamento} (dia seguinte)` : dados.horaFechamento;
+                horarioTexto.textContent = `Horário de funcionamento: ${dados.horaAbertura} — ${ate}. Sistema offline no momento.`;
             } else {
-                dot.className = 'hero-badge-dot offline';
-                text.textContent = 'Loja Fechada';
+                horarioTexto.textContent = 'Sistema offline. Volte mais tarde para fazer pedidos!';
             }
         }
-
-        // Card de horário
-        const horarioTexto = document.getElementById('horarioTexto');
-        const statusPill = document.getElementById('statusPill');
-
-        if (aberta) {
+    } else if (aberta) {
+        if (statusPill) {
             statusPill.textContent = '● Aberta';
             statusPill.className = 'status-pill aberta';
+        }
+        if (horarioTexto) {
             if (dados.diaAberto && dados.horaAbertura) {
                 const virada = dados.horaFechamento <= dados.horaAbertura;
                 const ate = virada ? `${dados.horaFechamento} (dia seguinte)` : dados.horaFechamento;
@@ -66,9 +125,13 @@ async function carregarStatusLoja() {
             } else {
                 horarioTexto.textContent = 'Estamos abertos! Faça seu pedido agora.';
             }
-        } else {
+        }
+    } else {
+        if (statusPill) {
             statusPill.textContent = '● Fechada';
             statusPill.className = 'status-pill fechada';
+        }
+        if (horarioTexto) {
             if (dados.diaAberto && dados.horaAbertura) {
                 const virada = dados.horaFechamento <= dados.horaAbertura;
                 const ate = virada ? `${dados.horaFechamento} (dia seguinte)` : dados.horaFechamento;
@@ -77,17 +140,12 @@ async function carregarStatusLoja() {
                 horarioTexto.textContent = 'Estamos fechados hoje. Volte amanhã!';
             }
         }
+    }
 
-        // Endereço no footer
-        if (dados.enderecoLoja) {
-            const el = document.getElementById('footerEndereco');
-            if (el) el.textContent = dados.enderecoLoja;
-        }
-    } catch {
-        const text = document.getElementById('storeStatusText');
-        if (text) text.textContent = 'Indisponível';
-        const horarioTexto = document.getElementById('horarioTexto');
-        if (horarioTexto) horarioTexto.textContent = 'Não foi possível verificar o horário.';
+    // Endereço no footer
+    if (dados.enderecoLoja) {
+        const el = document.getElementById('footerEndereco');
+        if (el) el.textContent = dados.enderecoLoja;
     }
 }
 
@@ -105,52 +163,62 @@ async function carregarProdutosDestaque() {
 
         const produtos = await resp.json();
         const lista = Array.isArray(produtos) ? produtos : [];
-
-        if (lista.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:var(--muted);">Nenhum produto disponível no momento.</p>';
-            return;
-        }
-
-        // Mostrar até 8 produtos (priorizar promoções)
-        const ordenados = [...lista].sort((a, b) => {
-            if (a.ofertaAtiva && !b.ofertaAtiva) return -1;
-            if (!a.ofertaAtiva && b.ofertaAtiva) return 1;
-            return 0;
-        });
-        const destaques = ordenados.slice(0, 8);
-
-        container.innerHTML = destaques.map((p, i) => {
-            const temOferta = p.ofertaAtiva && p.precoPromocional > 0;
-            const precoExibido = temOferta ? p.precoPromocional : p.preco;
-
-            const imgHtml = p.imagemUrl
-                ? `<img src="${API_BASE}${p.imagemUrl}" alt="${p.nome}" class="showcase-img" loading="lazy">`
-                : `<div class="showcase-img-placeholder">📦</div>`;
-
-            const promoBadge = temOferta
-                ? `<span class="showcase-promo-badge">-${p.percentualDesconto}% OFF</span>`
-                : '';
-
-            const priceHtml = temOferta
-                ? `<span class="showcase-price-old">${formatCurrency(p.preco)}</span><span class="showcase-price">${formatCurrency(precoExibido)}</span>`
-                : `<span class="showcase-price">${formatCurrency(precoExibido)}</span>`;
-
-            return `
-            <a href="index.html" class="showcase-card animate-on-scroll" style="animation-delay:${i * 80}ms">
-                ${imgHtml}
-                <div class="showcase-body">
-                    ${promoBadge}
-                    <h3>${p.nome}</h3>
-                    <p class="showcase-desc">${p.descricao || ''}</p>
-                    <div>${priceHtml}</div>
-                </div>
-            </a>`;
-        }).join('');
-
-        initScrollAnimations();
+        salvarCache(CACHE_KEYS.produtos, lista);
+        renderProdutosDestaque(lista, container);
     } catch {
-        container.innerHTML = '<p style="text-align:center;color:var(--muted);">Não foi possível carregar os produtos.</p>';
+        // Tentar cache
+        const cached = lerCache(CACHE_KEYS.produtos);
+        if (cached && cached.length) {
+            renderProdutosDestaque(cached, container);
+        } else {
+            container.innerHTML = '<p style="text-align:center;color:var(--muted);">Nenhum produto disponível no momento.</p>';
+        }
     }
+}
+
+function renderProdutosDestaque(lista, container) {
+    if (lista.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:var(--muted);">Nenhum produto disponível no momento.</p>';
+        return;
+    }
+
+    // Mostrar até 8 produtos (priorizar promoções)
+    const ordenados = [...lista].sort((a, b) => {
+        if (a.ofertaAtiva && !b.ofertaAtiva) return -1;
+        if (!a.ofertaAtiva && b.ofertaAtiva) return 1;
+        return 0;
+    });
+    const destaques = ordenados.slice(0, 8);
+
+    container.innerHTML = destaques.map((p, i) => {
+        const temOferta = p.ofertaAtiva && p.precoPromocional > 0;
+        const precoExibido = temOferta ? p.precoPromocional : p.preco;
+
+        const imgHtml = p.imagemUrl
+            ? `<img src="${API_BASE}${p.imagemUrl}" alt="${p.nome}" class="showcase-img" loading="lazy">`
+            : `<div class="showcase-img-placeholder">📦</div>`;
+
+        const promoBadge = temOferta
+            ? `<span class="showcase-promo-badge">-${p.percentualDesconto}% OFF</span>`
+            : '';
+
+        const priceHtml = temOferta
+            ? `<span class="showcase-price-old">${formatCurrency(p.preco)}</span><span class="showcase-price">${formatCurrency(precoExibido)}</span>`
+            : `<span class="showcase-price">${formatCurrency(precoExibido)}</span>`;
+
+        return `
+        <a href="index.html" class="showcase-card animate-on-scroll" style="animation-delay:${i * 80}ms">
+            ${imgHtml}
+            <div class="showcase-body">
+                ${promoBadge}
+                <h3>${p.nome}</h3>
+                <p class="showcase-desc">${p.descricao || ''}</p>
+                <div>${priceHtml}</div>
+            </div>
+        </a>`;
+    }).join('');
+
+    initScrollAnimations();
 }
 
 /* ===================================================================
@@ -166,60 +234,70 @@ async function carregarAvaliacoes() {
         if (!resp.ok) throw new Error();
 
         const data = await resp.json();
-
-        // Summary
-        const bigValue = document.getElementById('bigScoreValue');
-        const bigStars = document.getElementById('bigScoreStars');
-        const bigCount = document.getElementById('bigScoreCount');
-
-        if (bigValue) bigValue.textContent = data.mediaGeral.toFixed(1);
-        if (bigStars) bigStars.textContent = gerarEstrelas(Math.round(data.mediaGeral));
-        if (bigCount) bigCount.textContent = `${data.total} avaliações`;
-
-        // Stats no hero
-        const statNota = document.getElementById('statNota');
-        const statFeedbacks = document.getElementById('statFeedbacks');
-        if (statNota) statNota.textContent = `${data.mediaGeral.toFixed(1)} ★`;
-        if (statFeedbacks) statFeedbacks.textContent = data.total;
-
-        // Cards
-        const feedbacks = data.feedbacks || [];
-        if (feedbacks.length === 0) {
-            carousel.innerHTML = '<p style="text-align:center;color:var(--muted);">Nenhuma avaliação ainda.</p>';
-            return;
-        }
-
-        carousel.innerHTML = feedbacks.map((fb, i) => {
-            const iniciais = (fb.nomeCliente || '?')
-                .split(' ')
-                .map(n => n[0])
-                .slice(0, 2)
-                .join('')
-                .toUpperCase();
-
-            const produtoTag = fb.produtoNome
-                ? `<span class="review-product">${fb.produtoNome}</span>`
-                : '';
-
-            return `
-            <div class="review-card animate-on-scroll" style="animation-delay:${i * 100}ms">
-                <div class="review-header">
-                    <div class="review-avatar">${iniciais}</div>
-                    <div class="review-meta">
-                        <div class="review-name">${fb.nomeCliente || 'Cliente'}</div>
-                        <div class="review-stars">${gerarEstrelas(fb.nota)}</div>
-                    </div>
-                </div>
-                ${produtoTag}
-                <p class="review-comment">${fb.comentario || ''}</p>
-                <div class="review-date">${timeAgo(fb.criadoEm)}</div>
-            </div>`;
-        }).join('');
-
-        initScrollAnimations();
+        salvarCache(CACHE_KEYS.feedbacks, data);
+        renderAvaliacoes(data, carousel);
     } catch {
-        carousel.innerHTML = '<p style="text-align:center;color:var(--muted);">Não foi possível carregar avaliações.</p>';
+        // Tentar cache
+        const cached = lerCache(CACHE_KEYS.feedbacks);
+        if (cached) {
+            renderAvaliacoes(cached, carousel);
+        } else {
+            carousel.innerHTML = '<p style="text-align:center;color:var(--muted);">Não foi possível carregar avaliações.</p>';
+        }
     }
+}
+
+function renderAvaliacoes(data, carousel) {
+    // Summary
+    const bigValue = document.getElementById('bigScoreValue');
+    const bigStars = document.getElementById('bigScoreStars');
+    const bigCount = document.getElementById('bigScoreCount');
+
+    if (bigValue) bigValue.textContent = data.mediaGeral.toFixed(1);
+    if (bigStars) bigStars.textContent = gerarEstrelas(Math.round(data.mediaGeral));
+    if (bigCount) bigCount.textContent = `${data.total} avaliações`;
+
+    // Stats no hero
+    const statNota = document.getElementById('statNota');
+    const statFeedbacks = document.getElementById('statFeedbacks');
+    if (statNota) statNota.textContent = `${data.mediaGeral.toFixed(1)} ★`;
+    if (statFeedbacks) statFeedbacks.textContent = data.total;
+
+    // Cards
+    const feedbacks = data.feedbacks || [];
+    if (feedbacks.length === 0) {
+        carousel.innerHTML = '<p style="text-align:center;color:var(--muted);">Nenhuma avaliação ainda.</p>';
+        return;
+    }
+
+    carousel.innerHTML = feedbacks.map((fb, i) => {
+        const iniciais = (fb.nomeCliente || '?')
+            .split(' ')
+            .map(n => n[0])
+            .slice(0, 2)
+            .join('')
+            .toUpperCase();
+
+        const produtoTag = fb.produtoNome
+            ? `<span class="review-product">${fb.produtoNome}</span>`
+            : '';
+
+        return `
+        <div class="review-card animate-on-scroll" style="animation-delay:${i * 100}ms">
+            <div class="review-header">
+                <div class="review-avatar">${iniciais}</div>
+                <div class="review-meta">
+                    <div class="review-name">${fb.nomeCliente || 'Cliente'}</div>
+                    <div class="review-stars">${gerarEstrelas(fb.nota)}</div>
+                </div>
+            </div>
+            ${produtoTag}
+            <p class="review-comment">${fb.comentario || ''}</p>
+            <div class="review-date">${timeAgo(fb.criadoEm)}</div>
+        </div>`;
+    }).join('');
+
+    initScrollAnimations();
 }
 
 function gerarEstrelas(nota) {

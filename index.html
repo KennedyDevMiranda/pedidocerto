@@ -471,13 +471,10 @@
         <p>Desenvolvido por <strong>DevMiranda</strong></p>
     </footer>
 
-    <div class="offline-overlay" id="offlineOverlay">
-        <div class="offline-content">
-            <span class="offline-icon">🔌</span>
-            <h2>Loja Offline</h2>
-            <p>O sistema não está disponível no momento. Aguarde a loja ficar online para realizar pedidos.</p>
-            <div class="offline-pulse"></div>
-        </div>
+    <div class="offline-banner" id="offlineBanner">
+        <span class="offline-banner-icon">📡</span>
+        <span class="offline-banner-text">Sistema indisponível — Você pode navegar pelos produtos. Pedidos serão liberados quando a loja estiver online.</span>
+        <button class="offline-banner-close" onclick="this.parentElement.classList.remove('visible')" aria-label="Fechar">✕</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>

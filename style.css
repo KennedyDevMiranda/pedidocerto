@@ -928,54 +928,62 @@ body {
 
 /* ---- Offline Overlay ---- */
 
-.offline-overlay {
+/* ---- Banner Offline (não-bloqueante) ---- */
+
+.offline-banner {
     display: none;
     position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(6px);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 900;
+    background: linear-gradient(135deg, #1e293b, #334155);
+    color: #fff;
+    padding: 14px 20px;
     align-items: center;
-    justify-content: center;
+    gap: 12px;
+    font-size: .88rem;
+    font-weight: 600;
+    box-shadow: 0 -4px 20px rgba(0,0,0,.15);
+    animation: slideInUp .4s ease-out;
 }
 
-.offline-overlay.visible {
+.offline-banner.visible {
     display: flex;
 }
 
-.offline-content {
-    text-align: center;
+.offline-banner-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.offline-banner-text {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.offline-banner-close {
+    background: rgba(255,255,255,.15);
+    border: none;
     color: #fff;
-    max-width: 380px;
-    padding: 32px;
-    animation: fadeInUp .4s ease-out;
-}
-
-.offline-icon {
-    font-size: 3.5rem;
-    display: block;
-    margin-bottom: 16px;
-}
-
-.offline-content h2 {
-    font-size: 1.6rem;
-    margin-bottom: 10px;
-}
-
-.offline-content p {
-    font-size: .92rem;
-    color: rgba(255,255,255,.78);
-    line-height: 1.5;
-}
-
-.offline-pulse {
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    margin: 24px auto 0;
-    animation: spin .8s linear infinite;
+    font-size: .8rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    transition: background .2s;
+}
+
+.offline-banner-close:hover {
+    background: rgba(255,255,255,.25);
+}
+
+@keyframes slideInUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes spin {

@@ -462,6 +462,22 @@ function initStarFilter() {
     });
 }
 
+/* ──────────── Cache local (acessível offline) ──────────── */
+
+const CACHE_MURAL = 'dm_cache_mural';
+
+function salvarCache(key, data) {
+    try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data })); } catch {}
+}
+
+function lerCache(key) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        return JSON.parse(raw).data;
+    } catch { return null; }
+}
+
 /* ──────────── Carregar Mural ──────────── */
 
 async function carregarMural(append = false) {
@@ -471,57 +487,78 @@ async function carregarMural(append = false) {
             state.muralTamanho,
             state.muralFiltroNota
         ));
-        if (!res.ok) return;
+        if (!res.ok) throw new Error('Falha ao carregar');
 
         const data = await res.json();
         state.muralTotal = data.total;
 
+        // Cache da primeira página sem filtro
+        if (!append && state.muralFiltroNota === 0) {
+            salvarCache(CACHE_MURAL, data);
+        }
+
         if (!append) state.muralPagina = 1;
 
-        // Média
-        $('#muralMedia').textContent = data.mediaGeral.toFixed(1);
-        $('#muralTotal').textContent = data.total;
-
-        // Contagem por estrela
-        if (data.contagemEstrelas) {
-            data.contagemEstrelas.forEach(item => {
-                const el = document.getElementById(`filterCount${item.estrela}`);
-                if (el) el.textContent = item.quantidade;
-            });
-        }
-
-        // Lista
-        const container = $('#muralLista');
-        const html = data.feedbacks.map(fb => renderMuralCard(fb)).join('');
-
-        if (append) {
-            container.insertAdjacentHTML('beforeend', html);
-        } else {
-            if (data.feedbacks.length > 0) {
-                container.innerHTML = html;
-            } else {
-                const msg = state.muralFiltroNota > 0
-                    ? `Nenhum feedback com ${'★'.repeat(state.muralFiltroNota)} ainda.`
-                    : 'Nenhum feedback ainda. Seja o primeiro! ⭐';
-                container.innerHTML = `<div class="empty-state">${msg}</div>`;
-            }
-        }
-
-        // Botão carregar mais
-        const btnMais = $('#btnCarregarMais');
-        const totalExibido = state.muralPagina * state.muralTamanho;
-        if (totalExibido < state.muralTotal) {
-            btnMais.classList.remove('hidden');
-            btnMais.onclick = () => {
-                state.muralPagina++;
-                carregarMural(true);
-            };
-        } else {
-            btnMais.classList.add('hidden');
-        }
+        renderMuralData(data, append);
 
     } catch (err) {
         console.error('Erro ao carregar mural:', err);
+
+        // Tentar cache local quando offline
+        if (!append && state.muralFiltroNota === 0) {
+            const cached = lerCache(CACHE_MURAL);
+            if (cached) {
+                state.muralTotal = cached.total;
+                renderMuralData(cached, false);
+                return;
+            }
+        }
+    }
+}
+
+function renderMuralData(data, append) {
+    // Média
+    const mediaEl = $('#muralMedia');
+    const totalEl = $('#muralTotal');
+    if (mediaEl) mediaEl.textContent = data.mediaGeral.toFixed(1);
+    if (totalEl) totalEl.textContent = data.total;
+
+    // Contagem por estrela
+    if (data.contagemEstrelas) {
+        data.contagemEstrelas.forEach(item => {
+            const el = document.getElementById(`filterCount${item.estrela}`);
+            if (el) el.textContent = item.quantidade;
+        });
+    }
+
+    // Lista
+    const container = $('#muralLista');
+    const html = data.feedbacks.map(fb => renderMuralCard(fb)).join('');
+
+    if (append) {
+        container.insertAdjacentHTML('beforeend', html);
+    } else {
+        if (data.feedbacks.length > 0) {
+            container.innerHTML = html;
+        } else {
+            const msg = state.muralFiltroNota > 0
+                ? `Nenhum feedback com ${'★'.repeat(state.muralFiltroNota)} ainda.`
+                : 'Nenhum feedback ainda. Seja o primeiro! ⭐';
+            container.innerHTML = `<div class="empty-state">${msg}</div>`;
+        }
+    }
+
+    // Botão carregar mais
+    const btnMais = $('#btnCarregarMais');
+    const totalExibido = state.muralPagina * state.muralTamanho;
+    if (totalExibido < state.muralTotal) {
+        btnMais.classList.remove('hidden');
+        btnMais.onclick = () => {
+            state.muralPagina++;
+            carregarMural(true);
+        };
+    } else {
+        btnMais.classList.add('hidden');
     }
 }
 

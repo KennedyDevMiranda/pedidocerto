@@ -41,12 +41,33 @@ const PIX_CONFIG = {
     cidade: 'ESPIRITO SANTO'           // Cidade do recebedor (até 15 caracteres, sem acentos)
 };
 
+/* ---------- Cache Local (site acessível offline) ---------- */
+
+const CACHE_KEYS = {
+    produtos: 'dm_cache_produtos',
+    status: 'dm_cache_status',
+    cupons: 'dm_cache_cupons'
+};
+
+function salvarCache(key, data) {
+    try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data })); } catch {}
+}
+
+function lerCache(key) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        return JSON.parse(raw).data;
+    } catch { return null; }
+}
+
 /* ---------- Estado global ---------- */
 
 const state = {
     step: 1,
     produtos: [],
     carrinho: [],
+    sistemaOnline: null,
     cliente: {
         id: null,
         cpf: '',
@@ -178,16 +199,34 @@ function validarCpf(cpf) {
    PRODUTOS (GET /api/produtos?busca=)
    =================================================================== */
 
+// Carregar cache de produtos imediatamente para exibição rápida
+(function carregarProdutosDoCache() {
+    const cached = lerCache(CACHE_KEYS.produtos);
+    if (cached && cached.length && !state.produtos.length) {
+        state.produtos = cached;
+        renderProdutos();
+    }
+})();
+
 async function carregarProdutos(busca = '') {
     try {
         const resp = await fetch(ENDPOINTS.listarProdutos(busca));
         if (!resp.ok) throw new Error();
         const dados = await resp.json();
         state.produtos = Array.isArray(dados) ? dados : [];
+        if (!busca) salvarCache(CACHE_KEYS.produtos, state.produtos);
         renderProdutos();
     } catch {
+        // Tentar cache local
+        if (!busca) {
+            const cached = lerCache(CACHE_KEYS.produtos);
+            if (cached && cached.length) {
+                state.produtos = cached;
+                renderProdutos();
+                return;
+            }
+        }
         listaProdutos.innerHTML = '<div class="empty-state">Não foi possível carregar os produtos do estoque.</div>';
-        showToast('Erro ao carregar produtos.', 'error');
     }
 }
 
@@ -208,9 +247,17 @@ async function carregarCuponsDisponiveis() {
         const resp = await fetch(ENDPOINTS.cuponsDisponiveis);
         if (!resp.ok) throw new Error();
         const cupons = await resp.json();
-        renderCupons(Array.isArray(cupons) ? cupons : []);
+        const lista = Array.isArray(cupons) ? cupons : [];
+        salvarCache(CACHE_KEYS.cupons, lista);
+        renderCupons(lista);
     } catch {
-        bannerCupons.classList.add('hidden');
+        // Tentar cache
+        const cached = lerCache(CACHE_KEYS.cupons);
+        if (cached && cached.length) {
+            renderCupons(cached);
+        } else {
+            bannerCupons.classList.add('hidden');
+        }
     }
 }
 
@@ -290,6 +337,10 @@ function renderProdutos() {
    =================================================================== */
 
 function adicionarAoCarrinho(produtoId) {
+    if (!state.sistemaOnline) {
+        showToast('Aguarde a loja ficar online para adicionar itens.', 'error');
+        return;
+    }
     const p = state.produtos.find(x => x.id === produtoId);
     if (!p) return;
 
@@ -877,6 +928,11 @@ function removerCupom() {
 async function enviarPedido(e) {
     e.preventDefault();
     if (state.step !== 6) return;
+
+    if (!state.sistemaOnline) {
+        showToast('O sistema está offline. Aguarde a loja ficar online para enviar o pedido.', 'error');
+        return;
+    }
 
     const btn = document.getElementById('btnEnviar');
     btn.disabled = true;
@@ -1580,7 +1636,7 @@ let storeOnline = null;
 
 async function verificarStatusLoja() {
     const badge = document.getElementById('storeStatus');
-    const overlay = document.getElementById('offlineOverlay');
+    const banner = document.getElementById('offlineBanner');
     const text = badge.querySelector('.status-text');
 
     try {
@@ -1593,17 +1649,23 @@ async function verificarStatusLoja() {
             const dados = await resp.json();
             const aberta = dados.aberta !== false;
 
+            // Guardar no cache para uso offline
+            salvarCache(CACHE_KEYS.status, dados);
+
             if (dados.enderecoLoja) {
                 state.enderecoLoja = dados.enderecoLoja;
                 const lojaTexto = document.getElementById('enderecoLojaTexto');
                 if (lojaTexto) lojaTexto.textContent = dados.enderecoLoja;
             }
 
+            // Sistema online → habilitar pedidos
+            state.sistemaOnline = true;
+            if (banner) banner.classList.remove('visible');
+
             if (aberta) {
                 if (storeOnline !== true) {
                     badge.className = 'store-status online';
                     text.textContent = 'Loja Online';
-                    overlay.classList.remove('visible');
                     storeOnline = true;
                     carregarProdutos();
                 }
@@ -1613,30 +1675,57 @@ async function verificarStatusLoja() {
                     ? `Horário: ${dados.horaAbertura} - ${dados.horaFechamento}`
                     : 'Fechado hoje';
                 text.textContent = 'Loja Fechada';
-                const overlayContent = overlay.querySelector('.offline-content');
-                if (overlayContent) {
-                    overlayContent.querySelector('h2').textContent = 'Loja Fechada';
-                    if (dados.diaAberto && dados.horaAbertura) {
-                        const virada = dados.horaFechamento <= dados.horaAbertura;
-                        const ate = virada ? `${dados.horaFechamento} (dia seguinte)` : dados.horaFechamento;
-                        overlayContent.querySelector('p').textContent =
-                            `Nosso horário de funcionamento hoje é das ${dados.horaAbertura} às ${ate}. Volte no horário de atendimento!`;
-                    } else {
-                        overlayContent.querySelector('p').textContent = 'Estamos fechados hoje. Volte amanhã!';
-                    }
-                }
-                overlay.classList.add('visible');
                 storeOnline = false;
+
+                // Loja fechada mas sistema online → mostrar banner informativo (não bloqueia)
+                if (banner) {
+                    const bannerText = banner.querySelector('.offline-banner-text');
+                    if (bannerText) {
+                        if (dados.diaAberto && dados.horaAbertura) {
+                            const virada = dados.horaFechamento <= dados.horaAbertura;
+                            const ate = virada ? `${dados.horaFechamento} (dia seguinte)` : dados.horaFechamento;
+                            bannerText.textContent = `⏰ Loja fechada agora — Horário: ${dados.horaAbertura} às ${ate}`;
+                        } else {
+                            bannerText.textContent = '⏰ Estamos fechados hoje. Volte amanhã!';
+                        }
+                    }
+                    banner.classList.add('visible');
+                }
             }
             return;
         }
         throw new Error();
     } catch {
+        // Sistema offline → modo visualização
+        state.sistemaOnline = false;
         if (storeOnline !== false) {
             badge.className = 'store-status offline';
-            text.textContent = 'Loja Offline';
-            overlay.classList.add('visible');
+            text.textContent = 'Sistema Offline';
             storeOnline = false;
+        }
+
+        // Mostrar banner não-bloqueante
+        if (banner) {
+            const bannerText = banner.querySelector('.offline-banner-text');
+            if (bannerText) bannerText.textContent = '📡 Sistema indisponível — Você pode navegar pelos produtos. Pedidos serão liberados quando a loja estiver online.';
+            banner.classList.add('visible');
+        }
+
+        // Carregar produtos do cache se ainda não carregados
+        if (!state.produtos.length) {
+            const cached = lerCache(CACHE_KEYS.produtos);
+            if (cached && cached.length) {
+                state.produtos = cached;
+                renderProdutos();
+            }
+        }
+
+        // Carregar status do cache para endereço
+        const cachedStatus = lerCache(CACHE_KEYS.status);
+        if (cachedStatus && cachedStatus.enderecoLoja) {
+            state.enderecoLoja = cachedStatus.enderecoLoja;
+            const lojaTexto = document.getElementById('enderecoLojaTexto');
+            if (lojaTexto) lojaTexto.textContent = cachedStatus.enderecoLoja;
         }
     }
 }
