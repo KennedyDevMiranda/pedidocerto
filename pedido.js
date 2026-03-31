@@ -1655,7 +1655,7 @@ async function verificarStatusLoja() {
             if (dados.enderecoLoja) {
                 state.enderecoLoja = dados.enderecoLoja;
                 const lojaTexto = document.getElementById('enderecoLojaTexto');
-                if (lojaTexto) lojaTexto.textContent = dados.enderecoLoja;
+                if (lojaTexto) { lojaTexto.textContent = dados.enderecoLoja; lojaTexto.style.opacity = '1'; }
             }
 
             // Sistema online → habilitar pedidos
@@ -1725,7 +1725,7 @@ async function verificarStatusLoja() {
         if (cachedStatus && cachedStatus.enderecoLoja) {
             state.enderecoLoja = cachedStatus.enderecoLoja;
             const lojaTexto = document.getElementById('enderecoLojaTexto');
-            if (lojaTexto) lojaTexto.textContent = cachedStatus.enderecoLoja;
+            if (lojaTexto) { lojaTexto.textContent = cachedStatus.enderecoLoja; lojaTexto.style.opacity = '1'; }
         }
     }
 }

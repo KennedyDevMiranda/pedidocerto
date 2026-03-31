@@ -109,7 +109,10 @@
                     </div>
 
                     <div class="products-list" id="listaProdutos">
-                        <div class="empty-state">Carregando cardápio...</div>
+                        <div class="skeleton" style="height:72px;margin-bottom:10px"></div>
+                        <div class="skeleton" style="height:72px;margin-bottom:10px"></div>
+                        <div class="skeleton" style="height:72px;margin-bottom:10px"></div>
+                        <div class="skeleton" style="height:72px"></div>
                     </div>
 
                     <div class="sticky-actions">
@@ -247,7 +250,7 @@
                             <div class="address-info-icon">🏪</div>
                             <div>
                                 <strong>Retirar no estabelecimento</strong>
-                                <p id="enderecoLojaTexto">Carregando endereço da loja...</p>
+                                <p id="enderecoLojaTexto" style="opacity:0;transition:opacity .3s">&nbsp;</p>
                             </div>
                         </div>
                         <p class="address-info-note">⚠️ Sem taxa de entrega nesta opção.</p>

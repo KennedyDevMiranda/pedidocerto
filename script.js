@@ -74,6 +74,8 @@ async function carregarStatusLoja() {
             if (text) text.textContent = 'Indisponível';
             const horarioTexto = document.getElementById('horarioTexto');
             if (horarioTexto) horarioTexto.textContent = 'Não foi possível verificar o horário.';
+            const hCard = document.getElementById('horarioCard');
+            if (hCard) hCard.style.opacity = '1';
         }
     }
 }
@@ -150,6 +152,10 @@ function aplicarStatusLoja(dados, live) {
         const el = document.getElementById('footerEndereco');
         if (el) el.textContent = dados.enderecoLoja;
     }
+
+    // Revelar card de horário (começa oculto para evitar "Carregando...")
+    const hCard = document.getElementById('horarioCard');
+    if (hCard) hCard.style.opacity = '1';
 }
 
 /* ===================================================================
