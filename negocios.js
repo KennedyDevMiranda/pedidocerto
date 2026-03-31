@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (salvo && salvo.length === 11) {
         cpfInput.value = formatarCPF(salvo);
 
-        fetch(`${API_BASE_LOGIN}/api/clientes/documento/${salvo}`)
+        fetch(`${API_BASE}/api/clientes/documento/${salvo}`)
             .then(r => r.ok ? r.json() : null)
             .then(cliente => {
                 if (cliente && cliente.nome) {
@@ -233,9 +233,9 @@ let assinarCicloSelecionado = 'mensal';
 /* Preços em centavos */
 const PRECOS = {
     1: { mensal: 0, anual: 0 },
-    2: { mensal: 4990, anual: 3990 },
-    3: { mensal: 9990, anual: 7990 },
-    4: { mensal: 19990, anual: 15990 }
+    2: { mensal: 7990, anual: 6990 },
+    3: { mensal: 12990, anual: 10990 },
+    4: { mensal: 22990, anual: 18990 }
 };
 
 function assinarPlano(planoId, planoNome) {
@@ -531,7 +531,7 @@ async function solicitarCodigo(e) {
     if (errEl) errEl.classList.add('hidden');
 
     try {
-        const resp = await fetch(`${API_BASE_LOGIN}/api/recuperar-senha/solicitar`, {
+        const resp = await fetch(`${API_BASE}/api/recuperar-senha/solicitar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ login })
@@ -628,7 +628,7 @@ async function verificarCodigo(e) {
     if (errEl) errEl.classList.add('hidden');
 
     try {
-        const resp = await fetch(`${API_BASE_LOGIN}/api/recuperar-senha/verificar`, {
+        const resp = await fetch(`${API_BASE}/api/recuperar-senha/verificar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ login: recoveryLogin, codigo })
@@ -689,7 +689,7 @@ async function redefinirSenha(e) {
     if (errEl) errEl.classList.add('hidden');
 
     try {
-        const resp = await fetch(`${API_BASE_LOGIN}/api/recuperar-senha/redefinir`, {
+        const resp = await fetch(`${API_BASE}/api/recuperar-senha/redefinir`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
