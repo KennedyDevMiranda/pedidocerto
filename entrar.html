@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Menu Central — Entrar | Painel do Negócio</title>
+    <title>Menu Central — Entrar</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="negocios.css" />
 </head>
@@ -29,58 +29,146 @@
     <!-- ══ LOGIN ══ -->
     <div class="login-content">
         <div class="login-grid">
-            <!-- Branding -->
+            <!-- Branding — muda conforme a aba -->
             <div class="login-branding">
                 <span class="logo-icon">🍽️</span>
-                <h1>Gerencie seu negócio de <span>qualquer lugar</span></h1>
-                <p>Acesse o painel do Menu Central para acompanhar pedidos, gerenciar produtos e ver relatórios em tempo real.</p>
-                <div class="login-perks">
-                    <div class="login-perk">
-                        <div class="login-perk-icon">📊</div>
-                        <span>Dashboard com vendas em tempo real</span>
+
+                <!-- Branding: Cliente -->
+                <div class="login-branding-panel active" id="brandingCliente">
+                    <h1>Faça seu pedido de forma <span>rápida e fácil</span></h1>
+                    <p>Identifique-se com seu CPF para acessar o cardápio, fazer pedidos, acumular pontos e usar cupons de desconto.</p>
+                    <div class="login-perks">
+                        <div class="login-perk">
+                            <div class="login-perk-icon">🛒</div>
+                            <span>Faça pedidos online rapidamente</span>
+                        </div>
+                        <div class="login-perk">
+                            <div class="login-perk-icon">🏆</div>
+                            <span>Acumule pontos e ganhe cashback</span>
+                        </div>
+                        <div class="login-perk">
+                            <div class="login-perk-icon">🎟️</div>
+                            <span>Use cupons de desconto exclusivos</span>
+                        </div>
+                        <div class="login-perk">
+                            <div class="login-perk-icon">⭐</div>
+                            <span>Avalie e acompanhe seu histórico</span>
+                        </div>
                     </div>
-                    <div class="login-perk">
-                        <div class="login-perk-icon">📦</div>
-                        <span>Gerenciamento de produtos e estoque</span>
-                    </div>
-                    <div class="login-perk">
-                        <div class="login-perk-icon">📋</div>
-                        <span>Acompanhe pedidos ao vivo</span>
-                    </div>
-                    <div class="login-perk">
-                        <div class="login-perk-icon">📄</div>
-                        <span>Relatórios e exportações</span>
+                </div>
+
+                <!-- Branding: Admin -->
+                <div class="login-branding-panel" id="brandingAdmin">
+                    <h1>Gerencie seu negócio de <span>qualquer lugar</span></h1>
+                    <p>Acesse o painel do Menu Central para acompanhar pedidos, gerenciar produtos e ver relatórios em tempo real.</p>
+                    <div class="login-perks">
+                        <div class="login-perk">
+                            <div class="login-perk-icon">📊</div>
+                            <span>Dashboard com vendas em tempo real</span>
+                        </div>
+                        <div class="login-perk">
+                            <div class="login-perk-icon">📦</div>
+                            <span>Gerenciamento de produtos e estoque</span>
+                        </div>
+                        <div class="login-perk">
+                            <div class="login-perk-icon">📋</div>
+                            <span>Acompanhe pedidos ao vivo</span>
+                        </div>
+                        <div class="login-perk">
+                            <div class="login-perk-icon">📄</div>
+                            <span>Relatórios e exportações</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Login Card -->
             <div class="login-card">
-                <h2>Entrar no Painel</h2>
-                <p class="login-subtitle">Acesse sua conta para gerenciar seu negócio.</p>
+                <!-- Role Selector -->
+                <div class="role-selector">
+                    <button type="button" class="role-tab active" data-role="cliente" onclick="trocarPerfil('cliente')">
+                        <span class="role-tab-icon">🛒</span> Sou Cliente
+                    </button>
+                    <button type="button" class="role-tab" data-role="admin" onclick="trocarPerfil('admin')">
+                        <span class="role-tab-icon">💼</span> Sou Dono de Negócio
+                    </button>
+                </div>
 
-                <form id="loginForm" onsubmit="fazerLogin(event)">
-                    <div class="login-group">
-                        <label for="loginEmail">E-mail</label>
-                        <input type="email" id="loginEmail" placeholder="seu@email.com" required />
-                    </div>
-                    <div class="login-group">
-                        <label for="loginSenha">Senha</label>
-                        <input type="password" id="loginSenha" placeholder="Sua senha" required />
-                    </div>
-                    <div class="login-options">
-                        <label class="login-remember">
-                            <input type="checkbox" id="loginLembrar" /> Lembrar de mim
-                        </label>
-                        <a href="https://wa.me/5527995045666?text=Olá! Esqueci minha senha do Menu Central e preciso de ajuda." class="login-forgot" target="_blank">Esqueci a senha</a>
-                    </div>
-                    <button type="submit" class="login-btn">Entrar</button>
-                </form>
+                <!-- ══ PAINEL: CLIENTE (CPF) ══ -->
+                <div class="login-panel active" id="panelCliente">
+                    <h2>Acessar como Cliente</h2>
+                    <p class="login-subtitle">Informe seu CPF para fazer pedidos e acumular pontos.</p>
 
-                <div class="login-divider">ou</div>
+                    <div id="clienteWelcomeBack" class="cliente-welcome hidden">
+                        <div class="cliente-welcome-icon">👋</div>
+                        <div class="cliente-welcome-info">
+                            <div class="cliente-welcome-name" id="clienteWelcomeNome"></div>
+                            <div class="cliente-welcome-cpf" id="clienteWelcomeCpf"></div>
+                        </div>
+                    </div>
 
-                <div class="login-register">
-                    Ainda não tem conta? <a href="https://wa.me/5527995045666?text=Olá! Gostaria de criar minha conta no Menu Central." target="_blank">Comece Grátis →</a>
+                    <form id="clienteForm" onsubmit="entrarCliente(event)">
+                        <div class="login-group" id="cpfInputGroup">
+                            <label for="clienteCpf">CPF</label>
+                            <input type="text" id="clienteCpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required />
+                        </div>
+                        <div class="login-options">
+                            <label class="login-remember">
+                                <input type="checkbox" id="clienteLembrar" checked /> Lembrar meu CPF
+                            </label>
+                        </div>
+                        <button type="submit" class="login-btn" id="btnEntrarCliente">
+                            <span>Continuar para Pedido</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </form>
+
+                    <div id="clienteTrocarArea" class="hidden" style="text-align:center;margin-top:12px">
+                        <button type="button" class="login-change-cpf" onclick="trocarCpfCliente()">Usar outro CPF</button>
+                    </div>
+
+                    <div class="login-divider">ou acesse diretamente</div>
+
+                    <div class="login-quick-links">
+                        <a href="pedido.html" class="login-quick-link">
+                            <span class="login-quick-icon">🛒</span>
+                            <span>Fazer Pedido</span>
+                        </a>
+                        <a href="feedback.html" class="login-quick-link">
+                            <span class="login-quick-icon">⭐</span>
+                            <span>Feedback & Fidelidade</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ══ PAINEL: ADMIN (E-MAIL + SENHA) ══ -->
+                <div class="login-panel" id="panelAdmin">
+                    <h2>Entrar no Painel</h2>
+                    <p class="login-subtitle">Acesse sua conta para gerenciar seu negócio.</p>
+
+                    <form id="loginForm" onsubmit="fazerLogin(event)">
+                        <div class="login-group">
+                            <label for="loginEmail">E-mail</label>
+                            <input type="email" id="loginEmail" placeholder="seu@email.com" required />
+                        </div>
+                        <div class="login-group">
+                            <label for="loginSenha">Senha</label>
+                            <input type="password" id="loginSenha" placeholder="Sua senha" required />
+                        </div>
+                        <div class="login-options">
+                            <label class="login-remember">
+                                <input type="checkbox" id="loginLembrar" /> Lembrar de mim
+                            </label>
+                            <a href="https://wa.me/5527995045666?text=Olá! Esqueci minha senha do Menu Central e preciso de ajuda." class="login-forgot" target="_blank">Esqueci a senha</a>
+                        </div>
+                        <button type="submit" class="login-btn" id="btnEntrarAdmin">Entrar</button>
+                    </form>
+
+                    <div class="login-divider">ou</div>
+
+                    <div class="login-register">
+                        Ainda não tem conta? <a href="https://wa.me/5527995045666?text=Olá! Gostaria de criar minha conta no Menu Central." target="_blank">Comece Grátis →</a>
+                    </div>
                 </div>
             </div>
         </div>
