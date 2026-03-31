@@ -312,7 +312,14 @@ function initFeedbackForm() {
                 body: JSON.stringify(dto)
             });
 
-            const data = await res.json();
+            let data;
+            try {
+                data = await res.json();
+            } catch {
+                showToast(`Erro no servidor (${res.status}). Tente novamente.`, 'error');
+                console.error('Resposta não-JSON do servidor:', res.status, res.statusText);
+                return;
+            }
 
             if (res.ok && data.sucesso) {
                 showToast(data.mensagem || 'Feedback enviado! +10 pontos 🎉', 'success');
@@ -333,8 +340,8 @@ function initFeedbackForm() {
                 showToast(data.mensagem || 'Erro ao enviar feedback.', 'error');
             }
         } catch (err) {
-            showToast('Erro de conexão.', 'error');
-            console.error(err);
+            showToast('Erro de conexão. Verifique se a loja está online.', 'error');
+            console.error('Erro de rede ao enviar feedback:', err);
         } finally {
             btn.disabled = false;
             btn.textContent = '📤 Enviar Feedback (+10 pts)';
