@@ -1497,3 +1497,339 @@ body {
     color: var(--primary);
     font-weight: 700;
 }
+
+/* ===================================================================
+   ANIMAÇÕES
+   =================================================================== */
+
+/* ── Keyframes ── */
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(.92); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes bounceIn {
+    0%   { opacity: 0; transform: scale(.3); }
+    50%  { opacity: 1; transform: scale(1.05); }
+    70%  { transform: scale(.95); }
+    100% { transform: scale(1); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.04); }
+}
+
+/* ── Entrada da página ── */
+
+.site-nav {
+    animation: fadeInUp .5s ease-out both;
+}
+
+.hero-card {
+    animation: fadeInUp .6s ease-out both;
+    animation-delay: .1s;
+}
+
+.wizard-shell {
+    animation: fadeInUp .6s ease-out both;
+    animation-delay: .2s;
+}
+
+.app-footer {
+    animation: fadeIn .8s ease-out both;
+    animation-delay: .4s;
+}
+
+/* ── Transição de etapas do wizard ── */
+
+.step-card.active {
+    display: block;
+    animation: scaleIn .35s ease-out both;
+}
+
+/* ── Progress step ── */
+
+.progress-step {
+    transition: all .35s ease;
+}
+
+.progress-step.active {
+    animation: pulse .4s ease-out;
+}
+
+.progress-step.done {
+    animation: scaleIn .3s ease-out both;
+}
+
+/* ── Cards de produto ── */
+
+.product-card {
+    animation: fadeInUp .4s ease-out both;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 28px rgba(18,58,111,.1);
+}
+
+.product-card:active {
+    transform: translateY(-1px) scale(.99);
+}
+
+/* Stagger para lista de produtos */
+.products-list .product-card:nth-child(1)  { animation-delay: .00s; }
+.products-list .product-card:nth-child(2)  { animation-delay: .05s; }
+.products-list .product-card:nth-child(3)  { animation-delay: .10s; }
+.products-list .product-card:nth-child(4)  { animation-delay: .15s; }
+.products-list .product-card:nth-child(5)  { animation-delay: .20s; }
+.products-list .product-card:nth-child(6)  { animation-delay: .25s; }
+.products-list .product-card:nth-child(7)  { animation-delay: .30s; }
+.products-list .product-card:nth-child(8)  { animation-delay: .35s; }
+
+/* ── Cart items ── */
+
+.cart-item {
+    animation: slideInLeft .35s ease-out both;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.cart-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 6px 16px rgba(18,58,111,.08);
+}
+
+/* ── Botões ── */
+
+.btn {
+    transition: all .25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 18px 32px rgba(18,58,111,.22);
+}
+
+.btn-primary:active {
+    transform: translateY(0) scale(.98);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(18,58,111,.08);
+}
+
+/* Ripple nos botões */
+.btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255,255,255,.35) 10%, transparent 10.01%);
+    transform: scale(10);
+    opacity: 0;
+    transition: transform .4s, opacity .8s;
+}
+
+.btn:active::after {
+    transform: scale(0);
+    opacity: 1;
+    transition: 0s;
+}
+
+/* ── Opções de pagamento ── */
+
+.payment-option {
+    transition: all .25s ease;
+}
+
+.payment-option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(18,58,111,.1);
+}
+
+.payment-option.active {
+    animation: scaleIn .3s ease-out;
+}
+
+/* ── Address tabs ── */
+
+.address-tab {
+    transition: all .25s ease;
+}
+
+.address-tab:hover {
+    transform: translateY(-2px);
+}
+
+.address-tab.active {
+    animation: scaleIn .3s ease-out;
+}
+
+/* ── Summary & Review cards ── */
+
+.summary-card {
+    animation: fadeInUp .4s ease-out both;
+    transition: transform .2s ease;
+}
+
+.summary-card:nth-child(1) { animation-delay: .0s; }
+.summary-card:nth-child(2) { animation-delay: .08s; }
+.summary-card:nth-child(3) { animation-delay: .16s; }
+
+.summary-card:hover {
+    transform: translateY(-2px);
+}
+
+.review-card {
+    animation: fadeInUp .4s ease-out both;
+    transition: transform .2s ease;
+}
+
+.review-card:nth-child(1) { animation-delay: .0s; }
+.review-card:nth-child(2) { animation-delay: .06s; }
+.review-card:nth-child(3) { animation-delay: .12s; }
+.review-card:nth-child(4) { animation-delay: .18s; }
+
+.review-card:hover {
+    transform: translateY(-2px);
+}
+
+/* ── Cupons banner ── */
+
+.cupons-banner {
+    animation: slideInRight .5s ease-out both;
+}
+
+.cupom-card {
+    animation: fadeInUp .35s ease-out both;
+}
+
+.cupons-list .cupom-card:nth-child(1) { animation-delay: .0s; }
+.cupons-list .cupom-card:nth-child(2) { animation-delay: .07s; }
+.cupons-list .cupom-card:nth-child(3) { animation-delay: .14s; }
+.cupons-list .cupom-card:nth-child(4) { animation-delay: .21s; }
+.cupons-list .cupom-card:nth-child(5) { animation-delay: .28s; }
+
+/* ── Pontos card ── */
+
+.pontos-card {
+    animation: fadeInUp .4s ease-out both;
+}
+
+/* ── Tela de identificação (CPF) ── */
+
+.id-card {
+    animation: scaleIn .5s ease-out both;
+}
+
+.id-welcome {
+    animation: fadeInUp .4s ease-out both;
+}
+
+/* ── Status Box ── */
+
+.status-box {
+    transition: all .3s ease;
+}
+
+.status-box.success {
+    animation: fadeIn .4s ease-out;
+}
+
+/* ── Toast aprimorado ── */
+
+.toast {
+    transition: bottom .4s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* ── Qty & Icon buttons ── */
+
+.qty-btn:hover {
+    transform: scale(1.1);
+    background: #dbe6f5;
+}
+
+.qty-btn:active {
+    transform: scale(.95);
+}
+
+.icon-btn:hover {
+    transform: scale(1.1);
+    background: #fecaca;
+}
+
+.icon-btn:active {
+    transform: scale(.95);
+}
+
+/* ── Hero icon float ── */
+
+.hero-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+
+/* ── Store status pulse (melhorado) ── */
+
+.store-status {
+    animation: fadeIn .6s ease-out both;
+}
+
+/* ── Promo badge pulse ── */
+
+.offer-badge {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* ── Skeleton loading ── */
+
+.skeleton {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-sm);
+}
+
+/* ── Prefers reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

@@ -296,6 +296,7 @@ body {
 .hi-pontos.negativo { color: var(--danger); }
 
 /* ── Feedback form ── */
+.feedback-form-card { }
 .feedback-sub { color: var(--muted); font-size: .9rem; margin-bottom: 20px; }
 
 .form-group { margin-bottom: 18px; }
@@ -647,4 +648,401 @@ body {
     .welcome-bar { flex-direction: column; gap: 10px; text-align: center; }
     .mural-card-header { flex-direction: column; gap: 6px; align-items: flex-start; }
     .tipo-toggle { flex-direction: column; }
+}
+
+/* ===================================================================
+   ANIMAÇÕES
+   =================================================================== */
+
+/* ── Keyframes ── */
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(.92); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bounceIn {
+    0%   { opacity: 0; transform: scale(.3); }
+    50%  { opacity: 1; transform: scale(1.05); }
+    70%  { transform: scale(.95); }
+    100% { transform: scale(1); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.04); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+
+@keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes starPop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+@keyframes confetti {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-30px) rotate(20deg); opacity: 0; }
+}
+
+/* ── Entrada da página ── */
+
+.site-nav {
+    animation: fadeInUp .5s ease-out both;
+}
+
+.hero-card {
+    animation: fadeInUp .6s ease-out both;
+    animation-delay: .1s;
+}
+
+.hero-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+.app-footer {
+    animation: fadeIn .8s ease-out both;
+    animation-delay: .4s;
+}
+
+/* ── Tela de identificação ── */
+
+.id-card {
+    animation: scaleIn .5s ease-out both;
+}
+
+.id-welcome {
+    animation: fadeInUp .4s ease-out both;
+}
+
+.id-icon {
+    animation: bounceIn .6s ease-out both;
+}
+
+/* ── Welcome bar ── */
+
+.welcome-bar {
+    animation: slideInLeft .5s ease-out both;
+}
+
+.welcome-badge {
+    animation: bounceIn .5s ease-out both;
+    animation-delay: .3s;
+}
+
+/* ── Tabs ── */
+
+.tabs {
+    animation: fadeInUp .5s ease-out both;
+    animation-delay: .15s;
+}
+
+.tab {
+    transition: all .3s ease;
+    position: relative;
+}
+
+.tab:hover:not(.active) {
+    transform: translateY(-2px);
+    background: rgba(37, 99, 235, 0.04);
+}
+
+.tab.active {
+    animation: scaleIn .25s ease-out;
+}
+
+/* ── Tab content ── */
+
+.tab-content.active {
+    animation: fadeInUp .35s ease-out both;
+}
+
+/* ── Stats grid ── */
+
+.stat-card {
+    animation: fadeInUp .4s ease-out both;
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.stat-card:nth-child(1) { animation-delay: .0s; }
+.stat-card:nth-child(2) { animation-delay: .1s; }
+.stat-card:nth-child(3) { animation-delay: .2s; }
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(15, 52, 96, .12);
+}
+
+.stat-icon {
+    transition: transform .3s ease;
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.15);
+}
+
+/* ── Sequência (barra de progresso) ── */
+
+.sequencia-fill {
+    transition: width .8s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.sequencia-dias span {
+    transition: all .3s ease;
+}
+
+.sequencia-dias span.done {
+    animation: scaleIn .3s ease-out both;
+}
+
+.sequencia-dias span.current {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ── Cards genéricos ── */
+
+.card {
+    animation: fadeInUp .4s ease-out both;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(15, 52, 96, .1);
+}
+
+/* ── Regras grid ── */
+
+.regra {
+    animation: fadeInUp .4s ease-out both;
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.regra:nth-child(1) { animation-delay: .0s; }
+.regra:nth-child(2) { animation-delay: .08s; }
+.regra:nth-child(3) { animation-delay: .16s; }
+.regra:nth-child(4) { animation-delay: .24s; }
+
+.regra:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(15, 52, 96, .08);
+    background: #fff;
+}
+
+.regra-icon {
+    transition: transform .3s ease;
+}
+
+.regra:hover .regra-icon {
+    transform: scale(1.2);
+}
+
+/* ── Histórico de pontos ── */
+
+.historico-item {
+    animation: slideInLeft .35s ease-out both;
+    transition: transform .2s ease, background .2s ease;
+}
+
+.historico-item:nth-child(1) { animation-delay: .0s; }
+.historico-item:nth-child(2) { animation-delay: .04s; }
+.historico-item:nth-child(3) { animation-delay: .08s; }
+.historico-item:nth-child(4) { animation-delay: .12s; }
+.historico-item:nth-child(5) { animation-delay: .16s; }
+
+.historico-item:hover {
+    transform: translateX(4px);
+    background: #edf2f7;
+}
+
+/* ── Feedback form ── */
+
+.feedback-form-card {
+    animation: fadeInUp .5s ease-out both;
+}
+
+/* Star rating */
+.star {
+    transition: color .2s ease, transform .2s ease;
+}
+
+.star:hover {
+    transform: scale(1.3);
+}
+
+.star.active {
+    animation: starPop .3s ease-out;
+}
+
+/* Tipo toggle */
+.tipo-btn {
+    transition: all .25s ease;
+}
+
+.tipo-btn:hover:not(.active) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 52, 96, .06);
+}
+
+.tipo-btn.active {
+    animation: scaleIn .25s ease-out;
+}
+
+/* ── Botões ── */
+
+.btn {
+    transition: all .25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(37, 99, 235, .25);
+}
+
+.btn-primary:active {
+    transform: translateY(0) scale(.98);
+}
+
+.btn-outline:hover {
+    transform: translateY(-1px);
+}
+
+/* Ripple */
+.btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255,255,255,.35) 10%, transparent 10.01%);
+    transform: scale(10);
+    opacity: 0;
+    transition: transform .4s, opacity .8s;
+}
+
+.btn:active::after {
+    transform: scale(0);
+    opacity: 1;
+    transition: 0s;
+}
+
+/* ── Mural ── */
+
+.mural-section {
+    animation: fadeIn .6s ease-out both;
+}
+
+.mural-media {
+    animation: scaleIn .5s ease-out both;
+    transition: transform .2s ease;
+}
+
+.mural-media:hover {
+    transform: scale(1.02);
+}
+
+.mural-card {
+    animation: fadeInUp .4s ease-out both;
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.mural-lista .mural-card:nth-child(1) { animation-delay: .0s; }
+.mural-lista .mural-card:nth-child(2) { animation-delay: .08s; }
+.mural-lista .mural-card:nth-child(3) { animation-delay: .12s; }
+.mural-lista .mural-card:nth-child(4) { animation-delay: .16s; }
+.mural-lista .mural-card:nth-child(5) { animation-delay: .20s; }
+
+.mural-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(15, 52, 96, .1);
+}
+
+.mural-card-badge {
+    transition: transform .2s ease;
+}
+
+.mural-card:hover .mural-card-badge {
+    transform: scale(1.08);
+}
+
+/* ── Produto search results ── */
+
+.produto-results {
+    animation: fadeInUp .25s ease-out both;
+}
+
+.produto-item {
+    transition: background .2s ease, transform .15s ease;
+}
+
+.produto-item:hover {
+    transform: translateX(4px);
+}
+
+.produto-selecionado {
+    animation: slideInLeft .3s ease-out both;
+}
+
+/* ── Switch toggle ── */
+
+.slider {
+    transition: background .3s ease;
+}
+
+.slider::before {
+    transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* ── Toast aprimorado ── */
+
+.toast {
+    transition: bottom .4s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* ── Skeleton loading ── */
+
+.skeleton {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-sm);
+}
+
+/* ── Prefers reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
