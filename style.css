@@ -16,6 +16,77 @@
     --radius-sm: 12px;
 }
 
+/* ===================================================================
+   BARRA AO VIVO (Visitantes Online)
+   =================================================================== */
+
+.live-bar {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: linear-gradient(135deg, #0f3460, #1d4f8f);
+    padding: 8px 16px;
+    text-align: center;
+    animation: fadeIn .5s ease-out both;
+}
+
+.live-bar-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .84rem;
+    font-weight: 600;
+    color: rgba(255,255,255,.9);
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 6px #4ade80;
+    animation: pulse-dot 2s infinite;
+    flex-shrink: 0;
+}
+
+.live-bar strong {
+    color: #fff;
+    font-weight: 800;
+}
+
+/* ===================================================================
+   NOTIFICAÇÃO DE COMPRA (toast flutuante)
+   =================================================================== */
+
+.purchase-toast {
+    position: fixed;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #0f3460, #1d4f8f);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: .88rem;
+    font-weight: 600;
+    box-shadow: 0 12px 32px rgba(15, 52, 96, .3);
+    z-index: 950;
+    white-space: nowrap;
+    transition: top .5s cubic-bezier(.34, 1.56, .64, 1);
+    pointer-events: none;
+}
+
+.purchase-toast.show {
+    top: 52px;
+}
+
+.purchase-toast-icon {
+    font-size: 1.2rem;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;

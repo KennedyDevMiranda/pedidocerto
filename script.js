@@ -897,6 +897,16 @@ async function enviarPedido(e) {
         if (resp.ok || resp.status === 201) {
             const num = data?.numeroPedido || `#${data?.pedidoId || ''}`;
 
+            // Notificar atividade de compra para exibição ao vivo
+            fetch(`${API_BASE}/api/site/compra`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    clienteNome: state.cliente.nome,
+                    numeroPedido: num
+                })
+            }).catch(() => {});
+
             // Se for PIX, mostrar overlay de pagamento
             if (state.formaPagamento === 2 && data?.pedidoId && data?.valorTotal) {
                 showToast(`Pedido ${num} criado! Complete o pagamento via Pix.`, 'success');
@@ -1636,3 +1646,91 @@ setInterval(verificarStatusLoja, STORE_STATUS_INTERVAL);
 
 window.alterarQuantidade = alterarQuantidade;
 window.removerDoCarrinho = removerDoCarrinho;
+
+/* ===================================================================
+   ATIVIDADE AO VIVO — Visitantes online + Notificações de compra
+   =================================================================== */
+
+(function initLiveActivity() {
+    const SESSION_ID = crypto.randomUUID ? crypto.randomUUID() : `s_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const HEARTBEAT_INTERVAL = 30000;   // 30s
+    const POLL_INTERVAL = 10000;        // 10s
+    const TOAST_DURATION = 5000;        // 5s visível
+
+    let ultimoTimestamp = Date.now();
+    let toastQueue = [];
+    let toastExibindo = false;
+
+    // ── Heartbeat ──
+    function sendHeartbeat() {
+        fetch(`${API_BASE}/api/site/heartbeat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId: SESSION_ID })
+        }).catch(() => {});
+    }
+
+    // ── Polling de status ──
+    async function pollStatus() {
+        try {
+            const res = await fetch(`${API_BASE}/api/site/status?desde=${ultimoTimestamp}`);
+            if (!res.ok) return;
+
+            const data = await res.json();
+
+            // Atualizar contador online
+            const countEl = document.getElementById('liveCount');
+            if (countEl) countEl.textContent = data.online;
+
+            // Novas compras
+            if (data.compras && data.compras.length > 0) {
+                data.compras.forEach(c => {
+                    if (c.timestamp > ultimoTimestamp) {
+                        toastQueue.push(c.primeiroNome);
+                    }
+                });
+                // Atualizar timestamp para a maior compra
+                const maxTs = Math.max(...data.compras.map(c => c.timestamp));
+                if (maxTs > ultimoTimestamp) ultimoTimestamp = maxTs;
+
+                processarToastQueue();
+            }
+        } catch {}
+    }
+
+    // ── Fila de toasts de compra ──
+    function processarToastQueue() {
+        if (toastExibindo || toastQueue.length === 0) return;
+
+        toastExibindo = true;
+        const nome = toastQueue.shift();
+        mostrarPurchaseToast(nome);
+
+        setTimeout(() => {
+            esconderPurchaseToast();
+            setTimeout(() => {
+                toastExibindo = false;
+                processarToastQueue();
+            }, 600);
+        }, TOAST_DURATION);
+    }
+
+    function mostrarPurchaseToast(nome) {
+        const toast = document.getElementById('purchaseToast');
+        const text = document.getElementById('purchaseToastText');
+        if (!toast || !text) return;
+        text.textContent = `${nome} acabou de fazer um pedido!`;
+        toast.classList.add('show');
+    }
+
+    function esconderPurchaseToast() {
+        const toast = document.getElementById('purchaseToast');
+        if (toast) toast.classList.remove('show');
+    }
+
+    // ── Inicializar ──
+    sendHeartbeat();
+    pollStatus();
+    setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
+    setInterval(pollStatus, POLL_INTERVAL);
+})();

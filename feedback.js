@@ -559,3 +559,84 @@ function formatarData(dateStr) {
         return dateStr;
     }
 }
+
+/* ===================================================================
+   ATIVIDADE AO VIVO — Visitantes online + Notificações de compra
+   =================================================================== */
+
+(function initLiveActivity() {
+    const SESSION_ID = crypto.randomUUID ? crypto.randomUUID() : `s_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const HEARTBEAT_INTERVAL = 30000;
+    const POLL_INTERVAL = 10000;
+    const TOAST_DURATION = 5000;
+
+    let ultimoTimestamp = Date.now();
+    let toastQueue = [];
+    let toastExibindo = false;
+
+    function sendHeartbeat() {
+        fetch(`${API_BASE}/api/site/heartbeat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId: SESSION_ID })
+        }).catch(() => {});
+    }
+
+    async function pollStatus() {
+        try {
+            const res = await fetch(`${API_BASE}/api/site/status?desde=${ultimoTimestamp}`);
+            if (!res.ok) return;
+
+            const data = await res.json();
+
+            const countEl = document.getElementById('liveCount');
+            if (countEl) countEl.textContent = data.online;
+
+            if (data.compras && data.compras.length > 0) {
+                data.compras.forEach(c => {
+                    if (c.timestamp > ultimoTimestamp) {
+                        toastQueue.push(c.primeiroNome);
+                    }
+                });
+                const maxTs = Math.max(...data.compras.map(c => c.timestamp));
+                if (maxTs > ultimoTimestamp) ultimoTimestamp = maxTs;
+
+                processarToastQueue();
+            }
+        } catch {}
+    }
+
+    function processarToastQueue() {
+        if (toastExibindo || toastQueue.length === 0) return;
+
+        toastExibindo = true;
+        const nome = toastQueue.shift();
+        mostrarPurchaseToast(nome);
+
+        setTimeout(() => {
+            esconderPurchaseToast();
+            setTimeout(() => {
+                toastExibindo = false;
+                processarToastQueue();
+            }, 600);
+        }, TOAST_DURATION);
+    }
+
+    function mostrarPurchaseToast(nome) {
+        const toast = document.getElementById('purchaseToast');
+        const text = document.getElementById('purchaseToastText');
+        if (!toast || !text) return;
+        text.textContent = `${nome} acabou de fazer um pedido!`;
+        toast.classList.add('show');
+    }
+
+    function esconderPurchaseToast() {
+        const toast = document.getElementById('purchaseToast');
+        if (toast) toast.classList.remove('show');
+    }
+
+    sendHeartbeat();
+    pollStatus();
+    setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
+    setInterval(pollStatus, POLL_INTERVAL);
+})();
