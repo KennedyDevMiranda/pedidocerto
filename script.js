@@ -232,7 +232,7 @@ function renderProdutosDestaque(lista, container) {
             : '';
 
         return `
-        <a href="pedido.html" class="showcase-card animate-on-scroll" style="animation-delay:${i * 80}ms">
+        <a href="/pedido" class="showcase-card animate-on-scroll" style="animation-delay:${i * 80}ms">
             ${imgHtml}
             <div class="showcase-body">
                 ${bestSellerBadge}

@@ -144,7 +144,7 @@ function entrarCliente(e) {
     }
 
     sessionStorage.setItem('cpf_ativo', cpf);
-    window.location.href = 'pedido.html';
+    window.location.href = '/pedido';
 }
 
 /* ── Trocar CPF ── */
