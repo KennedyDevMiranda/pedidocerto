@@ -37,6 +37,45 @@ body {
     padding: 20px 16px 40px;
 }
 
+/* ---- Nav ---- */
+
+.site-nav {
+    display: flex;
+    gap: 6px;
+    background: var(--card);
+    padding: 6px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px rgba(15, 52, 96, 0.08);
+    margin-bottom: 14px;
+}
+
+.nav-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 8px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: .9rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all .25s;
+}
+
+.nav-link:hover {
+    color: var(--accent);
+    background: rgba(37, 99, 235, 0.06);
+}
+
+.nav-link.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
 /* ---- Hero ---- */
 
 .hero {
