@@ -226,7 +226,7 @@ async function carregarProdutos(busca = '') {
                 return;
             }
         }
-        listaProdutos.innerHTML = '<div class="empty-state">Não foi possível carregar os produtos do estoque.</div>';
+        listaProdutos.innerHTML = '<div class="empty-state">Não foi possível carregar o cardápio.</div>';
     }
 }
 
@@ -301,7 +301,7 @@ function renderCupons(cupons) {
 
 function renderProdutos() {
     if (!state.produtos.length) {
-        listaProdutos.innerHTML = '<div class="empty-state">Nenhum produto encontrado no estoque.</div>';
+        listaProdutos.innerHTML = '<div class="empty-state">Nenhum produto encontrado.</div>';
         return;
     }
     listaProdutos.innerHTML = state.produtos.map(p => {
@@ -325,7 +325,7 @@ function renderProdutos() {
                 : `<div class="product-img-placeholder">📦</div>`}
             <div class="product-info">
                 <h3>${p.nome}</h3>
-                <p>${p.descricao || ''} · Estoque: ${p.estoque}</p>
+                <p>${p.descricao || ''} · Disponível: ${p.estoque}</p>
             </div>
             ${precoHtml}
         </button>`;
@@ -347,7 +347,7 @@ function adicionarAoCarrinho(produtoId) {
     const existente = state.carrinho.find(i => i.produtoId === produtoId);
     if (existente) {
         if (existente.quantidade >= p.estoque) {
-            showToast(`Estoque máximo de "${p.nome}": ${p.estoque}`, 'error');
+            showToast(`Quantidade máxima disponível de "${p.nome}": ${p.estoque}`, 'error');
             return;
         }
         existente.quantidade += 1;
@@ -373,7 +373,7 @@ function alterarQuantidade(produtoId, delta) {
     if (!item) return;
     const novo = item.quantidade + delta;
     if (novo <= 0) { removerDoCarrinho(produtoId); return; }
-    if (novo > item.estoque) { showToast(`Estoque disponível: ${item.estoque}`, 'error'); return; }
+    if (novo > item.estoque) { showToast(`Disponível: ${item.estoque} unidade(s)`, 'error'); return; }
     item.quantidade = novo;
     renderCarrinho();
 }
