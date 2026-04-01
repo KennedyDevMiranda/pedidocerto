@@ -341,17 +341,12 @@ async function carregarStatPedidos() {
     if (!el) return;
 
     try {
-        const resp = await fetch(`${API_BASE}/api/site/status`);
+        const resp = await fetch(`${API_BASE}/api/site/metricas`);
         if (!resp.ok) throw new Error();
         const data = await resp.json();
-        // Usa o número de compras registradas como indicador
-        if (data.totalCompras !== undefined) {
-            el.textContent = data.totalCompras;
-        } else {
-            el.textContent = '100+';
-        }
+        el.textContent = data.totalPedidos || 0;
     } catch {
-        el.textContent = '100+';
+        el.textContent = '—';
     }
 }
 
