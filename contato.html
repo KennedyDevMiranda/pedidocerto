@@ -3,82 +3,94 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Menu Central â€” Contato</title>
+    <title>Menu Central — Contato</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="negocios.css" />
 </head>
 <body>
-    <!-- â•â• HEADER â•â• -->
+    <!-- ══ HEADER ══ -->
     <header class="top-header">
         <div class="top-header-inner">
-            <a href="index.html" class="logo-link">
-                <span class="logo-icon">ðŸ½ï¸</span>
+            <a href="/" class="logo-link">
+                <span class="logo-icon">🍽️</span>
                 <span class="logo-text">Menu<strong>Central</strong></span>
             </a>
             <nav class="top-nav">
-                <a href="negocios.html" class="top-nav-link">VisÃ£o Geral</a>
-                <a href="recursos.html" class="top-nav-link">Recursos</a>
-                <a href="planos.html" class="top-nav-link">Planos</a>
-                <a href="contato.html" class="top-nav-link active">Contato</a>
-                <a href="suporte.html" class="top-nav-link">Suporte</a>
-                <a href="sobre.html" class="top-nav-link">Sobre</a>
+                <a href="/negocios" class="top-nav-link">Visão Geral</a>
+                <a href="/recursos" class="top-nav-link">Recursos</a>
+                <a href="/planos" class="top-nav-link">Planos</a>
+                <a href="/contato" class="top-nav-link active">Contato</a>
+                <a href="/suporte" class="top-nav-link">Suporte</a>
+                <a href="/sobre" class="top-nav-link">Sobre</a>
             </nav>
-            <a href="entrar.html" class="header-cta">Entrar</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu" onclick="toggleNav()"><span></span><span></span><span></span></button>
+            <a href="/entrar" class="header-cta">Entrar</a>
         </div>
     </header>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="nav-close" onclick="toggleNav()">&times;</button>
+        <a href="/negocios">Visão Geral</a>
+        <a href="/recursos">Recursos</a>
+        <a href="/planos">Planos</a>
+        <a href="/contato" class="active">Contato</a>
+        <a href="/suporte">Suporte</a>
+        <a href="/sobre">Sobre</a>
+        <a href="/entrar">Entrar</a>
+    </div>
 
-    <!-- â•â• HERO â•â• -->
+    <!-- ══ HERO ══ -->
     <section class="page-hero">
         <div class="page-hero-content">
-            <div class="page-hero-badge">ðŸ“ž Contato</div>
+            <div class="page-hero-badge">📞 Contato</div>
             <h1 class="page-hero-title">Fale com a <span>nossa equipe</span></h1>
-            <p class="page-hero-subtitle">Estamos prontos para ajudar vocÃª a comeÃ§ar. Escolha o melhor canal de contato.</p>
+            <p class="page-hero-subtitle">Estamos prontos para ajudar você a começar. Escolha o melhor canal de contato.</p>
         </div>
     </section>
 
-    <!-- â•â• CONTATO â•â• -->
+    <!-- ══ CONTATO ══ -->
     <section class="contact-section">
         <div class="biz-shell">
             <div class="contact-grid">
                 <!-- Canais -->
                 <div class="contact-channels">
                     <div class="channel-card">
-                        <div class="channel-icon">ðŸ’¬</div>
+                        <div class="channel-icon">💬</div>
                         <div>
                             <h3>WhatsApp</h3>
-                            <p>Fale diretamente com um consultor. Atendimento rÃ¡pido e personalizado.</p>
-                            <a href="https://wa.me/5527995045666?text=OlÃ¡! Gostaria de saber mais sobre o Menu Central." class="channel-link" target="_blank">Iniciar Conversa â†’</a>
+                            <p>Fale diretamente com um consultor. Atendimento rápido e personalizado.</p>
+                            <a href="https://wa.me/5527995045666?text=Olá! Gostaria de saber mais sobre o Menu Central." class="channel-link" target="_blank">Iniciar Conversa →</a>
                         </div>
                     </div>
                     <div class="channel-card">
-                        <div class="channel-icon">ðŸ“§</div>
+                        <div class="channel-icon">📧</div>
                         <div>
                             <h3>E-mail</h3>
-                            <p>Envie sua dÃºvida ou proposta. Respondemos em atÃ© 24 horas Ãºteis.</p>
-                            <a href="mailto:contato@menucentral.com.br" class="channel-link">contato@menucentral.com.br â†’</a>
+                            <p>Envie sua dúvida ou proposta. Respondemos em até 24 horas úteis.</p>
+                            <a href="mailto:contato@menucentral.com.br" class="channel-link">contato@menucentral.com.br →</a>
                         </div>
                     </div>
                     <div class="channel-card">
-                        <div class="channel-icon">â°</div>
+                        <div class="channel-icon">⏰</div>
                         <div>
-                            <h3>HorÃ¡rio de Atendimento</h3>
-                            <p>Segunda a Sexta: 08:00 â€” 18:00<br>SÃ¡bado: 09:00 â€” 13:00</p>
+                            <h3>Horário de Atendimento</h3>
+                            <p>Segunda a Sexta: 08:00 — 18:00<br>Sábado: 09:00 — 13:00</p>
                         </div>
                     </div>
                     <div class="channel-card">
-                        <div class="channel-icon">ðŸ¢</div>
+                        <div class="channel-icon">🏢</div>
                         <div>
-                            <h3>Sobre NÃ³s</h3>
-                            <p>O Menu Central Ã© desenvolvido pela DevMiranda, especialista em soluÃ§Ãµes digitais para food service e varejo.</p>
+                            <h3>Sobre Nós</h3>
+                            <p>O Menu Central é desenvolvido pela DevMiranda, especialista em soluções digitais para food service e varejo.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- FormulÃ¡rio -->
+                <!-- Formulário -->
                 <div class="contact-form-card">
                     <div id="contactFormContent">
                         <h2>Envie uma Mensagem</h2>
-                        <p class="form-subtitle">Preencha o formulÃ¡rio e entraremos em contato rapidamente.</p>
+                        <p class="form-subtitle">Preencha o formulário e entraremos em contato rapidamente.</p>
                         <form id="contactForm" onsubmit="enviarContato(event)">
                             <div class="form-group">
                                 <label for="contatoNome">Nome Completo</label>
@@ -96,10 +108,10 @@
                                 <label for="contatoAssunto">Assunto</label>
                                 <select id="contatoAssunto" required>
                                     <option value="">Selecione...</option>
-                                    <option value="demo">Quero uma demonstraÃ§Ã£o</option>
-                                    <option value="planos">DÃºvida sobre planos</option>
+                                    <option value="demo">Quero uma demonstração</option>
+                                    <option value="planos">Dúvida sobre planos</option>
                                     <option value="parceria">Proposta de parceria</option>
-                                    <option value="suporte">Suporte tÃ©cnico</option>
+                                    <option value="suporte">Suporte técnico</option>
                                     <option value="outro">Outro assunto</option>
                                 </select>
                             </div>
@@ -111,7 +123,7 @@
                         </form>
                     </div>
                     <div class="form-success" id="contactSuccess">
-                        <div class="success-icon">âœ…</div>
+                        <div class="success-icon">✅</div>
                         <h3>Mensagem Enviada!</h3>
                         <p>Recebemos sua mensagem e retornaremos em breve. Obrigado pelo interesse no Menu Central!</p>
                     </div>
@@ -120,9 +132,9 @@
         </div>
     </section>
 
-    <!-- â•â• FOOTER â•â• -->
+    <!-- ══ FOOTER ══ -->
     <div class="biz-footer">
-        <p><a href="index.html">InÃ­cio</a> Â· <a href="recursos.html">Recursos</a> Â· <a href="planos.html">Planos</a> Â· <a href="suporte.html">Suporte</a> Â· <a href="sobre.html">Sobre</a> · <a href="termos.html">Termos de Uso</a></p>
+        <p><a href="/">Início</a> · <a href="/negocios">Visão Geral</a> · <a href="/recursos">Recursos</a> · <a href="/planos">Planos</a> · <a href="/contato">Contato</a> · <a href="/suporte">Suporte</a> · <a href="/sobre">Sobre</a> · <a href="/termos">Termos de Uso</a></p>
     </div>
 
     <script src="negocios.js"></script>

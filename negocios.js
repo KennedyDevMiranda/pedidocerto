@@ -1,9 +1,19 @@
 /* ===================================================================
    NEGÓCIOS — JS Compartilhado
-   Usado por: negocios, planos, contato, entrar
+   Usado por: negocios, planos, contato, entrar, recursos, suporte, sobre
    =================================================================== */
 
 const API_BASE = '';
+
+/* ── Mobile Nav Toggle ── */
+function toggleNav() {
+    const btn = document.getElementById('navToggle');
+    const overlay = document.getElementById('navOverlay');
+    if (!btn || !overlay) return;
+    const open = overlay.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+}
 
 /* ── Billing Toggle (planos, negocios) ── */
 let anual = false;

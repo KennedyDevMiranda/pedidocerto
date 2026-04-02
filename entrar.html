@@ -3,81 +3,93 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Menu Central â€” Entrar</title>
+    <title>Menu Central — Entrar</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="negocios.css" />
 </head>
 <body class="login-page">
-    <!-- â•â• HEADER â•â• -->
+    <!-- ══ HEADER ══ -->
     <header class="top-header">
         <div class="top-header-inner">
-            <a href="index.html" class="logo-link">
-                <span class="logo-icon">ðŸ½ï¸</span>
+            <a href="/" class="logo-link">
+                <span class="logo-icon">🍽️</span>
                 <span class="logo-text">Menu<strong>Central</strong></span>
             </a>
             <nav class="top-nav">
-                <a href="negocios.html" class="top-nav-link">VisÃ£o Geral</a>
-                <a href="recursos.html" class="top-nav-link">Recursos</a>
-                <a href="planos.html" class="top-nav-link">Planos</a>
-                <a href="contato.html" class="top-nav-link">Contato</a>
-                <a href="suporte.html" class="top-nav-link">Suporte</a>
-                <a href="sobre.html" class="top-nav-link">Sobre</a>
+                <a href="/negocios" class="top-nav-link">Visão Geral</a>
+                <a href="/recursos" class="top-nav-link">Recursos</a>
+                <a href="/planos" class="top-nav-link">Planos</a>
+                <a href="/contato" class="top-nav-link">Contato</a>
+                <a href="/suporte" class="top-nav-link">Suporte</a>
+                <a href="/sobre" class="top-nav-link">Sobre</a>
             </nav>
-            <a href="entrar.html" class="header-cta active">Entrar</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu" onclick="toggleNav()"><span></span><span></span><span></span></button>
+            <a href="/entrar" class="header-cta active">Entrar</a>
         </div>
     </header>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="nav-close" onclick="toggleNav()">&times;</button>
+        <a href="/negocios">Visão Geral</a>
+        <a href="/recursos">Recursos</a>
+        <a href="/planos">Planos</a>
+        <a href="/contato">Contato</a>
+        <a href="/suporte">Suporte</a>
+        <a href="/sobre">Sobre</a>
+        <a href="/entrar" class="active">Entrar</a>
+    </div>
 
-    <!-- â•â• LOGIN â•â• -->
+    <!-- ══ LOGIN ══ -->
     <div class="login-content">
         <div class="login-grid">
-            <!-- Branding â€” muda conforme a aba -->
+            <!-- Branding — muda conforme a aba -->
             <div class="login-branding">
-                <span class="logo-icon">ðŸ½ï¸</span>
+                <span class="logo-icon">🍽️</span>
 
                 <!-- Branding: Cliente -->
                 <div class="login-branding-panel active" id="brandingCliente">
-                    <h1>FaÃ§a seu pedido de forma <span>rÃ¡pida e fÃ¡cil</span></h1>
-                    <p>Identifique-se com seu CPF para acessar o cardÃ¡pio, fazer pedidos, acumular pontos e usar cupons de desconto.</p>
+                    <h1>Faça seu pedido de forma <span>rápida e fácil</span></h1>
+                    <p>Identifique-se com seu CPF para acessar o cardápio, fazer pedidos, acumular pontos e usar cupons de desconto.</p>
                     <div class="login-perks">
                         <div class="login-perk">
-                            <div class="login-perk-icon">ðŸ›’</div>
-                            <span>FaÃ§a pedidos online rapidamente</span>
+                            <div class="login-perk-icon">🛒</div>
+                            <span>Faça pedidos online rapidamente</span>
                         </div>
                         <div class="login-perk">
-                            <div class="login-perk-icon">ðŸ†</div>
+                            <div class="login-perk-icon">🏆</div>
                             <span>Acumule pontos e ganhe cashback</span>
                         </div>
                         <div class="login-perk">
-                            <div class="login-perk-icon">ðŸŽŸï¸</div>
+                            <div class="login-perk-icon">🎟️</div>
                             <span>Use cupons de desconto exclusivos</span>
                         </div>
                         <div class="login-perk">
-                            <div class="login-perk-icon">â­</div>
-                            <span>Avalie e acompanhe seu histÃ³rico</span>
+                            <div class="login-perk-icon">⭐</div>
+                            <span>Avalie e acompanhe seu histórico</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Branding: Admin -->
                 <div class="login-branding-panel" id="brandingAdmin">
-                    <h1>Gerencie seu negÃ³cio de <span>qualquer lugar</span></h1>
-                    <p>Acesse o painel do Menu Central para acompanhar pedidos, gerenciar produtos e ver relatÃ³rios em tempo real.</p>
+                    <h1>Gerencie seu negócio de <span>qualquer lugar</span></h1>
+                    <p>Acesse o painel do Menu Central para acompanhar pedidos, gerenciar produtos e ver relatórios em tempo real.</p>
                     <div class="login-perks">
                         <div class="login-perk">
-                            <div class="login-perk-icon">ðŸ“Š</div>
+                            <div class="login-perk-icon">📊</div>
                             <span>Dashboard com vendas em tempo real</span>
                         </div>
                         <div class="login-perk">
-                            <div class="login-perk-icon">ðŸ“¦</div>
+                            <div class="login-perk-icon">📦</div>
                             <span>Gerenciamento de produtos e estoque</span>
                         </div>
                         <div class="login-perk">
-                            <div class="login-perk-icon">ðŸ“‹</div>
+                            <div class="login-perk-icon">📋</div>
                             <span>Acompanhe pedidos ao vivo</span>
                         </div>
                         <div class="login-perk">
-                            <div class="login-perk-icon">ðŸ“„</div>
-                            <span>RelatÃ³rios e exportaÃ§Ãµes</span>
+                            <div class="login-perk-icon">📄</div>
+                            <span>Relatórios e exportações</span>
                         </div>
                     </div>
                 </div>
@@ -88,20 +100,20 @@
                 <!-- Role Selector -->
                 <div class="role-selector">
                     <button type="button" class="role-tab active" data-role="cliente" onclick="trocarPerfil('cliente')">
-                        <span class="role-tab-icon">ðŸ›’</span> Sou Cliente
+                        <span class="role-tab-icon">🛒</span> Sou Cliente
                     </button>
                     <button type="button" class="role-tab" data-role="admin" onclick="trocarPerfil('admin')">
-                        <span class="role-tab-icon">ðŸ’¼</span> Sou Dono de NegÃ³cio
+                        <span class="role-tab-icon">💼</span> Sou Dono de Negócio
                     </button>
                 </div>
 
-                <!-- â•â• PAINEL: CLIENTE (CPF) â•â• -->
+                <!-- ══ PAINEL: CLIENTE (CPF) ══ -->
                 <div class="login-panel active" id="panelCliente">
                     <h2>Acessar como Cliente</h2>
                     <p class="login-subtitle">Informe seu CPF para fazer pedidos e acumular pontos.</p>
 
                     <div id="clienteWelcomeBack" class="cliente-welcome hidden">
-                        <div class="cliente-welcome-icon">ðŸ‘‹</div>
+                        <div class="cliente-welcome-icon">👋</div>
                         <div class="cliente-welcome-info">
                             <div class="cliente-welcome-name" id="clienteWelcomeNome"></div>
                             <div class="cliente-welcome-cpf" id="clienteWelcomeCpf"></div>
@@ -120,7 +132,7 @@
                         </div>
                         <button type="submit" class="login-btn" id="btnEntrarCliente">
                             <span>Continuar para Pedido</span>
-                            <span class="btn-arrow">â†’</span>
+                            <span class="btn-arrow">→</span>
                         </button>
                     </form>
 
@@ -131,23 +143,23 @@
                     <div class="login-divider">ou acesse diretamente</div>
 
                     <div class="login-quick-links">
-                        <a href="pedido.html" class="login-quick-link">
-                            <span class="login-quick-icon">ðŸ›’</span>
+                        <a href="/pedido" class="login-quick-link">
+                            <span class="login-quick-icon">🛒</span>
                             <span>Fazer Pedido</span>
                         </a>
-                        <a href="feedback.html" class="login-quick-link">
-                            <span class="login-quick-icon">â­</span>
+                        <a href="/feedback" class="login-quick-link">
+                            <span class="login-quick-icon">⭐</span>
                             <span>Feedback & Fidelidade</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- â•â• PAINEL: ADMIN (LOGIN + SENHA + RECUPERAÃ‡ÃƒO) â•â• -->
+                <!-- ══ PAINEL: ADMIN (LOGIN + SENHA + RECUPERAÇÃO) ══ -->
                 <div class="login-panel" id="panelAdmin">
                     <!-- Vista: Login normal -->
                     <div id="adminLoginView">
                         <h2>Entrar no Painel</h2>
-                        <p class="login-subtitle">Acesse sua conta para gerenciar seu negÃ³cio.</p>
+                        <p class="login-subtitle">Acesse sua conta para gerenciar seu negócio.</p>
 
                         <form id="loginForm" onsubmit="fazerLogin(event)">
                             <div class="login-group">
@@ -170,11 +182,11 @@
                         <div class="login-divider">ou</div>
 
                         <div class="login-register">
-                            Ainda nÃ£o tem conta? <a href="https://wa.me/5527995045666?text=OlÃ¡! Gostaria de criar minha conta no Menu Central." target="_blank">Comece GrÃ¡tis â†’</a>
+                            Ainda não tem conta? <a href="https://wa.me/5527995045666?text=Olá! Gostaria de criar minha conta no Menu Central." target="_blank">Comece Grátis →</a>
                         </div>
                     </div>
 
-                    <!-- Vista: RecuperaÃ§Ã£o de Senha (3 etapas) -->
+                    <!-- Vista: Recuperação de Senha (3 etapas) -->
                     <div id="adminRecoveryView" class="hidden">
                         <!-- Indicador de etapas -->
                         <div class="recovery-steps-bar">
@@ -185,11 +197,11 @@
                             <div class="recovery-step-dot" data-step="3">3</div>
                         </div>
 
-                        <!-- Etapa 1: Solicitar cÃ³digo -->
+                        <!-- Etapa 1: Solicitar código -->
                         <div class="recovery-step active" id="recoveryStep1">
-                            <div class="recovery-icon">ðŸ”’</div>
+                            <div class="recovery-icon">🔒</div>
                             <h2>Recuperar Senha</h2>
-                            <p class="login-subtitle">Informe seu login para receber um cÃ³digo de verificaÃ§Ã£o via WhatsApp.</p>
+                            <p class="login-subtitle">Informe seu login para receber um código de verificação via WhatsApp.</p>
 
                             <form onsubmit="solicitarCodigo(event)">
                                 <div class="login-group">
@@ -197,51 +209,51 @@
                                     <input type="text" id="recoveryLogin" placeholder="Seu login" required />
                                 </div>
                                 <button type="submit" class="login-btn" id="btnSolicitarCodigo">
-                                    <span>Enviar CÃ³digo via WhatsApp</span>
+                                    <span>Enviar Código via WhatsApp</span>
                                 </button>
                             </form>
 
                             <div class="recovery-msg hidden" id="recoveryError1"></div>
 
-                            <button type="button" class="recovery-back" onclick="voltarLogin()">â† Voltar ao login</button>
+                            <button type="button" class="recovery-back" onclick="voltarLogin()">← Voltar ao login</button>
                         </div>
 
-                        <!-- Etapa 2: Verificar cÃ³digo -->
+                        <!-- Etapa 2: Verificar código -->
                         <div class="recovery-step" id="recoveryStep2">
-                            <div class="recovery-icon">ðŸ“±</div>
-                            <h2>Digite o CÃ³digo</h2>
-                            <p class="login-subtitle" id="recoveryStep2Msg">Insira o cÃ³digo de 6 dÃ­gitos enviado para o seu WhatsApp.</p>
+                            <div class="recovery-icon">📱</div>
+                            <h2>Digite o Código</h2>
+                            <p class="login-subtitle" id="recoveryStep2Msg">Insira o código de 6 dígitos enviado para o seu WhatsApp.</p>
 
                             <form onsubmit="verificarCodigo(event)">
                                 <div class="login-group">
-                                    <label for="recoveryCode">CÃ³digo de VerificaÃ§Ã£o</label>
+                                    <label for="recoveryCode">Código de Verificação</label>
                                     <input type="text" id="recoveryCode" inputmode="numeric" maxlength="6" placeholder="000000" class="code-input" required autocomplete="one-time-code" />
                                 </div>
                                 <button type="submit" class="login-btn" id="btnVerificarCodigo">
-                                    <span>Verificar CÃ³digo</span>
+                                    <span>Verificar Código</span>
                                 </button>
                             </form>
 
                             <div class="recovery-msg hidden" id="recoveryError2"></div>
 
                             <div class="recovery-timer" id="recoveryTimer">
-                                â±ï¸ CÃ³digo expira em <strong id="recoveryCountdown">10:00</strong>
+                                ⏱️ Código expira em <strong id="recoveryCountdown">10:00</strong>
                             </div>
 
-                            <button type="button" class="recovery-resend" id="btnReenviar" onclick="reenviarCodigo()">Reenviar cÃ³digo</button>
-                            <button type="button" class="recovery-back" onclick="voltarLogin()">â† Voltar ao login</button>
+                            <button type="button" class="recovery-resend" id="btnReenviar" onclick="reenviarCodigo()">Reenviar código</button>
+                            <button type="button" class="recovery-back" onclick="voltarLogin()">← Voltar ao login</button>
                         </div>
 
                         <!-- Etapa 3: Nova senha -->
                         <div class="recovery-step" id="recoveryStep3">
-                            <div class="recovery-icon">ðŸ”‘</div>
+                            <div class="recovery-icon">🔑</div>
                             <h2>Nova Senha</h2>
                             <p class="login-subtitle">Crie uma nova senha segura para sua conta.</p>
 
                             <form onsubmit="redefinirSenha(event)">
                                 <div class="login-group">
                                     <label for="recoveryNewPass">Nova Senha</label>
-                                    <input type="password" id="recoveryNewPass" placeholder="MÃ­nimo 6 caracteres" minlength="6" required />
+                                    <input type="password" id="recoveryNewPass" placeholder="Mínimo 6 caracteres" minlength="6" required />
                                 </div>
                                 <div class="login-group">
                                     <label for="recoveryConfirmPass">Confirmar Senha</label>
@@ -249,10 +261,10 @@
                                 </div>
                                 <div class="password-rules">
                                     <div class="password-rule" id="ruleLength">
-                                        <span class="rule-icon">â—‹</span> MÃ­nimo 6 caracteres
+                                        <span class="rule-icon">○</span> Mínimo 6 caracteres
                                     </div>
                                     <div class="password-rule" id="ruleMatch">
-                                        <span class="rule-icon">â—‹</span> As senhas coincidem
+                                        <span class="rule-icon">○</span> As senhas coincidem
                                     </div>
                                 </div>
                                 <button type="submit" class="login-btn" id="btnRedefinirSenha">
@@ -265,12 +277,12 @@
 
                         <!-- Sucesso -->
                         <div class="recovery-step" id="recoverySuccess">
-                            <div class="recovery-icon recovery-success-anim">âœ…</div>
+                            <div class="recovery-icon recovery-success-anim">✅</div>
                             <h2>Senha Redefinida!</h2>
-                            <p class="login-subtitle">Sua senha foi atualizada com sucesso. FaÃ§a login com a nova senha.</p>
+                            <p class="login-subtitle">Sua senha foi atualizada com sucesso. Faça login com a nova senha.</p>
                             <button type="button" class="login-btn" onclick="voltarLogin()">
                                 <span>Fazer Login</span>
-                                <span class="btn-arrow">â†’</span>
+                                <span class="btn-arrow">→</span>
                             </button>
                         </div>
                     </div>
@@ -279,9 +291,9 @@
         </div>
     </div>
 
-    <!-- â•â• FOOTER â•â• -->
+    <!-- ══ FOOTER ══ -->
     <div class="biz-footer">
-        <p><a href="index.html">InÃ­cio</a> Â· <a href="negocios.html">Para NegÃ³cios</a> Â· <a href="suporte.html">Suporte</a> Â· <a href="sobre.html">Sobre</a> · <a href="termos.html">Termos de Uso</a></p>
+        <p><a href="/">Início</a> · <a href="/negocios">Para Negócios</a> · <a href="/suporte">Suporte</a> · <a href="/sobre">Sobre</a> · <a href="/termos">Termos de Uso</a></p>
     </div>
 
     <script src="negocios.js"></script>

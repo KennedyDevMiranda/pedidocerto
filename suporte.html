@@ -3,63 +3,75 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Menu Central â€” Suporte | Central de Ajuda</title>
+    <title>Menu Central — Suporte | Central de Ajuda</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="negocios.css" />
 </head>
 <body>
-    <!-- â•â• HEADER â•â• -->
+    <!-- ══ HEADER ══ -->
     <header class="top-header">
         <div class="top-header-inner">
-            <a href="index.html" class="logo-link">
-                <span class="logo-icon">ðŸ½ï¸</span>
+            <a href="/" class="logo-link">
+                <span class="logo-icon">🍽️</span>
                 <span class="logo-text">Menu<strong>Central</strong></span>
             </a>
             <nav class="top-nav">
-                <a href="negocios.html" class="top-nav-link">VisÃ£o Geral</a>
-                <a href="recursos.html" class="top-nav-link">Recursos</a>
-                <a href="planos.html" class="top-nav-link">Planos</a>
-                <a href="contato.html" class="top-nav-link">Contato</a>
-                <a href="suporte.html" class="top-nav-link active">Suporte</a>
-                <a href="sobre.html" class="top-nav-link">Sobre</a>
+                <a href="/negocios" class="top-nav-link">Visão Geral</a>
+                <a href="/recursos" class="top-nav-link">Recursos</a>
+                <a href="/planos" class="top-nav-link">Planos</a>
+                <a href="/contato" class="top-nav-link">Contato</a>
+                <a href="/suporte" class="top-nav-link active">Suporte</a>
+                <a href="/sobre" class="top-nav-link">Sobre</a>
             </nav>
-            <a href="entrar.html" class="header-cta">Entrar</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu" onclick="toggleNav()"><span></span><span></span><span></span></button>
+            <a href="/entrar" class="header-cta">Entrar</a>
         </div>
     </header>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="nav-close" onclick="toggleNav()">&times;</button>
+        <a href="/negocios">Visão Geral</a>
+        <a href="/recursos">Recursos</a>
+        <a href="/planos">Planos</a>
+        <a href="/contato">Contato</a>
+        <a href="/suporte" class="active">Suporte</a>
+        <a href="/sobre">Sobre</a>
+        <a href="/entrar">Entrar</a>
+    </div>
 
-    <!-- â•â• HERO â•â• -->
+    <!-- ══ HERO ══ -->
     <section class="page-hero">
         <div class="page-hero-content">
-            <div class="page-hero-badge">ðŸ›Ÿ Suporte</div>
+            <div class="page-hero-badge">🛟 Suporte</div>
             <h1 class="page-hero-title">Central de <span>Ajuda</span></h1>
-            <p class="page-hero-subtitle">Encontre respostas rÃ¡pidas ou entre em contato com nossa equipe de suporte.</p>
+            <p class="page-hero-subtitle">Encontre respostas rápidas ou entre em contato com nossa equipe de suporte.</p>
         </div>
     </section>
 
-    <!-- â•â• AÃ‡Ã•ES RÃPIDAS â•â• -->
+    <!-- ══ AÇÕES RÁPIDAS ══ -->
     <section class="quick-actions">
         <div class="biz-shell">
             <div class="quick-grid">
-                <a href="https://wa.me/5527995045666?text=OlÃ¡! Preciso de suporte tÃ©cnico com o Menu Central." class="quick-card" target="_blank">
-                    <div class="quick-icon">ðŸ’¬</div>
+                <a href="https://wa.me/5527995045666?text=Olá! Preciso de suporte técnico com o Menu Central." class="quick-card" target="_blank">
+                    <div class="quick-icon">💬</div>
                     <h3>Chat ao Vivo</h3>
                     <p>Fale agora com nossa equipe via WhatsApp.</p>
                 </a>
-                <a href="mailto:servicskennedy.com.br" class="quick-card">
-                    <div class="quick-icon">ðŸ“§</div>
+                <a href="mailto:suporte@menucentral.com.br" class="quick-card">
+                    <div class="quick-icon">📧</div>
                     <h3>E-mail de Suporte</h3>
-                    <p>suporte@menucentral.com.br â€” resposta em atÃ© 24h.</p>
+                    <p>suporte@menucentral.com.br — resposta em até 24h.</p>
                 </a>
                 <a href="#faq" class="quick-card">
-                    <div class="quick-icon">â“</div>
+                    <div class="quick-icon">❓</div>
                     <h3>Perguntas Frequentes</h3>
-                    <p>Respostas para as dÃºvidas mais comuns.</p>
+                    <p>Respostas para as dúvidas mais comuns.</p>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- â•â• FAQ COMPLETO â•â• -->
+    <!-- ══ FAQ COMPLETO ══ -->
     <section class="faq-section" id="faq">
         <div class="biz-shell">
             <div class="section-header" style="text-align:center;margin-bottom:40px;">
@@ -68,89 +80,91 @@
             </div>
             <div class="faq-grid">
                 <!-- Primeiros Passos -->
-                <h3 class="faq-category-title">ðŸš€ Primeiros Passos</h3>
+                <h3 class="faq-category-title">🚀 Primeiros Passos</h3>
 
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Como comeÃ§o a usar o Menu Central? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">Basta entrar em contato pelo WhatsApp e solicitar o teste grÃ¡tis de 7 dias. Nossa equipe configura tudo para vocÃª â€” cadastro de produtos, horÃ¡rios e personalizaÃ§Ã£o da pÃ¡gina. VocÃª recebe o link pronto para compartilhar com seus clientes.</div>
+                    <div class="faq-q">Como começo a usar o Menu Central? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Basta entrar em contato pelo WhatsApp e solicitar o teste grátis de 7 dias. Nossa equipe configura tudo para você — cadastro de produtos, horários e personalização da página. Você recebe o link pronto para compartilhar com seus clientes.</div>
                 </div>
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Preciso ter conhecimento tÃ©cnico? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">NÃ£o! O Menu Central Ã© 100% gerenciado por uma interface simples. VocÃª cadastra produtos, define horÃ¡rios e acompanha pedidos sem tocar em cÃ³digo. Se precisar de ajuda, nosso suporte estÃ¡ sempre disponÃ­vel.</div>
+                    <div class="faq-q">Preciso ter conhecimento técnico? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Não! O Menu Central é 100% gerenciado por uma interface simples. Você cadastra produtos, define horários e acompanha pedidos sem tocar em código. Se precisar de ajuda, nosso suporte está sempre disponível.</div>
                 </div>
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Meus clientes precisam baixar algum aplicativo? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">NÃ£o. Tudo funciona direto pelo navegador do celular. Seus clientes acessam o link, escolhem os produtos e fazem o pedido â€” sem instalar nada.</div>
+                    <div class="faq-q">Meus clientes precisam baixar algum aplicativo? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Não. Tudo funciona direto pelo navegador do celular. Seus clientes acessam o link, escolhem os produtos e fazem o pedido — sem instalar nada.</div>
                 </div>
 
                 <!-- Pagamentos -->
-                <h3 class="faq-category-title">ðŸ’³ Pagamentos</h3>
+                <h3 class="faq-category-title">💳 Pagamentos</h3>
 
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">VocÃªs cobram taxa sobre os pedidos? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">NÃ£o! Zero taxa sobre vendas. VocÃª paga apenas a mensalidade fixa do plano escolhido. O dinheiro dos pedidos vai 100% direto para a sua conta.</div>
+                    <div class="faq-q">Vocês cobram taxa sobre os pedidos? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Não! Zero taxa sobre vendas. Você paga apenas a mensalidade fixa do plano escolhido. O dinheiro dos pedidos vai 100% direto para a sua conta.</div>
                 </div>
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Quais formas de pagamento do plano sÃ£o aceitas? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">Aceitamos PIX, cartÃ£o de crÃ©dito e boleto bancÃ¡rio para pagamento da mensalidade. Para planos anuais, oferecemos 20% de desconto.</div>
+                    <div class="faq-q">Quais formas de pagamento do plano são aceitas? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Aceitamos PIX, cartão de crédito e boleto bancário para pagamento da mensalidade. Para planos anuais, oferecemos 20% de desconto.</div>
                 </div>
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Como funciona o PIX integrado para meus clientes? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">Ao finalizar o pedido, um QR Code PIX Ã© gerado automaticamente com o valor do pedido. O pagamento cai direto na sua conta bancÃ¡ria, sem intermediÃ¡rios e sem taxas adicionais.</div>
+                    <div class="faq-q">Como funciona o PIX integrado para meus clientes? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Ao finalizar o pedido, um QR Code PIX é gerado automaticamente com o valor do pedido. O pagamento cai direto na sua conta bancária, sem intermediários e sem taxas adicionais.</div>
                 </div>
 
-                <!-- Planos e CobranÃ§a -->
-                <h3 class="faq-category-title">ðŸ’Ž Planos e CobranÃ§a</h3>
+                <!-- Planos e Cobrança -->
+                <h3 class="faq-category-title">💎 Planos e Cobrança</h3>
 
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Como funciona o teste grÃ¡tis de 7 dias? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">VocÃª tem acesso completo a todas as funcionalidades do plano Pro por 7 dias. NÃ£o pedimos cartÃ£o de crÃ©dito. Ao final do perÃ­odo, escolha o plano que melhor se encaixa ou cancele sem custos.</div>
+                    <div class="faq-q">Como funciona o teste grátis de 7 dias? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Você tem acesso completo a todas as funcionalidades do plano Pro por 7 dias. Não pedimos cartão de crédito. Ao final do período, escolha o plano que melhor se encaixa ou cancele sem custos.</div>
                 </div>
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Posso mudar de plano depois? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">Sim! VocÃª pode fazer upgrade ou downgrade a qualquer momento. O valor Ã© ajustado proporcionalmente no prÃ³ximo ciclo de cobranÃ§a.</div>
+                    <div class="faq-q">Posso mudar de plano depois? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Sim! Você pode fazer upgrade ou downgrade a qualquer momento. O valor é ajustado proporcionalmente no próximo ciclo de cobrança.</div>
                 </div>
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Como cancelo meu plano? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">Basta solicitar o cancelamento pelo WhatsApp ou e-mail de suporte. O cancelamento Ã© processado imediatamente e nÃ£o hÃ¡ multa ou taxa de fidelidade. VocÃª mantÃ©m acesso atÃ© o final do perÃ­odo pago.</div>
+                    <div class="faq-q">Como cancelo meu plano? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Basta solicitar o cancelamento pelo WhatsApp ou e-mail de suporte. O cancelamento é processado imediatamente e não há multa ou taxa de fidelidade. Você mantém acesso até o final do período pago.</div>
                 </div>
 
                 <!-- Funcionalidades -->
-                <h3 class="faq-category-title">âš™ï¸ Funcionalidades</h3>
+                <h3 class="faq-category-title">⚙️ Funcionalidades</h3>
 
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Como funciona o programa de fidelidade? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">Seus clientes acumulam pontos automaticamente a cada compra (0.5% de cashback em pontos). AlÃ©m disso, ganham bÃ´nus por compras em dias consecutivos (streak). Os pontos podem ser usados como desconto em pedidos futuros.</div>
+                    <div class="faq-q">Como funciona o programa de fidelidade? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Seus clientes acumulam pontos automaticamente a cada compra (0.5% de cashback em pontos). Além disso, ganham bônus por compras em dias consecutivos (streak). Os pontos podem ser usados como desconto em pedidos futuros.</div>
                 </div>
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">Posso criar cupons de desconto? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">Sim! VocÃª pode criar cupons com cÃ³digo personalizado, desconto percentual, quantidade mÃ¡xima de usos e data de validade. DisponÃ­vel nos planos Pro e Premium.</div>
+                    <div class="faq-q">Posso criar cupons de desconto? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">Sim! Você pode criar cupons com código personalizado, desconto percentual, quantidade máxima de usos e data de validade. Disponível nos planos Pro e Premium.</div>
                 </div>
                 <div class="faq-item" onclick="this.classList.toggle('open')">
-                    <div class="faq-q">O sistema funciona quando estou offline? <span class="faq-arrow">â–¼</span></div>
-                    <div class="faq-a">A pÃ¡gina dos seus clientes permite navegaÃ§Ã£o mesmo offline â€” eles podem ver o cardÃ¡pio, avaliaÃ§Ãµes e informaÃ§Ãµes com dados em cache. PorÃ©m, para fazer pedidos, a conexÃ£o com o servidor precisa estar ativa.</div>
+                    <div class="faq-q">O sistema funciona quando estou offline? <span class="faq-arrow">▼</span></div>
+                    <div class="faq-a">A página dos seus clientes permite navegação mesmo offline — eles podem ver o cardápio, avaliações e informações com dados em cache. Porém, para fazer pedidos, a conexão com o servidor precisa estar ativa.</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- â•â• CTA â•â• -->
+    <!-- ══ CTA ══ -->
     <section class="support-cta">
         <div class="biz-shell">
             <div class="support-cta-card">
-                <h2>NÃ£o encontrou o que procurava?</h2>
-                <p>Nossa equipe estÃ¡ pronta para ajudar com qualquer dÃºvida ou problema.</p>
+                <h2>Não encontrou o que procurava?</h2>
+                <p>Nossa equipe está pronta para ajudar com qualquer dúvida ou problema.</p>
                 <div class="support-cta-actions">
-                    <a href="https://wa.me/5527995045666?text=OlÃ¡! Preciso de ajuda com o Menu Central." class="support-btn support-btn-primary" target="_blank">Falar pelo WhatsApp</a>
-                    <a href="contato.html" class="support-btn support-btn-outline">Enviar Mensagem</a>
+                    <a href="https://wa.me/5527995045666?text=Olá! Preciso de ajuda com o Menu Central." class="support-btn support-btn-primary" target="_blank">Falar pelo WhatsApp</a>
+                    <a href="/contato" class="support-btn support-btn-outline">Enviar Mensagem</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- â•â• FOOTER â•â• -->
+    <!-- ══ FOOTER ══ -->
     <div class="biz-footer">
-        <p><a href="index.html">InÃ­cio</a> Â· <a href="recursos.html">Recursos</a> Â· <a href="planos.html">Planos</a> Â· <a href="contato.html">Contato</a> Â· <a href="sobre.html">Sobre</a> · <a href="termos.html">Termos de Uso</a></p>
+        <p><a href="/">Início</a> · <a href="/negocios">Visão Geral</a> · <a href="/recursos">Recursos</a> · <a href="/planos">Planos</a> · <a href="/contato">Contato</a> · <a href="/suporte">Suporte</a> · <a href="/sobre">Sobre</a> · <a href="/termos">Termos de Uso</a></p>
     </div>
+
+    <script src="negocios.js"></script>
 </body>
 </html>

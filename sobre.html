@@ -3,133 +3,145 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Menu Central â€” Sobre NÃ³s</title>
+    <title>Menu Central — Sobre Nós</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="negocios.css" />
 </head>
 <body>
-    <!-- â•â• HEADER â•â• -->
+    <!-- ══ HEADER ══ -->
     <header class="top-header">
         <div class="top-header-inner">
-            <a href="index.html" class="logo-link">
-                <span class="logo-icon">ðŸ½ï¸</span>
+            <a href="/" class="logo-link">
+                <span class="logo-icon">🍽️</span>
                 <span class="logo-text">Menu<strong>Central</strong></span>
             </a>
             <nav class="top-nav">
-                <a href="negocios.html" class="top-nav-link">VisÃ£o Geral</a>
-                <a href="recursos.html" class="top-nav-link">Recursos</a>
-                <a href="planos.html" class="top-nav-link">Planos</a>
-                <a href="contato.html" class="top-nav-link">Contato</a>
-                <a href="suporte.html" class="top-nav-link">Suporte</a>
-                <a href="sobre.html" class="top-nav-link active">Sobre</a>
+                <a href="/negocios" class="top-nav-link">Visão Geral</a>
+                <a href="/recursos" class="top-nav-link">Recursos</a>
+                <a href="/planos" class="top-nav-link">Planos</a>
+                <a href="/contato" class="top-nav-link">Contato</a>
+                <a href="/suporte" class="top-nav-link">Suporte</a>
+                <a href="/sobre" class="top-nav-link active">Sobre</a>
             </nav>
-            <a href="entrar.html" class="header-cta">Entrar</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu" onclick="toggleNav()"><span></span><span></span><span></span></button>
+            <a href="/entrar" class="header-cta">Entrar</a>
         </div>
     </header>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="nav-close" onclick="toggleNav()">&times;</button>
+        <a href="/negocios">Visão Geral</a>
+        <a href="/recursos">Recursos</a>
+        <a href="/planos">Planos</a>
+        <a href="/contato">Contato</a>
+        <a href="/suporte">Suporte</a>
+        <a href="/sobre" class="active">Sobre</a>
+        <a href="/entrar">Entrar</a>
+    </div>
 
-    <!-- â•â• HERO â•â• -->
+    <!-- ══ HERO ══ -->
     <section class="page-hero">
         <div class="page-hero-content">
-            <div class="page-hero-badge">ðŸ½ï¸ Sobre NÃ³s</div>
-            <h1 class="page-hero-title">ConheÃ§a o <span>Menu Central</span></h1>
-            <p class="page-hero-subtitle">A plataforma completa de pedidos online que ajuda restaurantes, lanchonetes e delivery a venderem mais â€” com tecnologia simples e sem taxa sobre vendas.</p>
+            <div class="page-hero-badge">🍽️ Sobre Nós</div>
+            <h1 class="page-hero-title">Conheça o <span>Menu Central</span></h1>
+            <p class="page-hero-subtitle">A plataforma completa de pedidos online que ajuda restaurantes, lanchonetes e delivery a venderem mais — com tecnologia simples e sem taxa sobre vendas.</p>
         </div>
     </section>
 
-    <!-- â•â• NOSSA HISTÃ“RIA â•â• -->
+    <!-- ══ NOSSA HISTÓRIA ══ -->
     <section class="feat-category">
         <div class="biz-shell">
-            <h2 class="feat-category-title">Nossa <span>HistÃ³ria</span></h2>
+            <h2 class="feat-category-title">Nossa <span>História</span></h2>
             <div class="about-text-block">
-                <p>O Menu Central nasceu de uma necessidade real: pequenos restaurantes e lanchonetes precisavam de uma forma simples e acessÃ­vel de receber pedidos online, sem depender de marketplaces que cobram altas comissÃµes sobre cada venda.</p>
-                <p>Desenvolvido no EspÃ­rito Santo, o projeto comeÃ§ou como uma soluÃ§Ã£o local e rapidamente evoluiu para uma plataforma completa â€” com cardÃ¡pio digital, pagamento via PIX integrado, programa de fidelidade, cupons de desconto e gestÃ£o em tempo real.</p>
+                <p>O Menu Central nasceu de uma necessidade real: pequenos restaurantes e lanchonetes precisavam de uma forma simples e acessível de receber pedidos online, sem depender de marketplaces que cobram altas comissões sobre cada venda.</p>
+                <p>Desenvolvido no Espírito Santo, o projeto começou como uma solução local e rapidamente evoluiu para uma plataforma completa — com cardápio digital, pagamento via PIX integrado, programa de fidelidade, cupons de desconto e gestão em tempo real.</p>
                 <p>Hoje, o Menu Central oferece tudo que um estabelecimento precisa para vender online com autonomia, pagando apenas uma mensalidade fixa e mantendo 100% do faturamento.</p>
             </div>
         </div>
     </section>
 
-    <!-- â•â• MISSÃƒO, VISÃƒO E VALORES â•â• -->
+    <!-- ══ MISSÃO, VISÃO E VALORES ══ -->
     <section class="feat-category">
         <div class="biz-shell">
-            <h2 class="feat-category-title">MissÃ£o, VisÃ£o & <span>Valores</span></h2>
+            <h2 class="feat-category-title">Missão, Visão & <span>Valores</span></h2>
             <div class="feat-grid">
                 <div class="feat-card">
-                    <div class="feat-icon">ðŸŽ¯</div>
-                    <h3>MissÃ£o</h3>
-                    <p>Democratizar a tecnologia de pedidos online para negÃ³cios de alimentaÃ§Ã£o de todos os tamanhos, oferecendo ferramentas profissionais a um preÃ§o justo.</p>
+                    <div class="feat-icon">🎯</div>
+                    <h3>Missão</h3>
+                    <p>Democratizar a tecnologia de pedidos online para negócios de alimentação de todos os tamanhos, oferecendo ferramentas profissionais a um preço justo.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">ðŸ”­</div>
-                    <h3>VisÃ£o</h3>
-                    <p>Ser a plataforma de referÃªncia para restaurantes e delivery no Brasil, reconhecida pela simplicidade, inovaÃ§Ã£o e compromisso com o sucesso dos nossos clientes.</p>
+                    <div class="feat-icon">🔭</div>
+                    <h3>Visão</h3>
+                    <p>Ser a plataforma de referência para restaurantes e delivery no Brasil, reconhecida pela simplicidade, inovação e compromisso com o sucesso dos nossos clientes.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">ðŸ’Ž</div>
-                    <h3>TransparÃªncia</h3>
-                    <p>Sem taxas escondidas, sem surpresas. VocÃª paga uma mensalidade fixa e recebe 100% das suas vendas diretamente na sua conta.</p>
+                    <div class="feat-icon">💎</div>
+                    <h3>Transparência</h3>
+                    <p>Sem taxas escondidas, sem surpresas. Você paga uma mensalidade fixa e recebe 100% das suas vendas diretamente na sua conta.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">ðŸ¤</div>
+                    <div class="feat-icon">🤝</div>
                     <h3>Parceria</h3>
-                    <p>Nosso sucesso depende do seu. Por isso, oferecemos suporte humanizado e estamos sempre disponÃ­veis para ajudar seu negÃ³cio a crescer.</p>
+                    <p>Nosso sucesso depende do seu. Por isso, oferecemos suporte humanizado e estamos sempre disponíveis para ajudar seu negócio a crescer.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">âš¡</div>
-                    <h3>InovaÃ§Ã£o</h3>
-                    <p>Atualizamos a plataforma constantemente com novas funcionalidades baseadas no feedback real dos donos de negÃ³cios.</p>
+                    <div class="feat-icon">⚡</div>
+                    <h3>Inovação</h3>
+                    <p>Atualizamos a plataforma constantemente com novas funcionalidades baseadas no feedback real dos donos de negócios.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">ðŸ›¡ï¸</div>
+                    <div class="feat-icon">🛡️</div>
                     <h3>Simplicidade</h3>
-                    <p>Tecnologia poderosa nÃ£o precisa ser complicada. Qualquer pessoa consegue configurar e usar o Menu Central em minutos.</p>
+                    <p>Tecnologia poderosa não precisa ser complicada. Qualquer pessoa consegue configurar e usar o Menu Central em minutos.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- â•â• POR QUE MENU CENTRAL â•â• -->
+    <!-- ══ POR QUE MENU CENTRAL ══ -->
     <section class="feat-category">
         <div class="biz-shell">
             <h2 class="feat-category-title">Por que escolher o <span>Menu Central</span>?</h2>
             <div class="feat-grid">
                 <div class="feat-card">
-                    <div class="feat-icon">ðŸ’¸</div>
+                    <div class="feat-icon">💸</div>
                     <h3>Zero Taxa sobre Vendas</h3>
-                    <p>Diferente de marketplaces que cobram de 12% a 30% por pedido, no Menu Central vocÃª paga apenas a mensalidade fixa.</p>
+                    <p>Diferente de marketplaces que cobram de 12% a 30% por pedido, no Menu Central você paga apenas a mensalidade fixa.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">â±ï¸</div>
+                    <div class="feat-icon">⏱️</div>
                     <h3>Pronto em 24 horas</h3>
-                    <p>Seu cardÃ¡pio digital fica pronto em atÃ© 24 horas. Sem burocracia, sem contratos longos.</p>
+                    <p>Seu cardápio digital fica pronto em até 24 horas. Sem burocracia, sem contratos longos.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">ðŸ“±</div>
+                    <div class="feat-icon">📱</div>
                     <h3>Funciona em Qualquer Celular</h3>
                     <p>Seus clientes acessam de qualquer dispositivo. Design responsivo otimizado para mobile.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">ðŸ†</div>
-                    <h3>FidelizaÃ§Ã£o AutomÃ¡tica</h3>
-                    <p>Programa de pontos, cashback e sequÃªncia de compras integrados â€” seus clientes voltam naturalmente.</p>
+                    <div class="feat-icon">🏆</div>
+                    <h3>Fidelização Automática</h3>
+                    <p>Programa de pontos, cashback e sequência de compras integrados — seus clientes voltam naturalmente.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">ðŸ“Š</div>
-                    <h3>GestÃ£o Completa</h3>
-                    <p>Dashboard com vendas em tempo real, controle de estoque, relatÃ³rios e exportaÃ§Ã£o de dados.</p>
+                    <div class="feat-icon">📊</div>
+                    <h3>Gestão Completa</h3>
+                    <p>Dashboard com vendas em tempo real, controle de estoque, relatórios e exportação de dados.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon">ðŸ’¬</div>
+                    <div class="feat-icon">💬</div>
                     <h3>Suporte Humanizado</h3>
-                    <p>Atendimento direto via WhatsApp. Sem bots, sem filas. Sua dÃºvida resolvida rapidamente.</p>
+                    <p>Atendimento direto via WhatsApp. Sem bots, sem filas. Sua dúvida resolvida rapidamente.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- â•â• NÃšMEROS â•â• -->
+    <!-- ══ NÚMEROS ══ -->
     <section class="feat-category">
         <div class="biz-shell">
-            <h2 class="feat-category-title">Menu Central em <span>nÃºmeros</span></h2>
+            <h2 class="feat-category-title">Menu Central em <span>números</span></h2>
             <div class="about-stats-grid">
                 <div class="about-stat-card">
                     <div class="about-stat-value">0%</div>
@@ -137,34 +149,36 @@
                 </div>
                 <div class="about-stat-card">
                     <div class="about-stat-value">24h</div>
-                    <div class="about-stat-label">Para comeÃ§ar a vender</div>
+                    <div class="about-stat-label">Para começar a vender</div>
                 </div>
                 <div class="about-stat-card">
                     <div class="about-stat-value">7 dias</div>
-                    <div class="about-stat-label">De teste grÃ¡tis</div>
+                    <div class="about-stat-label">De teste grátis</div>
                 </div>
                 <div class="about-stat-card">
                     <div class="about-stat-value">100%</div>
-                    <div class="about-stat-label">Do faturamento Ã© seu</div>
+                    <div class="about-stat-label">Do faturamento é seu</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- â•â• CTA â•â• -->
+    <!-- ══ CTA ══ -->
     <section class="feat-cta">
         <div class="biz-shell">
             <div class="feat-cta-card">
-                <h2>Pronto para transformar seu negÃ³cio?</h2>
-                <p>Comece agora com 7 dias grÃ¡tis. Sem cartÃ£o de crÃ©dito, sem compromisso.</p>
-                <a href="https://wa.me/5527995045666?text=OlÃ¡! Gostaria de saber mais sobre o Menu Central e testar por 7 dias grÃ¡tis." class="feat-cta-btn" target="_blank">Fale Conosco â†’</a>
+                <h2>Pronto para transformar seu negócio?</h2>
+                <p>Comece agora com 7 dias grátis. Sem cartão de crédito, sem compromisso.</p>
+                <a href="https://wa.me/5527995045666?text=Olá! Gostaria de saber mais sobre o Menu Central e testar por 7 dias grátis." class="feat-cta-btn" target="_blank">Fale Conosco →</a>
             </div>
         </div>
     </section>
 
-    <!-- â•â• FOOTER â•â• -->
+    <!-- ══ FOOTER ══ -->
     <div class="biz-footer">
-        <p><a href="index.html">InÃ­cio</a> Â· <a href="recursos.html">Recursos</a> Â· <a href="planos.html">Planos</a> Â· <a href="contato.html">Contato</a> Â· <a href="suporte.html">Suporte</a> Â· <a href="sobre.html">Sobre</a> · <a href="termos.html">Termos de Uso</a></p>
+        <p><a href="/">Início</a> · <a href="/negocios">Visão Geral</a> · <a href="/recursos">Recursos</a> · <a href="/planos">Planos</a> · <a href="/contato">Contato</a> · <a href="/suporte">Suporte</a> · <a href="/sobre">Sobre</a> · <a href="/termos">Termos de Uso</a></p>
     </div>
+
+    <script src="negocios.js"></script>
 </body>
 </html>
