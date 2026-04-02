@@ -3,7 +3,7 @@
    API: /api/pedidos, /api/produtos, /api/clientes
    =================================================================== */
 
-const API_BASE = 'https://api.pedidocerto.uk';
+const API_BASE = '';
 
 const ENDPOINTS = {
     criarPedido: `${API_BASE}/api/pedidos`,

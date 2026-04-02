@@ -3,7 +3,7 @@
    API: /api/feedbacks, /api/fidelidade, /api/clientes
    =================================================================== */
 
-const API_BASE = 'https://api.pedidocerto.uk';
+const API_BASE = '';
 
 const ENDPOINTS = {
     buscarClientePorDocumento: (doc) =>

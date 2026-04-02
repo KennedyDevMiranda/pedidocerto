@@ -3,7 +3,7 @@
    Usado por: negocios, planos, contato, entrar
    =================================================================== */
 
-const API_BASE = 'https://api.pedidocerto.uk';
+const API_BASE = '';
 
 /* ── Billing Toggle (planos, negocios) ── */
 let anual = false;

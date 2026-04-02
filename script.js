@@ -2,7 +2,7 @@
    SCRIPT.JS — Menu Central (Homepage Comercial)
    =================================================================== */
 
-const API_BASE = 'https://api.pedidocerto.uk';
+const API_BASE = '';
 
 /* ===================================================================
    UTILITÁRIOS

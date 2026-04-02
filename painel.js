@@ -2,7 +2,7 @@
    MENU CENTRAL — PAINEL DE GESTÃO (painel.js)
    =================================================================== */
 
-const API_BASE = 'https://api.pedidocerto.uk';
+const API_BASE = '';
 
 /* ── Estado ── */
 let currentPage = 'dashboard';
