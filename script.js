@@ -95,8 +95,8 @@ function aplicarStatusLoja(dados, live) {
             dot.className = 'hero-badge-dot online';
             text.textContent = 'Loja Aberta Agora';
         } else {
-            dot.className = 'hero-badge-dot offline';
-            text.textContent = 'Loja Fechada';
+            dot.className = 'hero-badge-dot online';
+            text.textContent = 'Loja Online';
         }
         const badge = document.getElementById('storeStatusBadge');
         if (badge) badge.style.opacity = '1';
@@ -136,16 +136,16 @@ function aplicarStatusLoja(dados, live) {
         }
     } else {
         if (statusPill) {
-            statusPill.textContent = '● Fechada';
-            statusPill.className = 'status-pill fechada';
+            statusPill.textContent = '● Online';
+            statusPill.className = 'status-pill aberta';
         }
         if (horarioTexto) {
             if (dados.diaAberto && dados.horaAbertura) {
                 const virada = dados.horaFechamento <= dados.horaAbertura;
                 const ate = virada ? `${dados.horaFechamento} (dia seguinte)` : dados.horaFechamento;
-                horarioTexto.textContent = `Horário hoje: ${dados.horaAbertura} — ${ate}. Volte no horário de atendimento!`;
+                horarioTexto.textContent = `Horário de atendimento: ${dados.horaAbertura} às ${ate}`;
             } else {
-                horarioTexto.textContent = 'Estamos fechados hoje. Volte amanhã!';
+                horarioTexto.textContent = 'Loja online! Faça seu pedido.';
             }
         }
     }
