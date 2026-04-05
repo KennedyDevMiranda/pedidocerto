@@ -1612,6 +1612,23 @@ body {
 }
 
 /* ===================================================================
+   AVISO FORA DO HORÁRIO
+   =================================================================== */
+
+.aviso-fora-horario {
+    text-align: center;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #fef3c7, #fffbeb);
+    border: 1.5px solid #f59e0b;
+    border-radius: var(--radius-sm);
+    color: #92400e;
+    font-size: .9rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+/* ===================================================================
    FOOTER
    =================================================================== */
 

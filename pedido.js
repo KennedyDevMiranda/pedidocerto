@@ -67,6 +67,8 @@ const state = {
     produtos: [],
     carrinho: [],
     sistemaOnline: null,
+    lojaAberta: null,
+    horarioTexto: '',
     cliente: {
         id: null,
         cpf: '',
@@ -924,6 +926,15 @@ async function enviarPedido(e) {
     e.preventDefault();
     if (state.step !== 6) return;
 
+    // Bloquear pedido fora do horário
+    if (state.lojaAberta === false) {
+        const msg = state.horarioTexto
+            ? `A loja está fechada no momento. Horário de funcionamento: ${state.horarioTexto}.`
+            : 'A loja está fechada no momento. Tente novamente mais tarde.';
+        showToast(msg, 'error');
+        return;
+    }
+
     const btn = document.getElementById('btnEnviar');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span>Enviando...';
@@ -1618,6 +1629,36 @@ renderCarrinho();
 })();
 
 /* ===================================================================
+   BLOQUEIO VISUAL DE PEDIDO FORA DO HORÁRIO
+   =================================================================== */
+
+function atualizarBloqueioHorario() {
+    const btnEnviar = document.getElementById('btnEnviar');
+    const aviso = document.getElementById('avisoForaHorario');
+
+    if (state.lojaAberta === false) {
+        // Desabilitar botão de envio
+        if (btnEnviar) {
+            btnEnviar.disabled = true;
+            btnEnviar.textContent = '🔒 Fora do Horário';
+        }
+        // Mostrar aviso se existir
+        if (aviso) {
+            aviso.textContent = state.horarioTexto
+                ? `⏰ Pedidos disponíveis das ${state.horarioTexto}`
+                : '⏰ Loja fechada no momento';
+            aviso.style.display = 'block';
+        }
+    } else {
+        if (btnEnviar) {
+            btnEnviar.disabled = false;
+            btnEnviar.textContent = 'Enviar Pedido';
+        }
+        if (aviso) aviso.style.display = 'none';
+    }
+}
+
+/* ===================================================================
    STATUS DA LOJA (ONLINE / OFFLINE)
    =================================================================== */
 
@@ -1650,27 +1691,46 @@ async function verificarStatusLoja() {
 
             // Sistema online → habilitar pedidos
             state.sistemaOnline = true;
-            if (banner) banner.classList.remove('visible');
 
+            // Carregar produtos na primeira vez (sempre carrega para navegação)
             if (storeOnline !== true) {
-                badge.className = 'store-status online';
-                badge.style.opacity = '1';
                 storeOnline = true;
                 carregarProdutos();
             }
 
             if (aberta) {
+                state.lojaAberta = true;
+                badge.className = 'store-status online';
                 text.textContent = 'Loja Online';
+                badge.style.opacity = '1';
                 if (banner) banner.classList.remove('visible');
+                atualizarBloqueioHorario();
             } else {
-                // Fora do horário mas sistema online → mostrar "Loja Online" com horário
+                state.lojaAberta = false;
+                badge.className = 'store-status offline';
+                badge.style.opacity = '1';
+
                 if (dados.diaAberto && dados.horaAbertura) {
                     const virada = dados.horaFechamento <= dados.horaAbertura;
                     const ate = virada ? `${dados.horaFechamento} (dia seguinte)` : dados.horaFechamento;
-                    text.textContent = `Loja Online · ${dados.horaAbertura} às ${ate}`;
+                    state.horarioTexto = `${dados.horaAbertura} às ${ate}`;
+                    text.textContent = `Loja Fechada · Abre ${dados.horaAbertura}`;
                 } else {
-                    text.textContent = 'Loja Online';
+                    state.horarioTexto = '';
+                    text.textContent = 'Loja Fechada';
                 }
+
+                // Banner informativo com horário
+                if (banner) {
+                    const bannerText = banner.querySelector('.offline-banner-text');
+                    if (bannerText) {
+                        bannerText.textContent = state.horarioTexto
+                            ? `⏰ Estamos fechados agora — Horário: ${state.horarioTexto}. Navegue pelo cardápio e volte no horário de atendimento!`
+                            : '⏰ Estamos fechados agora. Volte mais tarde!';
+                    }
+                    banner.classList.add('visible');
+                }
+                atualizarBloqueioHorario();
             }
             return;
         }
@@ -1716,11 +1776,14 @@ async function verificarStatusLoja() {
                 if (lojaTexto) { lojaTexto.textContent = cachedStatus.enderecoLoja; lojaTexto.style.opacity = '1'; }
             }
             // Exibir horário de funcionamento do cache
+            state.lojaAberta = false;
             if (cachedStatus.diaAberto && cachedStatus.horaAbertura) {
                 const virada = cachedStatus.horaFechamento <= cachedStatus.horaAbertura;
                 const ate = virada ? `${cachedStatus.horaFechamento} (dia seguinte)` : cachedStatus.horaFechamento;
-                text.textContent = `Loja Online · ${cachedStatus.horaAbertura} às ${ate}`;
+                state.horarioTexto = `${cachedStatus.horaAbertura} às ${ate}`;
+                text.textContent = `Offline · Horário: ${cachedStatus.horaAbertura} às ${ate}`;
             }
+            atualizarBloqueioHorario();
         }
     }
 }
