@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Menu Central � Fa�a seu Pedido</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>???</text></svg>" />
+    <title>Menu Central · Faça seu Pedido</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" />
     <link rel="stylesheet" href="pedido.css" />
 </head>
 <body>
-    <!-- -- BARRA DE ATIVIDADE AO VIVO -- -->
+    <!-- ══ BARRA DE ATIVIDADE AO VIVO ══ -->
     <div class="live-bar" id="liveBar">
         <div class="live-bar-inner">
             <span class="live-dot"></span>
@@ -16,41 +19,41 @@
         </div>
     </div>
 
-    <!-- -- NOTIFICA��O DE COMPRA -- -->
+    <!-- ══ NOTIFICAÇÃO DE COMPRA ══ -->
     <div class="purchase-toast" id="purchaseToast">
-        <span class="purchase-toast-icon">??</span>
+        <span class="purchase-toast-icon">🛒</span>
         <span class="purchase-toast-text" id="purchaseToastText"></span>
     </div>
 
     <main class="app-shell">
-        <!-- -- NAVEGA��O -- -->
+        <!-- ══ NAVEGAÇÃO ══ -->
         <nav class="site-nav">
-            <a href="/" class="nav-link">?? In�cio</a>
-            <a href="/pedido" class="nav-link active">?? Pedidos</a>
-            <a href="/feedback" class="nav-link">? Feedback & Fidelidade</a>
+            <a href="/" class="nav-link">🏠 Início</a>
+            <a href="/pedido" class="nav-link active">🛒 Pedidos</a>
+            <a href="/feedback" class="nav-link">⭐ Feedback & Fidelidade</a>
         </nav>
 
         <header class="hero">
             <div class="hero-card">
                 <div>
-                    <span class="brand-badge">Menu Central � Card�pio Online</span>
+                    <span class="brand-badge">Menu Central · Cardápio Online</span>
                     <div class="store-status" id="storeStatus" style="opacity:0;transition:opacity .4s">
                         <span class="status-dot"></span>
                         <span class="status-text"></span>
                     </div>
-                    <h1>Fa�a seu Pedido</h1>
+                    <h1>Faça seu Pedido</h1>
                     <p>Escolha seus produtos favoritos, informe seu CPF e finalize com a forma de pagamento desejada.</p>
                 </div>
-                <div class="hero-icon">??</div>
+                <div class="hero-icon">🛒</div>
             </div>
         </header>
 
-        <!-- -- TELA DE IDENTIFICA��O POR CPF -- -->
+        <!-- ══ TELA DE IDENTIFICAÇÃO POR CPF ══ -->
         <section class="id-screen" id="telaIdentificacao">
             <div class="id-card">
-                <div class="id-icon">??</div>
+                <div class="id-icon">👤</div>
                 <h2 class="id-title">Bem-vindo!</h2>
-                <p class="id-subtitle">Informe seu CPF para come�ar seu pedido</p>
+                <p class="id-subtitle">Informe seu CPF para começar seu pedido</p>
 
                 <div id="welcomeBack" class="id-welcome hidden">
                     <div class="id-welcome-name" id="welcomeNome"></div>
@@ -70,7 +73,7 @@
                 </div>
 
                 <p class="terms-notice">
-                    Ao continuar, voc� concorda com nossos <a href="/termos" target="_blank" class="terms-link">Termos de Uso e Pol�tica de Privacidade</a>.
+                    Ao continuar, você concorda com nossos <a href="/termos" target="_blank" class="terms-link">Termos de Uso e Política de Privacidade</a>.
                 </p>
 
                 <button type="button" class="btn btn-primary id-btn" id="btnIdentificar">Continuar</button>
@@ -81,22 +84,22 @@
             </div>
         </section>
 
-        <!-- -- WIZARD DE PEDIDO (inicia oculto) -- -->
+        <!-- ══ WIZARD DE PEDIDO (inicia oculto) ══ -->
         <section class="wizard-shell hidden" id="wizardShell">
             <div class="wizard-progress">
                 <div class="progress-step active" data-step="1">Produtos</div>
                 <div class="progress-step" data-step="2">Carrinho</div>
                 <div class="progress-step" data-step="3">Cliente</div>
-                <div class="progress-step" data-step="4">Endere�o</div>
+                <div class="progress-step" data-step="4">Endereço</div>
                 <div class="progress-step" data-step="5">Pagamento</div>
-                <div class="progress-step" data-step="6">Revis�o</div>
+                <div class="progress-step" data-step="6">Revisão</div>
             </div>
 
             <form id="formPedido" autocomplete="off">
                 <input type="hidden" id="usuarioId" value="1" />
                 <input type="hidden" id="clienteId" value="" />
 
-                <!-- ETAPA 1 � CARD�PIO -->
+                <!-- ETAPA 1 — CARDÁPIO -->
                 <section class="step-card active" data-step="1">
                     <div class="section-head">
                         <h2>Escolha os produtos</h2>
@@ -106,7 +109,7 @@
                     <div id="bannerCupons" class="cupons-banner hidden"></div>
 
                     <div class="search-box">
-                        <input type="text" id="produtoBusca" placeholder="Buscar produto pelo nome ou descri��o..." />
+                        <input type="text" id="produtoBusca" placeholder="Buscar produto pelo nome ou descrição..." />
                     </div>
 
                     <div class="products-list" id="listaProdutos">
@@ -121,7 +124,7 @@
                     </div>
                 </section>
 
-                <!-- ETAPA 2 � CARRINHO / RESUMO -->
+                <!-- ETAPA 2 — CARRINHO / RESUMO -->
                 <section class="step-card" data-step="2">
                     <div class="section-head">
                         <h2>Seu pedido</h2>
@@ -151,14 +154,14 @@
                             <div class="form-group">
                                 <label for="codigoCupom">Cupom de desconto</label>
                                 <div class="inline-group">
-                                    <input type="text" id="codigoCupom" placeholder="Digite o c�digo do cupom" />
+                                    <input type="text" id="codigoCupom" placeholder="Digite o código do cupom" />
                                     <button type="button" class="btn btn-outline" id="btnAplicarCupom">Aplicar</button>
                                 </div>
-                                <small id="cupomStatus">Se possui um cupom, insira o c�digo acima.</small>
+                                <small id="cupomStatus">Se possui um cupom, insira o código acima.</small>
                             </div>
                             <div class="form-group">
-                                <label for="observacao">Observa��o</label>
-                                <input type="text" id="observacao" placeholder="Observa��o geral do pedido (opcional)" />
+                                <label for="observacao">Observação</label>
+                                <input type="text" id="observacao" placeholder="Observação geral do pedido (opcional)" />
                             </div>
                         </div>
                     </div>
@@ -169,10 +172,10 @@
                     </div>
                 </section>
 
-                <!-- ETAPA 3 � CLIENTE (CPF) -->
+                <!-- ETAPA 3 — CLIENTE (CPF) -->
                 <section class="step-card" data-step="3">
                     <div class="section-head">
-                        <h2>Identifica��o do cliente</h2>
+                        <h2>Identificação do cliente</h2>
                         <p>Consulte o CPF para localizar o cadastro ou preencha os dados para criar um novo.</p>
                     </div>
 
@@ -183,7 +186,7 @@
                                 <input type="text" id="cpf" maxlength="14" placeholder="000.000.000-00" />
                                 <button type="button" class="btn btn-outline" id="btnConsultarCpf">Consultar</button>
                             </div>
-                            <small>Se j� cadastrado, os dados s�o preenchidos automaticamente.</small>
+                            <small>Se já cadastrado, os dados são preenchidos automaticamente.</small>
                         </div>
 
                         <div class="status-box" id="statusCliente">Informe o CPF e clique em Consultar.</div>
@@ -211,36 +214,36 @@
                     </div>
                 </section>
 
-                <!-- ETAPA 4 � ENDERE�O DE ENTREGA -->
+                <!-- ETAPA 4 — ENDEREÇO DE ENTREGA -->
                 <section class="step-card" data-step="4">
                     <div class="section-head">
-                        <h2>Endere�o de entrega</h2>
+                        <h2>Endereço de entrega</h2>
                         <p>Escolha como deseja receber seu pedido.</p>
                     </div>
 
                     <!-- Abas de modo de entrega -->
                     <div class="address-tabs" id="addressTabs">
                         <button type="button" class="address-tab" data-modo="cadastrado" id="tabCadastrado">
-                            <span class="address-tab-icon">??</span>
-                            <span>Endere�o Cadastrado</span>
+                            <span class="address-tab-icon">📍</span>
+                            <span>Endereço Cadastrado</span>
                         </button>
                         <button type="button" class="address-tab" data-modo="retirada" id="tabRetirada">
-                            <span class="address-tab-icon">??</span>
+                            <span class="address-tab-icon">🏪</span>
                             <span>Retirar no Local</span>
                         </button>
                         <button type="button" class="address-tab" data-modo="novo" id="tabNovo">
-                            <span class="address-tab-icon">??</span>
-                            <span>Novo Endere�o</span>
+                            <span class="address-tab-icon">📝</span>
+                            <span>Novo Endereço</span>
                         </button>
                     </div>
 
-                    <!-- Painel: Endere�o cadastrado -->
+                    <!-- Painel: Endereço cadastrado -->
                     <div class="address-panel hidden" id="panelCadastrado">
                         <div class="address-info-card">
-                            <div class="address-info-icon">??</div>
+                            <div class="address-info-icon">📍</div>
                             <div>
-                                <strong>Endere�o do cadastro</strong>
-                                <p id="enderecoCadastradoTexto">Nenhum endere�o cadastrado.</p>
+                                <strong>Endereço do cadastro</strong>
+                                <p id="enderecoCadastradoTexto">Nenhum endereço cadastrado.</p>
                             </div>
                         </div>
                     </div>
@@ -248,16 +251,16 @@
                     <!-- Painel: Retirada no estabelecimento -->
                     <div class="address-panel hidden" id="panelRetirada">
                         <div class="address-info-card">
-                            <div class="address-info-icon">??</div>
+                            <div class="address-info-icon">🏪</div>
                             <div>
                                 <strong>Retirar no estabelecimento</strong>
                                 <p id="enderecoLojaTexto" style="opacity:0;transition:opacity .3s">&nbsp;</p>
                             </div>
                         </div>
-                        <p class="address-info-note">?? Sem taxa de entrega nesta op��o.</p>
+                        <p class="address-info-note">⚠️ Sem taxa de entrega nesta opção.</p>
                     </div>
 
-                    <!-- Painel: Novo endere�o -->
+                    <!-- Painel: Novo endereço -->
                     <div class="address-panel hidden" id="panelNovo">
                         <div class="form-grid">
                             <div class="row two">
@@ -267,7 +270,7 @@
                                     <small id="cepStatus">Digite o CEP para preencher automaticamente.</small>
                                 </div>
                                 <div class="form-group">
-                                    <label for="numero">N�mero</label>
+                                    <label for="numero">Número</label>
                                     <input type="text" id="numero" maxlength="10" placeholder="Ex.: 123" />
                                 </div>
                             </div>
@@ -300,8 +303,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="referencia">Refer�ncia</label>
-                                <textarea id="referencia" placeholder="Ponto de refer�ncia ou observa��o sobre a entrega..."></textarea>
+                                <label for="referencia">Referência</label>
+                                <textarea id="referencia" placeholder="Ponto de referência ou observação sobre a entrega..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -312,7 +315,7 @@
                     </div>
                 </section>
 
-                <!-- ETAPA 5 � FORMA DE PAGAMENTO (enum real: 1-5) -->
+                <!-- ETAPA 5 — FORMA DE PAGAMENTO (enum real: 1-5) -->
                 <section class="step-card" data-step="5">
                     <div class="section-head">
                         <h2>Forma de pagamento</h2>
@@ -321,15 +324,15 @@
 
                     <!-- Valor total do pedido -->
                     <div class="status-box highlight" style="font-size:1.1rem;font-weight:800;text-align:center;margin-bottom:14px;padding:14px;background:linear-gradient(135deg,rgba(37,99,235,.06),rgba(37,99,235,.12));border:1px solid var(--accent);border-radius:var(--radius-sm);">
-                        ?? Valor total: <span id="totalPagamento">R$ 0,00</span>
+                        💰 Valor total: <span id="totalPagamento">R$ 0,00</span>
                     </div>
 
                     <div class="payment-grid" id="formasPagamento">
-                        <button type="button" class="payment-option" data-value="1">?? Dinheiro</button>
-                        <button type="button" class="payment-option" data-value="2">?? Pix</button>
-                        <button type="button" class="payment-option" data-value="3">?? Cart�o de Cr�dito</button>
-                        <button type="button" class="payment-option" data-value="4">?? Cart�o de D�bito</button>
-                        <button type="button" class="payment-option" data-value="5">?? Boleto</button>
+                        <button type="button" class="payment-option" data-value="1">💵 Dinheiro</button>
+                        <button type="button" class="payment-option" data-value="2">📱 Pix</button>
+                        <button type="button" class="payment-option" data-value="3">💳 Cartão de Crédito</button>
+                        <button type="button" class="payment-option" data-value="4">💳 Cartão de Débito</button>
+                        <button type="button" class="payment-option" data-value="5">📄 Boleto</button>
                     </div>
 
                     <input type="hidden" id="formaPagamento" value="" />
@@ -338,7 +341,7 @@
                     <div class="pontos-section" id="pontosSection" style="display:none;margin-top:14px">
                         <div class="pontos-card">
                             <div class="pontos-header">
-                                <span>??</span>
+                                <span>🎯</span>
                                 <strong>Usar pontos de fidelidade</strong>
                             </div>
                             <p class="pontos-info" id="pontosInfo" style="font-size:.85rem;color:var(--muted);margin:6px 0"></p>
@@ -353,27 +356,27 @@
                     <div class="form-grid" style="margin-top:14px">
                         <div class="row two">
                             <div class="form-group">
-                                <label>?? Taxa de entrega</label>
+                                <label>🚚 Taxa de entrega</label>
                                 <div class="status-box success" style="font-size:1rem;font-weight:800;text-align:center">
                                     R$ 3,00
                                 </div>
                                 <small style="color:var(--muted)">Taxa fixa para todas as entregas.</small>
                             </div>
                             <div class="form-group" id="trocoGroup" style="display:none">
-                                <label for="trocoPara">?? Troco para (R$)</label>
+                                <label for="trocoPara">💵 Troco para (R$)</label>
                                 <input type="number" id="trocoPara" min="0" step="0.01" value="" placeholder="Ex: 50,00" />
                                 <small id="trocoInfo" style="color:var(--muted)">Informe o valor que o cliente vai pagar em dinheiro.</small>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Se��o PIX QR Code -->
+                    <!-- Seção PIX QR Code -->
                     <div class="pix-section" id="pixSection" style="display:none">
                         <div class="pix-card">
                             <div class="pix-header">
-                                <span class="pix-logo">??</span>
+                                <span class="pix-logo">📱</span>
                                 <h3>Pagamento via Pix</h3>
-                                <p>Escaneie o QR Code ou copie o c�digo para pagar</p>
+                                <p>Escaneie o QR Code ou copie o código para pagar</p>
                             </div>
                             <div class="pix-amount" id="pixAmount"></div>
                             <div class="pix-qr-container" id="pixQrContainer"></div>
@@ -381,9 +384,9 @@
                                 <label>Pix Copia e Cola:</label>
                                 <div class="pix-code-box">
                                     <input type="text" id="pixCopiaCola" readonly />
-                                    <button type="button" class="btn btn-outline pix-copy-btn" id="btnCopiarPix">?? Copiar</button>
+                                    <button type="button" class="btn btn-outline pix-copy-btn" id="btnCopiarPix">📋 Copiar</button>
                                 </div>
-                                <small id="pixCopyStatus" style="color:var(--success);display:none">? C�digo copiado!</small>
+                                <small id="pixCopyStatus" style="color:var(--success);display:none">✅ Código copiado!</small>
                             </div>
                         </div>
                     </div>
@@ -394,28 +397,28 @@
                     </div>
                 </section>
 
-                <!-- ETAPA 6 � REVIS�O FINAL -->
+                <!-- ETAPA 6 — REVISÃO FINAL -->
                 <section class="step-card" data-step="6">
                     <div class="section-head">
-                        <h2>Revis�o final</h2>
-                        <p>Confira todas as informa��es antes de enviar o pedido.</p>
+                        <h2>Revisão final</h2>
+                        <p>Confira todas as informações antes de enviar o pedido.</p>
                     </div>
 
                     <div class="review-grid">
                         <div class="review-card">
-                            <h3>?? Cliente</h3>
+                            <h3>👤 Cliente</h3>
                             <div id="reviewCliente"></div>
                         </div>
                         <div class="review-card">
-                            <h3>?? Endere�o de Entrega</h3>
+                            <h3>📍 Endereço de Entrega</h3>
                             <div id="reviewEndereco"></div>
                         </div>
                         <div class="review-card full">
-                            <h3>?? Itens do Pedido</h3>
+                            <h3>📦 Itens do Pedido</h3>
                             <div id="reviewItens"></div>
                         </div>
                         <div class="review-card">
-                            <h3>?? Pagamento</h3>
+                            <h3>💰 Pagamento</h3>
                             <div id="reviewPagamento"></div>
                         </div>
                         <div class="review-card highlight">
@@ -435,11 +438,11 @@
 
     <div class="toast" id="toast"></div>
 
-    <!-- -- OVERLAY DE PAGAMENTO PIX (p�s-pedido) -- -->
+    <!-- ══ OVERLAY DE PAGAMENTO PIX (pós-pedido) ══ -->
     <div class="pix-overlay" id="pixOverlay">
         <div class="pix-overlay-content">
             <div class="pix-overlay-header">
-                <span class="pix-overlay-icon">??</span>
+                <span class="pix-overlay-icon">📱</span>
                 <h2>Pagamento via Pix</h2>
                 <p class="pix-overlay-pedido" id="pixOverlayPedido"></p>
             </div>
@@ -452,23 +455,23 @@
                 <label>Pix Copia e Cola:</label>
                 <div class="pix-code-box">
                     <input type="text" id="pixOverlayCopiaCola" readonly />
-                    <button type="button" class="btn btn-outline pix-copy-btn" id="btnCopiarPixOverlay">?? Copiar</button>
+                    <button type="button" class="btn btn-outline pix-copy-btn" id="btnCopiarPixOverlay">📋 Copiar</button>
                 </div>
-                <small id="pixOverlayCopyStatus" style="color:var(--success);display:none">? C�digo copiado!</small>
+                <small id="pixOverlayCopyStatus" style="color:var(--success);display:none">✅ Código copiado!</small>
             </div>
 
             <div class="pix-overlay-timer">
-                <small>?? Aguardando confirma��o do pagamento...</small>
+                <small>⏱️ Aguardando confirmação do pagamento...</small>
                 <div class="pix-overlay-pulse"></div>
             </div>
 
             <div class="pix-overlay-actions">
-                <button type="button" class="btn btn-primary pix-confirm-btn" id="btnConfirmarPix">? J� paguei</button>
+                <button type="button" class="btn btn-primary pix-confirm-btn" id="btnConfirmarPix">✅ Já paguei</button>
                 <button type="button" class="btn btn-secondary" id="btnPagarDepois">Pagar depois</button>
             </div>
 
             <div class="pix-overlay-result hidden" id="pixResultado">
-                <div class="pix-result-icon">?</div>
+                <div class="pix-result-icon">✅</div>
                 <h3>Pagamento confirmado!</h3>
                 <p>Seu pedido foi marcado como <strong>Pago</strong>.</p>
             </div>
@@ -479,9 +482,9 @@
     </footer>
 
     <div class="offline-banner" id="offlineBanner">
-        <span class="offline-banner-icon">??</span>
-        <span class="offline-banner-text">Sistema indispon�vel � Voc� pode navegar pelos produtos. Pedidos ser�o liberados quando a loja estiver online.</span>
-        <button class="offline-banner-close" onclick="this.parentElement.classList.remove('visible')" aria-label="Fechar">?</button>
+        <span class="offline-banner-icon">📡</span>
+        <span class="offline-banner-text">Sistema indisponível — Você pode navegar pelos produtos. Pedidos serão liberados quando a loja estiver online.</span>
+        <button class="offline-banner-close" onclick="this.parentElement.classList.remove('visible')" aria-label="Fechar">✕</button>
     </div>
 
     <script src="config.js"></script>
