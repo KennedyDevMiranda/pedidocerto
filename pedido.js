@@ -337,10 +337,6 @@ function renderProdutos() {
    =================================================================== */
 
 function adicionarAoCarrinho(produtoId) {
-    if (!state.sistemaOnline) {
-        showToast('Aguarde a loja ficar online para adicionar itens.', 'error');
-        return;
-    }
     const p = state.produtos.find(x => x.id === produtoId);
     if (!p) return;
 
@@ -928,11 +924,6 @@ function removerCupom() {
 async function enviarPedido(e) {
     e.preventDefault();
     if (state.step !== 6) return;
-
-    if (!state.sistemaOnline) {
-        showToast('O sistema está offline. Aguarde a loja ficar online para enviar o pedido.', 'error');
-        return;
-    }
 
     const btn = document.getElementById('btnEnviar');
     btn.disabled = true;
@@ -1710,7 +1701,7 @@ async function verificarStatusLoja() {
         // Mostrar banner não-bloqueante
         if (banner) {
             const bannerText = banner.querySelector('.offline-banner-text');
-            if (bannerText) bannerText.textContent = '📡 Sistema indisponível — Você pode navegar pelos produtos. Pedidos serão liberados quando a loja estiver online.';
+            if (bannerText) bannerText.textContent = '📡 Sistema indisponível — Você pode navegar pelos produtos e montar seu pedido. O envio será possível quando a conexão for restabelecida.';
             banner.classList.add('visible');
         }
 
@@ -1723,12 +1714,26 @@ async function verificarStatusLoja() {
             }
         }
 
-        // Carregar status do cache para endereço
+        // Carregar cupons do cache
+        const cachedCupons = lerCache(CACHE_KEYS.cupons);
+        if (cachedCupons && cachedCupons.length) {
+            renderCupons(cachedCupons);
+        }
+
+        // Carregar status do cache para endereço e horário
         const cachedStatus = lerCache(CACHE_KEYS.status);
-        if (cachedStatus && cachedStatus.enderecoLoja) {
-            state.enderecoLoja = cachedStatus.enderecoLoja;
-            const lojaTexto = document.getElementById('enderecoLojaTexto');
-            if (lojaTexto) { lojaTexto.textContent = cachedStatus.enderecoLoja; lojaTexto.style.opacity = '1'; }
+        if (cachedStatus) {
+            if (cachedStatus.enderecoLoja) {
+                state.enderecoLoja = cachedStatus.enderecoLoja;
+                const lojaTexto = document.getElementById('enderecoLojaTexto');
+                if (lojaTexto) { lojaTexto.textContent = cachedStatus.enderecoLoja; lojaTexto.style.opacity = '1'; }
+            }
+            // Exibir horário de funcionamento do cache
+            if (cachedStatus.diaAberto && cachedStatus.horaAbertura) {
+                const virada = cachedStatus.horaFechamento <= cachedStatus.horaAbertura;
+                const ate = virada ? `${cachedStatus.horaFechamento} (dia seguinte)` : cachedStatus.horaFechamento;
+                text.textContent = `Offline — Horário: ${cachedStatus.horaAbertura} às ${ate}`;
+            }
         }
     }
 }
