@@ -1,0 +1,30 @@
+{
+  "rewrites": [
+    { "source": "/pedido", "destination": "/pedido.html" },
+    { "source": "/feedback", "destination": "/feedback.html" },
+    { "source": "/negocios", "destination": "/negocios.html" },
+    { "source": "/painel", "destination": "/painel.html" },
+    { "source": "/planos", "destination": "/planos.html" },
+    { "source": "/contato", "destination": "/contato.html" },
+    { "source": "/entrar", "destination": "/entrar.html" },
+    { "source": "/recursos", "destination": "/recursos.html" },
+    { "source": "/sobre", "destination": "/sobre.html" },
+    { "source": "/suporte", "destination": "/suporte.html" },
+    { "source": "/termos", "destination": "/termos.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+      ]
+    },
+    {
+      "source": "/config.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    }
+  ]
+}
