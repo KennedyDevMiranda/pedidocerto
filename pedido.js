@@ -268,7 +268,7 @@ function renderCupons(cupons) {
     bannerCupons.classList.remove('hidden');
     bannerCupons.innerHTML = `
         <div class="cupons-header">
-            <span class="cupons-icon">???</span>
+            <span class="cupons-icon">🎟️</span>
             <strong>Cupons disponíveis</strong>
             <small style="color:var(--muted);margin-left:auto">Toque para copiar</small>
         </div>
@@ -321,7 +321,7 @@ function renderProdutos() {
         <button type="button" class="product-card${temOferta ? ' product-card--promo' : ''}" data-produto-id="${p.id}">
             ${p.imagemUrl
                 ? `<img src="${API_BASE}${p.imagemUrl}" alt="${p.nome}" class="product-img">`
-                : `<div class="product-img-placeholder">??</div>`}
+                : `<div class="product-img-placeholder">📦</div>`}
             <div class="product-info">
                 <h3>${p.nome}</h3>
                 <p>${p.descricao || ''} · Disponível: ${p.estoque}</p>
@@ -407,18 +407,18 @@ function renderCarrinho() {
         <div class="cart-item">
             ${item.imagemUrl
                 ? `<img src="${API_BASE}${item.imagemUrl}" alt="${item.nome}" class="cart-item-img">`
-                : `<div class="cart-item-img-placeholder">??</div>`}
+                : `<div class="cart-item-img-placeholder">📦</div>`}
             <div>
                 <h4>${item.nome}</h4>
                 <small>${formatCurrency(item.preco)} cada</small>
             </div>
             <div class="qty-box">
-                <button type="button" class="qty-btn" onclick="alterarQuantidade(${item.produtoId}, -1)">-</button>
+                <button type="button" class="qty-btn" onclick="alterarQuantidade(${item.produtoId}, -1)">−</button>
                 <strong>${item.quantidade}</strong>
                 <button type="button" class="qty-btn" onclick="alterarQuantidade(${item.produtoId}, 1)">+</button>
             </div>
             <strong>${formatCurrency(item.quantidade * item.preco)}</strong>
-            <button type="button" class="icon-btn" onclick="removerDoCarrinho(${item.produtoId})">?</button>
+            <button type="button" class="icon-btn" onclick="removerDoCarrinho(${item.produtoId})">✕</button>
         </div>
     `).join('');
 }
@@ -547,7 +547,7 @@ async function buscarCep(cep) {
         if (data.uf) document.getElementById('uf').value = data.uf;
 
         if (statusEl) {
-            statusEl.innerHTML = `<span style="color:var(--success)">? ${data.localidade}/${data.uf}</span>`;
+            statusEl.innerHTML = `<span style="color:var(--success)">✓ ${data.localidade}/${data.uf}</span>`;
         }
 
         document.getElementById('numero').focus();
@@ -760,25 +760,25 @@ function preencherRevisao() {
         <p>CPF: ${formatCpf(state.cliente.cpf)}</p>
         <p>Telefone: ${state.cliente.telefone || '—'}</p>
         <p>E-mail: ${state.cliente.email || '—'}</p>
-        ${state.cliente.existente ? '<p style="color:var(--success);font-weight:700">? Cliente já cadastrado</p>' : '<p style="color:var(--warning);font-weight:700">? Novo cadastro</p>'}
+        ${state.cliente.existente ? '<p style="color:var(--success);font-weight:700">✓ Cliente já cadastrado</p>' : '<p style="color:var(--warning);font-weight:700">⚠ Novo cadastro</p>'}
     `;
 
     const end = state.endereco;
     let endHtml = '';
     if (state.modoEntrega === 'cadastrado') {
         endHtml = `
-            <p style="color:var(--accent);font-weight:700">?? Endereço Cadastrado</p>
+            <p style="color:var(--accent);font-weight:700">📍 Endereço Cadastrado</p>
             <p>${state.cliente.endereco}</p>
         `;
     } else if (state.modoEntrega === 'retirada') {
         endHtml = `
-            <p style="color:var(--success);font-weight:700">?? Retirada no Estabelecimento</p>
+            <p style="color:var(--success);font-weight:700">🏪 Retirada no Estabelecimento</p>
             <p>${state.enderecoLoja}</p>
-            <p style="color:var(--success);font-size:.85rem">? Sem taxa de entrega</p>
+            <p style="color:var(--success);font-size:.85rem">✓ Sem taxa de entrega</p>
         `;
     } else {
         endHtml = `
-            <p style="color:var(--primary);font-weight:700">?? Novo Endereço</p>
+            <p style="color:var(--primary);font-weight:700">📝 Novo Endereço</p>
             <p>${end.logradouro}, nº ${end.numero}</p>
             <p>${end.bairro} — ${end.cidade}/${end.uf}</p>
             <p>CEP: ${end.cep}</p>
@@ -799,13 +799,13 @@ function preencherRevisao() {
     if (desconto > 0)
         valoresHtml += `<p>Cupom (${state.cupom.codigo}): -${formatCurrency(desconto)}</p>`;
     if (descontoPontos > 0)
-        valoresHtml += `<p>?? Pontos (${state.pontosUsados} pts): -${formatCurrency(descontoPontos)}</p>`;
+        valoresHtml += `<p>🎯 Pontos (${state.pontosUsados} pts): -${formatCurrency(descontoPontos)}</p>`;
     if (taxaEntrega > 0)
-        valoresHtml += `<p>?? Taxa de entrega: ${formatCurrency(taxaEntrega)}</p>`;
+        valoresHtml += `<p>🚚 Taxa de entrega: ${formatCurrency(taxaEntrega)}</p>`;
     valoresHtml += `<p style="font-size:1.2rem"><strong>Total: ${formatCurrency(total)}</strong></p>`;
     if (state.formaPagamento === 1 && state.trocoPara > 0) {
         const troco = state.trocoPara - total;
-        valoresHtml += `<p>?? Troco para: ${formatCurrency(state.trocoPara)} (Troco: ${formatCurrency(troco)})</p>`;
+        valoresHtml += `<p>💵 Troco para: ${formatCurrency(state.trocoPara)} (Troco: ${formatCurrency(troco)})</p>`;
     }
     if (state.observacao)
         valoresHtml += `<p style="margin-top:6px;font-size:.85rem;opacity:.85">Obs: ${state.observacao}</p>`;
@@ -874,7 +874,7 @@ async function validarCupom() {
                 ? `${data.valor}% de desconto`
                 : `R$ ${data.valorDesconto.toFixed(2)} de desconto`;
 
-            statusEl.innerHTML = `<strong style="color:var(--success)">? Cupom "${data.codigo}" aplicado!</strong> ${info}${data.descricao ? ` — ${data.descricao}` : ''}`;
+            statusEl.innerHTML = `<strong style="color:var(--success)">✓ Cupom "${data.codigo}" aplicado!</strong> ${info}${data.descricao ? ` — ${data.descricao}` : ''}`;
             statusEl.style.color = 'var(--success)';
 
             input.disabled = true;
@@ -1001,7 +1001,7 @@ async function exibirOverlayPix(pedidoId, numeroPedido, valorTotal) {
     document.querySelector('.pix-overlay-copiacola').style.display = '';
     document.getElementById('pixOverlayCopyStatus').style.display = 'none';
     document.getElementById('btnConfirmarPix').disabled = false;
-    document.getElementById('btnConfirmarPix').textContent = '? Já paguei';
+    document.getElementById('btnConfirmarPix').textContent = '✅ Já paguei';
 
     container.innerHTML = '<div class="empty-state" style="padding:20px">Gerando QR Code do Pix...</div>';
     copiaCola.value = '';
@@ -1040,7 +1040,7 @@ async function exibirOverlayPix(pedidoId, numeroPedido, valorTotal) {
             iniciarPollingPix(pedidoId);
 
             document.querySelector('.pix-overlay-timer small').textContent =
-                '?? Aguardando pagamento... (atualiza automaticamente)';
+                '⏱️ Aguardando pagamento... (atualiza automaticamente)';
             return;
         }
     } catch {
@@ -1063,7 +1063,7 @@ async function exibirOverlayPix(pedidoId, numeroPedido, valorTotal) {
     }
 
     document.querySelector('.pix-overlay-timer small').textContent =
-        '?? QR estático — clique em "Já paguei" após efetuar o pagamento';
+        '⏱️ QR estático — clique em "Já paguei" após efetuar o pagamento';
 }
 
 function iniciarPollingPix(pedidoId) {
@@ -1132,11 +1132,11 @@ async function confirmarPagamentoPix() {
 
         showToast(data?.mensagem || 'Erro ao confirmar pagamento.', 'error');
         btn.disabled = false;
-        btn.textContent = '? Já paguei';
+        btn.textContent = '✅ Já paguei';
     } catch {
         showToast('Erro de conexão ao confirmar pagamento.', 'error');
         btn.disabled = false;
-        btn.textContent = '? Já paguei';
+        btn.textContent = '✅ Já paguei';
     }
 }
 
@@ -1334,7 +1334,7 @@ function atualizarDescontoPontos() {
 
     const desconto = state.pontosUsados / 100;
     if (desconto > 0) {
-        valorEl.innerHTML = `<span style="color:var(--success)">? Desconto de ${formatCurrency(desconto)} será aplicado.</span>`;
+        valorEl.innerHTML = `<span style="color:var(--success)">✅ Desconto de ${formatCurrency(desconto)} será aplicado.</span>`;
     } else {
         valorEl.textContent = '';
     }
@@ -1550,17 +1550,17 @@ function atualizarTrocoInfo() {
     }
 
     if (valor < total) {
-        infoEl.textContent = `?? Valor insuficiente. Total do pedido: ${formatCurrency(total)}`;
+        infoEl.textContent = `⚠️ Valor insuficiente. Total do pedido: ${formatCurrency(total)}`;
         infoEl.style.color = 'var(--danger)';
         return;
     }
 
     if (valor === total) {
-        infoEl.textContent = '? Valor exato, sem troco.';
+        infoEl.textContent = '✅ Valor exato, sem troco.';
         infoEl.style.color = 'var(--success)';
     } else {
         const troco = valor - total;
-        infoEl.textContent = `? Troco: ${formatCurrency(troco)}`;
+        infoEl.textContent = `✅ Troco: ${formatCurrency(troco)}`;
         infoEl.style.color = 'var(--success)';
     }
 }
@@ -1648,47 +1648,35 @@ async function verificarStatusLoja() {
                 if (lojaTexto) { lojaTexto.textContent = dados.enderecoLoja; lojaTexto.style.opacity = '1'; }
             }
 
-            // Sistema online ? habilitar pedidos
+            // Sistema online → habilitar pedidos
             state.sistemaOnline = true;
             if (banner) banner.classList.remove('visible');
 
-            if (aberta) {
-                if (storeOnline !== true) {
-                    badge.className = 'store-status online';
-                    text.textContent = 'Loja Online';
-                    badge.style.opacity = '1';
-                    storeOnline = true;
-                    carregarProdutos();
-                }
-            } else {
-                badge.className = 'store-status offline';
-                const horarioInfo = dados.diaAberto && dados.horaAbertura
-                    ? `Horário: ${dados.horaAbertura} - ${dados.horaFechamento}`
-                    : 'Fechado hoje';
-                text.textContent = 'Loja Fechada';
+            if (storeOnline !== true) {
+                badge.className = 'store-status online';
                 badge.style.opacity = '1';
-                storeOnline = false;
+                storeOnline = true;
+                carregarProdutos();
+            }
 
-                // Loja fechada mas sistema online ? mostrar banner informativo (não bloqueia)
-                if (banner) {
-                    const bannerText = banner.querySelector('.offline-banner-text');
-                    if (bannerText) {
-                        if (dados.diaAberto && dados.horaAbertura) {
-                            const virada = dados.horaFechamento <= dados.horaAbertura;
-                            const ate = virada ? `${dados.horaFechamento} (dia seguinte)` : dados.horaFechamento;
-                            bannerText.textContent = `? Loja fechada agora — Horário: ${dados.horaAbertura} às ${ate}`;
-                        } else {
-                            bannerText.textContent = '? Estamos fechados hoje. Volte amanhã!';
-                        }
-                    }
-                    banner.classList.add('visible');
+            if (aberta) {
+                text.textContent = 'Loja Online';
+                if (banner) banner.classList.remove('visible');
+            } else {
+                // Fora do horário mas sistema online → mostrar "Loja Online" com horário
+                if (dados.diaAberto && dados.horaAbertura) {
+                    const virada = dados.horaFechamento <= dados.horaAbertura;
+                    const ate = virada ? `${dados.horaFechamento} (dia seguinte)` : dados.horaFechamento;
+                    text.textContent = `Loja Online · ${dados.horaAbertura} às ${ate}`;
+                } else {
+                    text.textContent = 'Loja Online';
                 }
             }
             return;
         }
         throw new Error();
     } catch {
-        // Sistema offline ? modo visualização
+        // Sistema offline → modo visualização
         state.sistemaOnline = false;
         if (storeOnline !== false) {
             badge.className = 'store-status offline';
@@ -1700,7 +1688,7 @@ async function verificarStatusLoja() {
         // Mostrar banner não-bloqueante
         if (banner) {
             const bannerText = banner.querySelector('.offline-banner-text');
-            if (bannerText) bannerText.textContent = '?? Sistema indisponível — Você pode navegar pelos produtos e montar seu pedido. O envio será possível quando a conexão for restabelecida.';
+            if (bannerText) bannerText.textContent = '📡 Sistema indisponível — Você pode navegar pelos produtos e montar seu pedido. O envio será possível quando a conexão for restabelecida.';
             banner.classList.add('visible');
         }
 
@@ -1731,7 +1719,7 @@ async function verificarStatusLoja() {
             if (cachedStatus.diaAberto && cachedStatus.horaAbertura) {
                 const virada = cachedStatus.horaFechamento <= cachedStatus.horaAbertura;
                 const ate = virada ? `${cachedStatus.horaFechamento} (dia seguinte)` : cachedStatus.horaFechamento;
-                text.textContent = `Offline — Horário: ${cachedStatus.horaAbertura} às ${ate}`;
+                text.textContent = `Loja Online · ${cachedStatus.horaAbertura} às ${ate}`;
             }
         }
     }
@@ -1757,7 +1745,7 @@ window.removerDoCarrinho = removerDoCarrinho;
     let toastQueue = [];
     let toastExibindo = false;
 
-    // -- Heartbeat --
+    // ── Heartbeat ──
     function sendHeartbeat() {
         fetch(`${API_BASE}/api/site/heartbeat`, {
             method: 'POST',
@@ -1766,7 +1754,7 @@ window.removerDoCarrinho = removerDoCarrinho;
         }).catch(() => {});
     }
 
-    // -- Polling de status --
+    // ── Polling de status ──
     async function pollStatus() {
         try {
             const res = await fetch(`${API_BASE}/api/site/status?desde=${ultimoTimestamp}`);
@@ -1802,7 +1790,7 @@ window.removerDoCarrinho = removerDoCarrinho;
         }
     }
 
-    // -- Fila de toasts de compra --
+    // ── Fila de toasts de compra ──
     function processarToastQueue() {
         if (toastExibindo || toastQueue.length === 0) return;
 
@@ -1832,13 +1820,13 @@ window.removerDoCarrinho = removerDoCarrinho;
         if (toast) toast.classList.remove('show');
     }
 
-    // -- Inicializar --
+    // ── Inicializar ──
     sendHeartbeat();
     pollStatus();
     setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
     setInterval(pollStatus, POLL_INTERVAL);
 
-    // -- Desconectar ao fechar a aba --
+    // ── Desconectar ao fechar a aba ──
     window.addEventListener('beforeunload', () => {
         const body = JSON.stringify({ sessionId: SESSION_ID });
         if (navigator.sendBeacon) {
