@@ -14,6 +14,14 @@ const API_BASE = (function detectApiBase() {
         return '';
     }
 
-    // Se estiver em outro domínio (Vercel, CDN, etc.), apontar para a API do túnel
+    // Qualquer outro domínio (menucentral.com.br, Vercel preview, CDN, etc.)
+    // apontar para a API do túnel Cloudflare
     return 'https://api.pedidocerto.uk';
 })();
+
+// Log discreto para diagnóstico (visível em DevTools > Console)
+if (API_BASE) {
+    console.info(`[MenuCentral] API remota: ${API_BASE}`);
+} else {
+    console.info('[MenuCentral] API local (mesmo domínio)');
+}
