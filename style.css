@@ -1011,6 +1011,492 @@ body {
 }
 
 /* ===================================================================
+   MOCKUPS DO SISTEMA (Phone Frames)
+   =================================================================== */
+
+.mockups-section {
+    background: linear-gradient(180deg, transparent, rgba(37, 99, 235, .02), transparent);
+}
+
+.mockups-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    justify-items: center;
+}
+
+.mockup-frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.mockup-phone {
+    position: relative;
+    width: 220px;
+    height: 420px;
+    background: #1a1a2e;
+    border-radius: 32px;
+    padding: 12px 8px;
+    box-shadow:
+        0 24px 48px rgba(15, 52, 96, .18),
+        inset 0 0 0 2px rgba(255,255,255,.08);
+    overflow: hidden;
+}
+
+.mockup-notch {
+    width: 80px;
+    height: 6px;
+    background: #2a2a4a;
+    border-radius: 999px;
+    margin: 0 auto 8px;
+}
+
+.mockup-screen {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 14px);
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--bg);
+}
+
+.mockup-iframe {
+    width: 375px;
+    height: 812px;
+    border: none;
+    transform: scale(0.525);
+    transform-origin: top left;
+    pointer-events: none;
+}
+
+.mockup-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(26, 26, 46, .4) 100%);
+    cursor: default;
+}
+
+.mockup-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+}
+
+.mockup-label-icon {
+    font-size: 1.6rem;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: rgba(37, 99, 235, .08);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+.mockup-label strong {
+    display: block;
+    font-size: .92rem;
+    color: var(--primary);
+    margin-bottom: 2px;
+}
+
+.mockup-label p {
+    font-size: .78rem;
+    color: var(--muted);
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Fidelidade preview (CSS illustration) */
+.mockup-screen--fidelidade {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f3460, #1d5ea8);
+}
+
+.mockup-fidelidade-preview {
+    text-align: center;
+    color: #fff;
+    padding: 20px;
+    width: 100%;
+}
+
+.mockup-fid-header {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.mockup-fid-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,.2);
+    border-radius: 999px;
+    margin-bottom: 14px;
+    overflow: hidden;
+}
+
+.mockup-fid-fill {
+    width: 72%;
+    height: 100%;
+    background: linear-gradient(90deg, #4ade80, #22d3ee);
+    border-radius: 999px;
+    animation: fid-fill 2s ease-out both;
+}
+
+@keyframes fid-fill {
+    from { width: 0; }
+    to   { width: 72%; }
+}
+
+.mockup-fid-stats {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    font-size: .78rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.mockup-fid-cashback {
+    font-size: .82rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    background: rgba(255,255,255,.15);
+    border-radius: 999px;
+    display: inline-block;
+}
+
+/* ===================================================================
+   FLUXO VISUAL DO PEDIDO (Order Flow)
+   =================================================================== */
+
+.order-flow {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 56px;
+    position: relative;
+}
+
+.flow-step {
+    flex: 1;
+    max-width: 240px;
+    text-align: center;
+    position: relative;
+    padding: 0 16px;
+}
+
+.flow-icon-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+}
+
+.flow-icon {
+    width: 72px;
+    height: 72px;
+    display: grid;
+    place-items: center;
+    font-size: 2rem;
+    background: var(--card);
+    border: 3px solid var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, .15);
+    position: relative;
+    z-index: 2;
+    transition: transform .3s, box-shadow .3s;
+}
+
+.flow-step:hover .flow-icon {
+    transform: scale(1.1);
+    box-shadow: 0 12px 32px rgba(37, 99, 235, .25);
+}
+
+.flow-number {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 800;
+    z-index: 3;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, .4);
+}
+
+.flow-connector {
+    position: absolute;
+    top: 36px;
+    left: calc(50% + 44px);
+    width: calc(100% - 88px + 32px);
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), rgba(37, 99, 235, .2));
+    z-index: 1;
+}
+
+.flow-step:last-child .flow-connector {
+    display: none;
+}
+
+.flow-step h3 {
+    font-size: 1.05rem;
+    color: var(--primary);
+    margin-bottom: 6px;
+}
+
+.flow-step p {
+    font-size: .84rem;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+/* ── Sub-header for modules detail ── */
+
+.modules-detail-header {
+    text-align: center;
+    margin-bottom: 28px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.modules-detail-header h3 {
+    font-size: 1.3rem;
+    color: var(--primary);
+    margin-bottom: 6px;
+}
+
+.modules-detail-header p {
+    font-size: .9rem;
+    color: var(--muted);
+}
+
+/* ===================================================================
+   PROVA DE FIDELIDADE & RECOMPENSAS
+   =================================================================== */
+
+.rewards-proof-section {
+    background: linear-gradient(180deg, rgba(37, 99, 235, .03), transparent);
+}
+
+.rewards-proof-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.reward-proof-card {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 8px 28px rgba(15, 52, 96, .06);
+    border: 1px solid var(--border);
+    transition: transform .3s, box-shadow .3s;
+}
+
+.reward-proof-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(15, 52, 96, .12);
+}
+
+.reward-proof-icon-big {
+    font-size: 2.8rem;
+    margin-bottom: 12px;
+}
+
+.reward-proof-metric {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.reward-proof-label {
+    font-size: .82rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: 12px;
+}
+
+.reward-proof-card > p {
+    font-size: .86rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.reward-proof-example {
+    padding: 10px 14px;
+    background: rgba(37, 99, 235, .06);
+    border-radius: var(--radius-sm);
+    font-size: .8rem;
+    color: var(--text);
+}
+
+.reward-proof-example span {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.reward-proof-example strong {
+    color: var(--accent);
+}
+
+.reward-proof-progress {
+    padding: 12px 14px;
+    background: rgba(37, 99, 235, .06);
+    border-radius: var(--radius-sm);
+}
+
+.streak-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.streak-dot {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: .72rem;
+    font-weight: 800;
+    background: var(--border);
+    color: var(--muted);
+    transition: all .3s;
+}
+
+.streak-dot.active {
+    background: linear-gradient(135deg, #f97316, #ef4444);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, .3);
+}
+
+.streak-label {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+/* ===================================================================
+   DEMONSTRAÇÃO EM VÍDEO
+   =================================================================== */
+
+.demo-section {
+    padding-bottom: 40px;
+}
+
+.demo-video-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.demo-video-frame {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 20px 48px rgba(15, 52, 96, .12);
+    border: 1px solid var(--border);
+}
+
+.demo-video-placeholder {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #0f3460 0%, #1d5ea8 50%, #2563eb 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.demo-video-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 50%, rgba(99, 102, 241, .3), transparent 50%),
+        radial-gradient(circle at 80% 30%, rgba(37, 99, 235, .4), transparent 50%);
+}
+
+.demo-play-btn {
+    position: relative;
+    z-index: 2;
+    transition: transform .3s;
+}
+
+.demo-video-placeholder:hover .demo-play-btn {
+    transform: scale(1.12);
+}
+
+.demo-placeholder-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 32px 24px 24px;
+    background: linear-gradient(transparent, rgba(15, 52, 96, .8));
+    text-align: center;
+    color: #fff;
+    z-index: 2;
+}
+
+.demo-ph-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.demo-ph-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.demo-ph-sub {
+    font-size: .84rem;
+    color: rgba(255,255,255,.7);
+}
+
+.demo-features-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    background: var(--card);
+}
+
+.demo-feature-tag {
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+    padding: 14px 12px;
+    font-size: .82rem;
+    font-weight: 700;
+    color: var(--primary);
+    border-right: 1px solid var(--border);
+}
+
+.demo-feature-tag:last-child {
+    border-right: none;
+}
+
+/* ===================================================================
    SCROLL ANIMATIONS
    =================================================================== */
 
@@ -1099,6 +1585,43 @@ body {
         font-size: 1.3rem;
     }
 
+    .mockups-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .mockup-phone {
+        width: 200px;
+        height: 380px;
+    }
+
+    .order-flow {
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+    }
+
+    .flow-connector {
+        display: none;
+    }
+
+    .rewards-proof-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .demo-features-row {
+        flex-wrap: wrap;
+    }
+
+    .demo-feature-tag {
+        flex: 1 1 45%;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .demo-feature-tag:nth-child(2) {
+        border-right: none;
+    }
+
     .steps-grid {
         grid-template-columns: 1fr 1fr;
         gap: 24px;
@@ -1154,6 +1677,16 @@ body {
     .btn-lg {
         width: 100%;
         justify-content: center;
+    }
+
+    .mockup-phone {
+        width: 180px;
+        height: 340px;
+    }
+
+    .demo-feature-tag {
+        flex: 1 1 100%;
+        border-right: none;
     }
 }
 

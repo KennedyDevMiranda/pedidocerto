@@ -12,7 +12,7 @@
     <div class="live-bar" id="liveBar">
         <div class="live-bar-inner">
             <span class="live-dot"></span>
-            <span class="live-online"><strong id="liveCount">0</strong> pessoa(s) online agora</span>
+            <span class="live-online"><strong id="liveCount">1</strong> pessoa(s) online agora</span>
         </div>
     </div>
 
@@ -31,11 +31,11 @@
             </a>
             <nav class="top-nav">
                 <a href="/" class="top-nav-link active">Início</a>
-                <a href="pedido.html" class="top-nav-link">Fazer Pedido</a>
-                <a href="feedback.html" class="top-nav-link">Avaliações</a>
-                <a href="negocios.html" class="top-nav-link">Para Negócios</a>
+                <a href="/pedido" class="top-nav-link">Fazer Pedido</a>
+                <a href="/feedback" class="top-nav-link">Avaliações</a>
+                <a href="/negocios" class="top-nav-link">Para Negócios</a>
             </nav>
-            <a href="pedido.html" class="header-cta">Peça Agora</a>
+            <a href="/pedido" class="header-cta">Peça Agora</a>
         </div>
     </header>
 
@@ -54,7 +54,7 @@
             <h1 class="hero-title">Peça online,<br><span class="hero-highlight">receba rápido</span></h1>
             <p class="hero-subtitle">Escolha seus produtos, faça o pedido em poucos cliques e acompanhe tudo em tempo real. Simples, rápido e confiável.</p>
             <div class="hero-actions">
-                <a href="pedido.html" class="btn-primary btn-lg">
+                <a href="/pedido" class="btn-primary btn-lg">
                     <span>🛒</span> Fazer Pedido
                 </a>
                 <a href="#destaques" class="btn-outline btn-lg">
@@ -63,18 +63,87 @@
             </div>
             <div class="hero-stats" id="heroStats">
                 <div class="hero-stat">
-                    <span class="hero-stat-value" id="statPedidos">—</span>
+                    <span class="hero-stat-value" id="statPedidos">0</span>
                     <span class="hero-stat-label">Pedidos Feitos</span>
                 </div>
                 <div class="hero-stat-divider"></div>
                 <div class="hero-stat">
-                    <span class="hero-stat-value" id="statNota">—</span>
+                    <span class="hero-stat-value" id="statNota">0.0 ★</span>
                     <span class="hero-stat-label">Avaliação Média</span>
                 </div>
                 <div class="hero-stat-divider"></div>
                 <div class="hero-stat">
-                    <span class="hero-stat-value" id="statFeedbacks">—</span>
+                    <span class="hero-stat-value" id="statFeedbacks">0</span>
                     <span class="hero-stat-label">Avaliações</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ MOCKUPS DO SISTEMA ══ -->
+    <section class="section mockups-section" id="mockups">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Veja na Prática</span>
+                <h2>Conheça o <span class="text-accent">Sistema</span></h2>
+                <p>Prints reais das telas que você vai usar para pedir, avaliar e acompanhar.</p>
+            </div>
+            <div class="mockups-grid">
+                <div class="mockup-frame animate-on-scroll">
+                    <div class="mockup-phone">
+                        <div class="mockup-notch"></div>
+                        <div class="mockup-screen">
+                            <iframe src="/pedido" class="mockup-iframe" loading="lazy" tabindex="-1" title="Tela de Pedidos"></iframe>
+                            <div class="mockup-overlay"></div>
+                        </div>
+                    </div>
+                    <div class="mockup-label">
+                        <span class="mockup-label-icon">🛒</span>
+                        <div>
+                            <strong>Tela de Pedidos</strong>
+                            <p>Cardápio completo com fotos, preços e promoções</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mockup-frame animate-on-scroll" style="animation-delay:150ms">
+                    <div class="mockup-phone">
+                        <div class="mockup-notch"></div>
+                        <div class="mockup-screen">
+                            <iframe src="/feedback" class="mockup-iframe" loading="lazy" tabindex="-1" title="Tela de Avaliações"></iframe>
+                            <div class="mockup-overlay"></div>
+                        </div>
+                    </div>
+                    <div class="mockup-label">
+                        <span class="mockup-label-icon">⭐</span>
+                        <div>
+                            <strong>Tela de Avaliações</strong>
+                            <p>Feedbacks reais de clientes com notas e comentários</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mockup-frame animate-on-scroll" style="animation-delay:300ms">
+                    <div class="mockup-phone">
+                        <div class="mockup-notch"></div>
+                        <div class="mockup-screen mockup-screen--fidelidade">
+                            <div class="mockup-fidelidade-preview">
+                                <div class="mockup-fid-header">🏆 Fidelidade</div>
+                                <div class="mockup-fid-bar"><div class="mockup-fid-fill"></div></div>
+                                <div class="mockup-fid-stats">
+                                    <span>🪙 1.250 pts</span>
+                                    <span>🔥 5x streak</span>
+                                </div>
+                                <div class="mockup-fid-cashback">💰 R$ 12,50 cashback</div>
+                            </div>
+                            <div class="mockup-overlay"></div>
+                        </div>
+                    </div>
+                    <div class="mockup-label">
+                        <span class="mockup-label-icon">🏆</span>
+                        <div>
+                            <strong>Programa de Fidelidade</strong>
+                            <p>Pontos, cashback e bônus de sequência</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,7 +170,52 @@
         <div class="container">
             <div class="section-header">
                 <span class="section-badge">Como Funciona</span>
-                <h2>Nossos <span class="text-accent">Módulos</span></h2>
+                <h2>Seu pedido em <span class="text-accent">4 passos</span></h2>
+                <p>Do cardápio à sua porta — simples, rápido e sem complicação.</p>
+            </div>
+
+            <!-- ── Fluxo Visual Horizontal ── -->
+            <div class="order-flow">
+                <div class="flow-step animate-on-scroll">
+                    <div class="flow-icon-wrap">
+                        <div class="flow-icon">📋</div>
+                        <span class="flow-number">1</span>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <h3>Escolha</h3>
+                    <p>Navegue pelo cardápio, veja fotos, preços e promoções do dia.</p>
+                </div>
+                <div class="flow-step animate-on-scroll" style="animation-delay:120ms">
+                    <div class="flow-icon-wrap">
+                        <div class="flow-icon">🛒</div>
+                        <span class="flow-number">2</span>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <h3>Adicione</h3>
+                    <p>Monte seu carrinho com os itens favoritos e aplique cupons.</p>
+                </div>
+                <div class="flow-step animate-on-scroll" style="animation-delay:240ms">
+                    <div class="flow-icon-wrap">
+                        <div class="flow-icon">💳</div>
+                        <span class="flow-number">3</span>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <h3>Finalize</h3>
+                    <p>Informe endereço, escolha pagamento e confirme com segurança.</p>
+                </div>
+                <div class="flow-step animate-on-scroll" style="animation-delay:360ms">
+                    <div class="flow-icon-wrap">
+                        <div class="flow-icon">🎉</div>
+                        <span class="flow-number">4</span>
+                    </div>
+                    <h3>Receba</h3>
+                    <p>Acompanhe em tempo real e receba seu pedido rapidinho!</p>
+                </div>
+            </div>
+
+            <!-- ── Módulos do Sistema (Grid de detalhes) ── -->
+            <div class="modules-detail-header">
+                <h3>Módulos <span class="text-accent">Completos</span></h3>
                 <p>Cada etapa foi pensada para ser simples e rápida.</p>
             </div>
             <div class="steps-grid">
@@ -168,7 +282,7 @@
                 </div>
             </div>
             <div class="section-action">
-                <a href="pedido.html" class="btn-primary">Ver Todos os Produtos →</a>
+                <a href="/pedido" class="btn-primary">Ver Todos os Produtos →</a>
             </div>
         </div>
     </section>
@@ -215,6 +329,53 @@
         </div>
     </section>
 
+    <!-- ══ PROVA DE FIDELIDADE & RECOMPENSAS ══ -->
+    <section class="section rewards-proof-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Fidelidade na Prática</span>
+                <h2>Veja como suas <span class="text-accent">recompensas</span> crescem</h2>
+                <p>Quanto mais você pede, mais benefícios acumula. Confira um exemplo real:</p>
+            </div>
+            <div class="rewards-proof-grid">
+                <div class="reward-proof-card animate-on-scroll">
+                    <div class="reward-proof-icon-big">🪙</div>
+                    <div class="reward-proof-metric">1.250</div>
+                    <div class="reward-proof-label">Pontos Acumulados</div>
+                    <p>A cada R$ 1 gasto, você ganha pontos. Troque por descontos a qualquer momento.</p>
+                    <div class="reward-proof-example">
+                        <span>Exemplo:</span> 5 pedidos de R$ 50 = <strong>250 pontos</strong>
+                    </div>
+                </div>
+                <div class="reward-proof-card animate-on-scroll" style="animation-delay:100ms">
+                    <div class="reward-proof-icon-big">💰</div>
+                    <div class="reward-proof-metric">R$ 12,50</div>
+                    <div class="reward-proof-label">Cashback Disponível</div>
+                    <p>0.5% de cashback em cada pedido entregue é creditado automaticamente.</p>
+                    <div class="reward-proof-example">
+                        <span>Exemplo:</span> R$ 2.500 em pedidos = <strong>R$ 12,50</strong> de volta
+                    </div>
+                </div>
+                <div class="reward-proof-card animate-on-scroll" style="animation-delay:200ms">
+                    <div class="reward-proof-icon-big">🔥</div>
+                    <div class="reward-proof-metric">5x Streak</div>
+                    <div class="reward-proof-label">Bônus de Sequência</div>
+                    <p>Mantenha pedidos consecutivos e ganhe bônus de 2x a 5x nos pontos!</p>
+                    <div class="reward-proof-progress">
+                        <div class="streak-dots">
+                            <span class="streak-dot active">1</span>
+                            <span class="streak-dot active">2</span>
+                            <span class="streak-dot active">3</span>
+                            <span class="streak-dot active">4</span>
+                            <span class="streak-dot active">5</span>
+                        </div>
+                        <span class="streak-label">🎉 Bônus 5x ativo!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- ══ AVALIAÇÕES DE CLIENTES ══ -->
     <section class="section reviews-section" id="avaliacoes">
         <div class="container">
@@ -225,9 +386,9 @@
             </div>
             <div class="reviews-summary" id="reviewsSummary">
                 <div class="reviews-big-score">
-                    <span class="big-score-value" id="bigScoreValue">—</span>
+                    <span class="big-score-value" id="bigScoreValue">0.0</span>
                     <div class="big-score-stars" id="bigScoreStars">★★★★★</div>
-                    <span class="big-score-count" id="bigScoreCount">— avaliações</span>
+                    <span class="big-score-count" id="bigScoreCount">0 avaliações</span>
                 </div>
             </div>
             <div class="reviews-carousel" id="reviewsCarousel">
@@ -238,7 +399,41 @@
                 </div>
             </div>
             <div class="section-action">
-                <a href="feedback.html" class="btn-outline">Ver Todas as Avaliações →</a>
+                <a href="/feedback" class="btn-outline">Ver Todas as Avaliações →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ DEMONSTRAÇÃO EM VÍDEO ══ -->
+    <section class="section demo-section" id="demo">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Demonstração</span>
+                <h2>Veja o sistema <span class="text-accent">em ação</span></h2>
+                <p>Assista uma demonstração rápida de como fazer seu pedido do início ao fim.</p>
+            </div>
+            <div class="demo-video-wrap animate-on-scroll">
+                <div class="demo-video-frame">
+                    <div class="demo-video-placeholder">
+                        <div class="demo-play-btn">
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                                <circle cx="32" cy="32" r="32" fill="rgba(37,99,235,.9)"/>
+                                <polygon points="26,20 26,44 46,32" fill="#fff"/>
+                            </svg>
+                        </div>
+                        <div class="demo-placeholder-content">
+                            <div class="demo-ph-icon">🎬</div>
+                            <p class="demo-ph-title">Demonstração do Menu Central</p>
+                            <p class="demo-ph-sub">Vídeo em breve — enquanto isso, experimente agora!</p>
+                        </div>
+                    </div>
+                    <div class="demo-features-row">
+                        <div class="demo-feature-tag">⚡ Pedido em 30s</div>
+                        <div class="demo-feature-tag">📱 100% no navegador</div>
+                        <div class="demo-feature-tag">🔒 Pagamento seguro</div>
+                        <div class="demo-feature-tag">🏆 Pontos automáticos</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -249,7 +444,7 @@
             <div class="cta-card">
                 <h2>Pronto para fazer seu pedido?</h2>
                 <p>É rápido, seguro e você ainda acumula pontos de fidelidade!</p>
-                <a href="pedido.html" class="btn-primary btn-lg">
+                <a href="/pedido" class="btn-primary btn-lg">
                     <span>🛒</span> Fazer Meu Pedido Agora
                 </a>
             </div>
@@ -268,14 +463,14 @@
                 <div class="footer-links">
                     <h4>Navegação</h4>
                     <a href="/">Início</a>
-                    <a href="pedido.html">Fazer Pedido</a>
-                    <a href="feedback.html">Avaliações</a>
-                    <a href="negocios.html">Para Negócios</a>
-                    <a href="termos.html">Termos de Uso</a>
+                    <a href="/pedido">Fazer Pedido</a>
+                    <a href="/feedback">Avaliações</a>
+                    <a href="/negocios">Para Negócios</a>
+                    <a href="/termos">Termos de Uso</a>
                 </div>
                 <div class="footer-links">
                     <h4>Endereço</h4>
-                    <p id="footerEndereco">—</p>
+                    <p id="footerEndereco">Endereço disponível em breve</p>
                 </div>
             </div>
             <div class="footer-bottom">

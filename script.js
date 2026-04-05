@@ -152,9 +152,13 @@ function aplicarStatusLoja(dados, live) {
     }
 
     // Endereço no footer
-    if (dados.enderecoLoja) {
-        const el = document.getElementById('footerEndereco');
-        if (el) el.textContent = dados.enderecoLoja;
+    const enderecoEl = document.getElementById('footerEndereco');
+    if (enderecoEl) {
+        if (dados.enderecoLoja) {
+            enderecoEl.textContent = dados.enderecoLoja;
+        } else {
+            enderecoEl.textContent = 'Endereço disponível em breve';
+        }
     }
 
     // Revelar card de horário (começa oculto para evitar "Carregando...")
@@ -268,7 +272,18 @@ async function carregarAvaliacoes() {
         if (cached) {
             renderAvaliacoes(cached, carousel);
         } else {
-            carousel.innerHTML = '<p style="text-align:center;color:var(--muted);">Não foi possível carregar avaliações.</p>';
+            carousel.innerHTML = '<p style="text-align:center;color:var(--muted);">Nenhuma avaliação ainda. Seja o primeiro!</p>';
+            // Mostrar zeros amigáveis em vez de "—"
+            const bigValue = document.getElementById('bigScoreValue');
+            const bigStars = document.getElementById('bigScoreStars');
+            const bigCount = document.getElementById('bigScoreCount');
+            const statNota = document.getElementById('statNota');
+            const statFeedbacks = document.getElementById('statFeedbacks');
+            if (bigValue) bigValue.textContent = '0.0';
+            if (bigStars) bigStars.textContent = '☆☆☆☆☆';
+            if (bigCount) bigCount.textContent = '0 avaliações';
+            if (statNota) statNota.textContent = '0.0 ★';
+            if (statFeedbacks) statFeedbacks.textContent = '0';
         }
     }
 }
@@ -344,9 +359,12 @@ async function carregarStatPedidos() {
         const resp = await fetch(`${API_BASE}/api/site/metricas`);
         if (!resp.ok) throw new Error();
         const data = await resp.json();
-        el.textContent = data.totalPedidos || 0;
+        const total = data.totalPedidos || 0;
+        el.textContent = total;
+        salvarCache('dm_cache_stat_pedidos', total);
     } catch {
-        el.textContent = '—';
+        const cached = lerCache('dm_cache_stat_pedidos');
+        el.textContent = cached != null ? cached : 0;
     }
 }
 
@@ -453,6 +471,13 @@ function initScrollAnimations() {
         if (toast) toast.classList.remove('show');
     }
 
+    // Mostrar "1" imediatamente (o próprio visitante) até o primeiro poll
+    const countElInit = document.getElementById('liveCount');
+    if (countElInit && countElInit.textContent === '0') {
+        const cachedOnline = lerCache('dm_cache_online');
+        countElInit.textContent = cachedOnline && cachedOnline > 0 ? cachedOnline : 1;
+    }
+
     sendHeartbeat();
     pollStatus();
     setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
@@ -476,8 +501,8 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarAvaliacoes();
     carregarStatPedidos();
 
-    // Animações dos cards estáticos (módulos, perks)
-    document.querySelectorAll('.step-card, .perk-card, .horario-card').forEach(el => {
+    // Animações dos cards estáticos (módulos, perks, rewards, mockups)
+    document.querySelectorAll('.step-card, .perk-card, .horario-card, .reward-proof-card, .mockup-frame, .flow-step, .demo-video-wrap').forEach(el => {
         el.classList.add('animate-on-scroll');
     });
     initScrollAnimations();
