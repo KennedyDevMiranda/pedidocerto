@@ -1,9 +1,8 @@
 /* ===================================================================
    NEGÓCIOS — JS Compartilhado
    Usado por: negocios, planos, contato, entrar, recursos, suporte, sobre
+   API_BASE definido em config.js
    =================================================================== */
-
-const API_BASE = '';
 
 /* ── Mobile Nav Toggle ── */
 function toggleNav() {

@@ -1,9 +1,8 @@
 /* ===================================================================
    DevMiranda – Feedback & Fidelidade – Script
    API: /api/feedbacks, /api/fidelidade, /api/clientes
+   API_BASE definido em config.js
    =================================================================== */
-
-const API_BASE = '';
 
 const ENDPOINTS = {
     buscarClientePorDocumento: (doc) =>

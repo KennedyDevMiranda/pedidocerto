@@ -1,8 +1,7 @@
 /* ===================================================================
    MENU CENTRAL — PAINEL DE GESTÃO (painel.js)
+   API_BASE definido em config.js
    =================================================================== */
-
-const API_BASE = '';
 
 /* ── Estado ── */
 let currentPage = 'dashboard';

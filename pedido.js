@@ -1,9 +1,8 @@
 /* ===================================================================
    Menu Central — Script do Formulário de Pedido
    API: /api/pedidos, /api/produtos, /api/clientes
+   API_BASE definido em config.js
    =================================================================== */
-
-const API_BASE = '';
 
 const ENDPOINTS = {
     criarPedido: `${API_BASE}/api/pedidos`,
