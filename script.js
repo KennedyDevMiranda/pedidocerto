@@ -48,6 +48,24 @@ function lerCache(key) {
 }
 
 /* ===================================================================
+   VERIFICAÇÃO DE HORÁRIO (client-side)
+   =================================================================== */
+
+function estaNoHorario(dados) {
+    if (!dados || !dados.diaAberto || !dados.horaAbertura || !dados.horaFechamento) return null;
+    const agora = new Date();
+    const [hA, mA] = dados.horaAbertura.split(':').map(Number);
+    const [hF, mF] = dados.horaFechamento.split(':').map(Number);
+    const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
+    const minutosAbre = hA * 60 + (mA || 0);
+    const minutosFecha = hF * 60 + (mF || 0);
+    if (minutosFecha > minutosAbre) {
+        return minutosAgora >= minutosAbre && minutosAgora < minutosFecha;
+    }
+    return minutosAgora >= minutosAbre || minutosAgora < minutosFecha;
+}
+
+/* ===================================================================
    STATUS DA LOJA
    =================================================================== */
 
@@ -64,17 +82,17 @@ async function carregarStatusLoja() {
         salvarCache(CACHE_KEYS.status, dados);
         aplicarStatusLoja(dados, true);
     } catch {
-        // Tentar cache
+        // Tentar cache — site sempre ativo, usa horário local para determinar aberta/fechada
         const cached = lerCache(CACHE_KEYS.status);
         if (cached) {
             aplicarStatusLoja(cached, false);
         } else {
             const text = document.getElementById('storeStatusText');
-            if (text) text.textContent = 'Indisponível';
+            if (text) text.textContent = 'Consulte nosso horário';
             const badge = document.getElementById('storeStatusBadge');
             if (badge) badge.style.opacity = '1';
             const horarioTexto = document.getElementById('horarioTexto');
-            if (horarioTexto) horarioTexto.textContent = 'Não foi possível verificar o horário.';
+            if (horarioTexto) horarioTexto.textContent = 'Horário de funcionamento será exibido em breve.';
             const hCard = document.getElementById('horarioCard');
             if (hCard) hCard.style.opacity = '1';
         }
@@ -82,16 +100,21 @@ async function carregarStatusLoja() {
 }
 
 function aplicarStatusLoja(dados, live) {
-    const aberta = live ? (dados.aberta !== false) : false;
+    // Quando API está ativa: usar dados.aberta direto
+    // Quando API está offline: verificar horário localmente com dados em cache
+    let aberta;
+    if (live) {
+        aberta = dados.aberta !== false;
+    } else {
+        const horarioLocal = estaNoHorario(dados);
+        aberta = horarioLocal === true;
+    }
 
     // Badge do hero
     const dot = document.querySelector('.hero-badge-dot');
     const text = document.getElementById('storeStatusText');
     if (dot && text) {
-        if (!live) {
-            dot.className = 'hero-badge-dot offline';
-            text.textContent = 'Sistema Offline — Navegue à vontade';
-        } else if (aberta) {
+        if (aberta) {
             dot.className = 'hero-badge-dot online';
             text.textContent = 'Loja Aberta Agora';
         } else {
@@ -106,21 +129,7 @@ function aplicarStatusLoja(dados, live) {
     const horarioTexto = document.getElementById('horarioTexto');
     const statusPill = document.getElementById('statusPill');
 
-    if (!live) {
-        if (statusPill) {
-            statusPill.textContent = '● Offline';
-            statusPill.className = 'status-pill fechada';
-        }
-        if (horarioTexto) {
-            if (dados.diaAberto && dados.horaAbertura) {
-                const virada = dados.horaFechamento <= dados.horaAbertura;
-                const ate = virada ? `${dados.horaFechamento} (dia seguinte)` : dados.horaFechamento;
-                horarioTexto.textContent = `Horário de funcionamento: ${dados.horaAbertura} — ${ate}. Sistema offline no momento.`;
-            } else {
-                horarioTexto.textContent = 'Sistema offline. Volte mais tarde para fazer pedidos!';
-            }
-        }
-    } else if (aberta) {
+    if (aberta) {
         if (statusPill) {
             statusPill.textContent = '● Aberta';
             statusPill.className = 'status-pill aberta';
