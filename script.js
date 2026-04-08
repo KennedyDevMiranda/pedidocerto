@@ -100,15 +100,21 @@ async function carregarStatusLoja() {
 }
 
 function aplicarStatusLoja(dados, live) {
-    // Quando API está ativa: usar dados.aberta direto
-    // Quando API está offline: verificar horário localmente com dados em cache
-    let aberta;
-    if (live) {
-        aberta = dados.aberta !== false;
+    // Determinar estado efetivo
+    // API retorna: estado ('aberta'|'fechada'|'pausada'|'agendamento'), aceitaPedidos, mensagem
+    let estado;
+    if (live && dados.estado) {
+        estado = dados.estado;
+    } else if (live) {
+        estado = dados.aberta !== false ? 'aberta' : 'fechada';
     } else {
         const horarioLocal = estaNoHorario(dados);
-        aberta = horarioLocal === true;
+        estado = horarioLocal === true ? 'aberta' : 'fechada';
     }
+
+    const aberta = estado === 'aberta';
+    const pausada = estado === 'pausada';
+    const agendamento = estado === 'agendamento';
 
     // Badge do hero
     const dot = document.querySelector('.hero-badge-dot');
@@ -117,6 +123,12 @@ function aplicarStatusLoja(dados, live) {
         if (aberta) {
             dot.className = 'hero-badge-dot online';
             text.textContent = 'Loja Aberta Agora';
+        } else if (pausada) {
+            dot.className = 'hero-badge-dot paused';
+            text.textContent = dados.mensagem || 'Loja Pausada';
+        } else if (agendamento) {
+            dot.className = 'hero-badge-dot scheduling';
+            text.textContent = 'Aceitando Agendamentos';
         } else {
             dot.className = 'hero-badge-dot offline';
             text.textContent = 'Loja Fechada';
@@ -142,6 +154,22 @@ function aplicarStatusLoja(dados, live) {
             } else {
                 horarioTexto.textContent = 'Estamos abertos! Faça seu pedido agora.';
             }
+        }
+    } else if (pausada) {
+        if (statusPill) {
+            statusPill.textContent = '● Pausada';
+            statusPill.className = 'status-pill pausada';
+        }
+        if (horarioTexto) {
+            horarioTexto.textContent = dados.mensagem || 'Estamos pausados temporariamente. Volte em breve!';
+        }
+    } else if (agendamento) {
+        if (statusPill) {
+            statusPill.textContent = '● Agendamento';
+            statusPill.className = 'status-pill agendamento';
+        }
+        if (horarioTexto) {
+            horarioTexto.textContent = dados.mensagem || 'Aceitando agendamentos — faça seu pedido para retirada futura!';
         }
     } else {
         if (statusPill) {
@@ -235,6 +263,10 @@ function renderProdutosDestaque(lista, container) {
             ? `<span class="showcase-bestseller-badge">🔥 Mais Vendido</span>`
             : '';
 
+        const categoriaBadge = p.categoriaNome && p.categoriaNome !== 'Outros'
+            ? `<span class="showcase-category-badge">${p.categoriaNome}</span>`
+            : '';
+
         const priceHtml = temOferta
             ? `<span class="showcase-price-old">${formatCurrency(p.preco)}</span><span class="showcase-price">${formatCurrency(precoExibido)}</span>`
             : `<span class="showcase-price">${formatCurrency(precoExibido)}</span>`;
@@ -248,6 +280,7 @@ function renderProdutosDestaque(lista, container) {
             ${imgHtml}
             <div class="showcase-body">
                 ${bestSellerBadge}
+                ${categoriaBadge}
                 ${promoBadge}
                 <h3>${p.nome}</h3>
                 <p class="showcase-desc">${p.descricao || ''}</p>
