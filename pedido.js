@@ -1027,18 +1027,23 @@ async function enviarPedido(e) {
     e.preventDefault();
     if (state.step !== 6) return;
 
-    // Bloquear pedido fora do horário
-    if (state.lojaAberta === false) {
-        const msg = state.horarioTexto
-            ? `A loja está fechada no momento. Horário de funcionamento: ${state.horarioTexto}.`
-            : 'A loja está fechada no momento. Tente novamente mais tarde.';
+    // Bloquear pedido se loja não aceita pedidos
+    if (state.aceitaPedidos === false || state.lojaAberta === false) {
+        const mensagens = {
+            fechada: state.horarioTexto
+                ? `A loja está fechada no momento. Horário: ${state.horarioTexto}.`
+                : 'A loja está fechada no momento. Tente novamente mais tarde.',
+            pausada: state.mensagemLoja || 'Loja pausada temporariamente. Tente novamente em instantes.',
+            agendamento: 'No momento só aceitamos agendamentos pelo WhatsApp.'
+        };
+        const msg = mensagens[state.estadoLoja] || mensagens.fechada;
         showToast(msg, 'error');
         return;
     }
 
     // Sem conexão e sem cache de horário — não conseguimos verificar
-    if (!state.sistemaOnline && state.lojaAberta === null) {
-        showToast('Não foi possível verificar o horário da loja. Tente novamente em instantes.', 'error');
+    if (!state.sistemaOnline && state.aceitaPedidos === null && state.lojaAberta === null) {
+        showToast('Não foi possível verificar o status da loja. Tente novamente em instantes.', 'error');
         return;
     }
 

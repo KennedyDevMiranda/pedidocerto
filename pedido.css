@@ -338,6 +338,99 @@ body {
     gap: 14px;
 }
 
+/* ---- Category Tabs ---- */
+
+.categorias-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0 8px;
+    margin-top: 10px;
+    scrollbar-width: none;
+}
+
+.categorias-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.cat-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .25s ease;
+}
+
+.cat-tab:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.cat-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.cat-tab.active .cat-count {
+    background: rgba(255,255,255,.25);
+    color: #fff;
+}
+
+.cat-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: rgba(0,0,0,.06);
+    font-size: .7rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* ---- Category Groups ---- */
+
+.categoria-grupo {
+    margin-bottom: 8px;
+}
+
+.categoria-titulo {
+    font-size: .92rem;
+    font-weight: 700;
+    color: var(--primary);
+    padding: 10px 4px 6px;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.categoria-titulo::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    border-radius: 4px;
+    background: var(--accent);
+    flex-shrink: 0;
+}
+
+.categoria-produtos {
+    display: grid;
+    gap: 12px;
+}
+
 /* ---- Products List ---- */
 
 .products-list {
@@ -969,6 +1062,26 @@ body {
 .store-status.offline .status-dot {
     background: #f87171;
     box-shadow: 0 0 6px #f87171;
+}
+
+.store-status.paused {
+    background: rgba(217, 119, 6, 0.35);
+}
+
+.store-status.paused .status-dot {
+    background: #fbbf24;
+    box-shadow: 0 0 6px #fbbf24;
+    animation: pulse-dot 2s infinite;
+}
+
+.store-status.scheduling {
+    background: rgba(37, 99, 235, 0.35);
+}
+
+.store-status.scheduling .status-dot {
+    background: #60a5fa;
+    box-shadow: 0 0 6px #60a5fa;
+    animation: pulse-dot 2s infinite;
 }
 
 @keyframes pulse-dot {

@@ -535,6 +535,16 @@ body {
     color: var(--danger);
 }
 
+.status-pill.pausada {
+    background: rgba(217, 119, 6, .1);
+    color: var(--warning);
+}
+
+.status-pill.agendamento {
+    background: rgba(37, 99, 235, .1);
+    color: var(--accent);
+}
+
 /* ===================================================================
    COMO FUNCIONA
    =================================================================== */
@@ -723,6 +733,17 @@ body {
     font-size: .72rem;
     color: var(--muted);
     font-weight: 600;
+}
+
+.showcase-category-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(37, 99, 235, .08);
+    color: var(--accent);
+    font-size: .7rem;
+    font-weight: 700;
+    margin-bottom: 4px;
 }
 
 /* ---- Shimmer Loading ---- */
