@@ -10,6 +10,7 @@ const ENDPOINTS = {
         const q = busca ? `?busca=${encodeURIComponent(busca)}` : '';
         return `${API_BASE}/api/produtos${q}`;
     },
+    listarCategorias: `${API_BASE}/api/categorias`,
     buscarClientePorDocumento: (doc) =>
         `${API_BASE}/api/clientes/documento/${encodeURIComponent(doc)}`,
     criarCliente: `${API_BASE}/api/clientes`,
@@ -44,6 +45,7 @@ const PIX_CONFIG = {
 
 const CACHE_KEYS = {
     produtos: 'dm_cache_produtos',
+    categorias: 'dm_cache_categorias',
     status: 'dm_cache_status',
     cupons: 'dm_cache_cupons'
 };
@@ -79,6 +81,8 @@ function estaNoHorario(dados) {
 const state = {
     step: 1,
     produtos: [],
+    categorias: [],
+    categoriaFiltro: 0, // 0 = Todas
     carrinho: [],
     sistemaOnline: null,
     lojaAberta: null,
@@ -252,6 +256,50 @@ produtoBusca.addEventListener('input', (e) => {
 });
 
 /* ===================================================================
+   CATEGORIAS (GET /api/categorias)
+   =================================================================== */
+
+async function carregarCategorias() {
+    try {
+        const resp = await fetch(ENDPOINTS.listarCategorias);
+        if (!resp.ok) throw new Error();
+        const dados = await resp.json();
+        state.categorias = Array.isArray(dados) ? dados : [];
+        salvarCache(CACHE_KEYS.categorias, state.categorias);
+    } catch {
+        const cached = lerCache(CACHE_KEYS.categorias);
+        if (cached && cached.length) state.categorias = cached;
+    }
+    renderCategoriasTabs();
+}
+
+function renderCategoriasTabs() {
+    const container = document.getElementById('categoriasTabs');
+    if (!container) return;
+
+    const cats = state.categorias.filter(c => c.totalProdutos > 0);
+    if (!cats.length) {
+        container.innerHTML = '';
+        return;
+    }
+
+    let html = `<button type="button" class="cat-tab${state.categoriaFiltro === 0 ? ' active' : ''}" data-cat-id="0">Todas</button>`;
+    cats.forEach(c => {
+        html += `<button type="button" class="cat-tab${state.categoriaFiltro === c.id ? ' active' : ''}" data-cat-id="${c.id}">${c.nome} <span class="cat-count">${c.totalProdutos}</span></button>`;
+    });
+    container.innerHTML = html;
+
+    container.querySelectorAll('.cat-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+            state.categoriaFiltro = parseInt(btn.dataset.catId);
+            container.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderProdutos();
+        });
+    });
+}
+
+/* ===================================================================
    CUPONS DISPONÍVEIS (GET /api/cupons/disponiveis)
    =================================================================== */
 
@@ -319,32 +367,68 @@ function renderProdutos() {
         listaProdutos.innerHTML = '<div class="empty-state">Nenhum produto encontrado.</div>';
         return;
     }
-    listaProdutos.innerHTML = state.produtos.map(p => {
-        const temOferta = p.ofertaAtiva && p.precoPromocional > 0;
-        const precoExibido = temOferta ? p.precoPromocional : p.preco;
-        const badgeOferta = temOferta && p.tipoOfertaNome
-            ? `<span class="offer-badge">${p.tipoOfertaNome}</span>` : '';
-        const precoHtml = temOferta
-            ? `<div class="product-price-wrap">
-                   ${badgeOferta}
-                   <span class="product-price-old">${formatCurrency(p.preco)}</span>
-                   <span class="product-price-new">${formatCurrency(precoExibido)}</span>
-                   <span class="product-discount-badge">-${p.percentualDesconto}%</span>
-               </div>`
-            : `<div class="product-price">${formatCurrency(p.preco)}</div>`;
 
-        return `
-        <button type="button" class="product-card${temOferta ? ' product-card--promo' : ''}" data-produto-id="${p.id}">
-            ${p.imagemUrl
-                ? `<img src="${API_BASE}${p.imagemUrl}" alt="${p.nome}" class="product-img">`
-                : `<div class="product-img-placeholder">📦</div>`}
-            <div class="product-info">
-                <h3>${p.nome}</h3>
-                <p>${p.descricao || ''} · Disponível: ${p.estoque}</p>
-            </div>
-            ${precoHtml}
-        </button>`;
-    }).join('');
+    // Filtrar por categoria se selecionada
+    const filtrados = state.categoriaFiltro > 0
+        ? state.produtos.filter(p => p.categoriaId === state.categoriaFiltro)
+        : state.produtos;
+
+    if (!filtrados.length) {
+        listaProdutos.innerHTML = '<div class="empty-state">Nenhum produto nesta categoria.</div>';
+        return;
+    }
+
+    // Agrupar por categoria
+    const grupos = {};
+    filtrados.forEach(p => {
+        const cat = p.categoriaNome || 'Outros';
+        if (!grupos[cat]) grupos[cat] = [];
+        grupos[cat].push(p);
+    });
+
+    const categoriasOrdenadas = Object.keys(grupos).sort((a, b) => {
+        if (a === 'Outros') return 1;
+        if (b === 'Outros') return -1;
+        return a.localeCompare(b, 'pt-BR');
+    });
+
+    let html = '';
+    categoriasOrdenadas.forEach(cat => {
+        html += `<div class="categoria-grupo">
+            <h3 class="categoria-titulo">${cat}</h3>
+            <div class="categoria-produtos">`;
+
+        html += grupos[cat].map(p => {
+            const temOferta = p.ofertaAtiva && p.precoPromocional > 0;
+            const precoExibido = temOferta ? p.precoPromocional : p.preco;
+            const badgeOferta = temOferta && p.tipoOfertaNome
+                ? `<span class="offer-badge">${p.tipoOfertaNome}</span>` : '';
+            const precoHtml = temOferta
+                ? `<div class="product-price-wrap">
+                       ${badgeOferta}
+                       <span class="product-price-old">${formatCurrency(p.preco)}</span>
+                       <span class="product-price-new">${formatCurrency(precoExibido)}</span>
+                       <span class="product-discount-badge">-${p.percentualDesconto}%</span>
+                   </div>`
+                : `<div class="product-price">${formatCurrency(p.preco)}</div>`;
+
+            return `
+            <button type="button" class="product-card${temOferta ? ' product-card--promo' : ''}" data-produto-id="${p.id}">
+                ${p.imagemUrl
+                    ? `<img src="${API_BASE}${p.imagemUrl}" alt="${p.nome}" class="product-img">`
+                    : `<div class="product-img-placeholder">📦</div>`}
+                <div class="product-info">
+                    <h3>${p.nome}</h3>
+                    <p>${p.descricao || ''} · Disponível: ${p.estoque}</p>
+                </div>
+                ${precoHtml}
+            </button>`;
+        }).join('');
+
+        html += `</div></div>`;
+    });
+
+    listaProdutos.innerHTML = html;
 }
 
 /* ===================================================================
